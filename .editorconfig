@@ -13,5 +13,5 @@ indent_size = 4
 [*.js]
 max_line_length = 100
 
-[*.md]
+[*.{md,html}]
 trim_trailing_whitespace = false
