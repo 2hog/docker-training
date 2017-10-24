@@ -39,6 +39,10 @@
       bottom: 3em;
     }
 
+    li {
+      padding: 8px 0;
+    }
+
     li p {
       line-height: 1.25em;
     }
@@ -396,25 +400,51 @@ https://docs.docker.com/engine/reference/commandline/cli/
 
 class: center
 
-# The Dockerfile
+# Create your first image
+    
+[git.io/vdhKH](https://git.io/vdhKH)
 
 ---
 
-class: center
+# The `Dockerfile`
 
-# Create your first Dockerfile
+The Dockerfile is a text file that contains all commands needed to build an image.
+
+```dockerfile
+FROM openjdk:8
+
+COPY Main.java /usr/src/app/Main.java
+WORKDIR /usr/src/app
+RUN javac Main.java
+CMD ["java", "Main"]
+```
+
+https://docs.docker.com/engine/reference/builder/
 
 ---
-
-class: center
 
 # Image building
+
+Run the following command to build and run your image, based on the Dockerfile
+
+```
+docker build -t myjava .
+docker run myjava
+```
 
 ---
 
 class: center
 
 # Container principles
+
+---
+
+# Container principles
+
+1. The container should be single-purposed program (e.g. avoid using `supervisord`)
+2. The image should be lightweight and slim
+3. Orchestration, load balancing etc. should be carried out by an external tool
 
 ???
 
