@@ -258,6 +258,12 @@ class: center
 
 ---
 
+class: center
+
+# https://p.2hog.codes/intro-docker-containers/
+
+---
+
 # Agenda
 
 1. What is a container
@@ -268,43 +274,62 @@ class: center
 
 ---
 
-class: center
+# An outdated software delivery pipeline
 
-# https://p.2hog.codes/intro-docker-containers/
+1. A developer implements a new software feature
+2. The developer commits the new feature in Source Control (e.g. Git, SVN etc.)
+3. The developer requests from an "operations person" to deploy the new feature
+4. The "operations person" prepares the host machine (updates libraries etc.)
+5. The "operations person" pulls and runs the new version of the software, replacing the old
+
+---
+
+# Issues
+
+1. Man hours are wasted on chores
+2. High risk of mistakes due to human factor
+3. High infrastructure costs
+4. Clear productivity bottleneck
+
+---
+
+# An old-school software delivery pipeline
+
+1. A developer implements a new software feature
+2. The developer commits the new feature in Source Control (e.g. Git, SVN etc.)
+3. A Virtual Machine with the new software gets deployed on the cloud
+
+---
+
+# Issues
+
+1. Super complex setup procedure
+2. Long lasting deployments
+3. High infrastructure costs
+
+---
+
+# A fresh software delivery pipeline
+
+1. A developer implements a new software feature
+2. The developer commits the new feature in Source Control (e.g. Git, SVN etc.)
+3. A new Docker Container gets deployed, replacing the old one automatically
 
 ---
 
 class: center, middle
 
-# What is a container
+# What is a Container though?
+
+Containers are a set of **kernel tools and features** that **jail** and **limit** a process based on our needs.
 
 ---
 
-class: center, middle
-
-## Containers are the use of a collection of **kernel tools and features**, in order to **jail** and **limit** a process according to our needs and wants.
-
-???
-
-Focus on:
-
-* kernel tools and features - there are no containers in the kernel
-* jail - this is isolation, namespaces
-* limit - this is resource limiting, cgroups
-
----
-
-# What is a container
+# What is a Container? (in a bit more details)
 
 * It’s a process
-* Isolated in it’s own world, using namespaces
-* Resource limited, using cgroups
-
-???
-
-* You can use ps aux and see all "container" processes running in the host
-* Containers dont see other containers running in the system
-* You can easily limit RAM and CPU usage, even though more RAM is available in the machine
+* Isolated in it’s own world, using **namespaces**
+* With limited resources, using **cgroups**
 
 ---
 
@@ -316,19 +341,12 @@ Focus on:
 
 ---
 
-# Namespaces
+# Popular Namespaces
 
 * net
 * mnt
-* uts
 * user
 * pid
-
-???
-
-* Network -> each container sees it's own veth
-* Mount -> each container has it's own file system
-* etc
 
 ---
 
@@ -340,7 +358,7 @@ Focus on:
 
 ---
 
-# cgroups
+# Popular cgroups
 
 * memory
 * cpu/cpuset
@@ -349,27 +367,32 @@ Focus on:
 * network*
 
 .footnote[*network is not a real cgroup, it’s used though for metering]
-
 ---
 
-class: center
+# Virtuals Machines vs. Containers?
+
+They should co-exist.
+
+Imagine a Virtual Machine as a multi-floor building and a Container as a rented flat.
+
+* It’s a process
+* Isolated in it’s own world, using namespaces
+* With limited resources, using cgroups
+
+---
 
 # What is Docker
 
----
-
-class: center
-
-# Docker is an operating system for your data center
+Docker is an operating system for your data center.
 
 ---
 
-# What is Docker
+# Docker core features
 
 * Copy on Write file system
 * Software Defined Networking
 * Volume management
-* Orchestration
+* Built-in Orchestration
 
 ---
 
@@ -428,6 +451,10 @@ The basis of Docker Containers
 
 The Dockerfile is a text file that contains all commands needed to build an image.
 
+*(The Dockerfile plays the same role as a recipe for a food)*
+
+## Example
+
 ```dockerfile
 FROM openjdk:8
 
@@ -441,9 +468,13 @@ https://docs.docker.com/engine/reference/builder/
 
 ---
 
-# Building your Dockerfile
+# Building your Docker Image
 
-Run the following command to build and run your image, based on the Dockerfile
+Run the following command to build your Docker Image, based on the Dockerfile and run a container with it.
+
+*(The Docker Image plays the same role as the cooked food of the recipe)*
+
+## Example
 
 ```
 docker build -t myjava .
@@ -496,12 +527,6 @@ It manages complete stacks containing:
 
 [https://docs.docker.com/compose/](https://docs.docker.com/compose/)
 
-???
-
-* Run multiple containers
-* Dockerfile for complete software stacks
-* Everything is documented inside the code
-
 ---
 
 # Docker Networks
@@ -525,7 +550,13 @@ Docker Volumes persist data through ephemeral containers.
 
 ---
 
-# A complete example with Docker Compose
+class: center
+
+# That's all folks!
+
+## Thank you
+
+---
 
 
     </textarea>
