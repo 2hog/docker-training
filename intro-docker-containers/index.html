@@ -228,10 +228,10 @@ class: center
 # Agenda
 
 1. What is a container
-1. What is Docker
-1. Understanding Docker images
-1. Dockerfiles
-1. Introduction to Docker Compose
+2. What is Docker
+3. Docker Containers
+4. Docker Images
+5. Docker Compose
 
 ---
 
@@ -360,8 +360,6 @@ class: center
 
 ---
 
-class: center
-
 # Run your first container
 
 ```
@@ -397,8 +395,15 @@ docker run openjdk:7 javac -version
 https://docs.docker.com/engine/reference/commandline/cli/
 
 ---
+# Docker Images
 
-class: center
+The basis of Docker Containers
+
+- They provide the root file system for a Docker Container
+- They contain the context needed to run (e.g. exposed ports, health check instructions etc.)
+- They are structured in sequential layers
+- They are distributed via Docker Registry instances (mostly via [https://hub.docker.com/](https://hub.docker.com/))
+---
 
 # Create your first image
     
@@ -423,7 +428,7 @@ https://docs.docker.com/engine/reference/builder/
 
 ---
 
-# Image building
+# Building your Dockerfile
 
 Run the following command to build and run your image, based on the Dockerfile
 
@@ -454,7 +459,23 @@ class: center
 
 ---
 
+class: center
+
 # Docker Compose
+
+---
+
+# Docker Compose
+
+A tool for defining and running multi-container Docker applications.
+
+It manages complete stacks containing:
+
+- Containers
+- Networks
+- Volumes
+
+[https://docs.docker.com/compose/](https://docs.docker.com/compose/)
 
 ???
 
@@ -464,30 +485,28 @@ class: center
 
 ---
 
-# Docker Networking
+# Docker Networks
 
-???
+Docker Networks connect separate containers via a Software Defined Network.
 
-* Understand Docker SDNs
-* Examples in compose:
-  * Ping a container
-  * Query Redis
-* Understand the Docker DNS
+## Use cases
+- Accessing a container without knowing its IP address
+- Isolate sets of connected containers (stacks)
 
 ---
 
-# Docker volumes
+# Docker Volumes
 
-???
+Docker Volumes persist data through ephemeral containers.
 
-* The need for persistent storage
-* Intro to basic volumes
-* Make them store something in a volume and retrieve it elsewhere
-* Brief intro to Volume plugins
+## Use cases
+
+- Store database data
+- Store binary files (e.g. images)
 
 ---
 
-# Developing a complete application, with Docker Compose
+# A complete example with Docker Compose
 
 ???
 
