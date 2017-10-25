@@ -11,6 +11,7 @@
 
     body {
       font-family: 'Droid Serif';
+      background: #272822;
     }
 
     h1,
@@ -20,6 +21,15 @@
       font-weight: 400;
       margin-bottom: 0;
       line-height: 120%;
+    }
+
+    .remark-slide-container {
+      background: #272822;
+    }
+
+    .remark-slide-scaler {
+      -webkit-box-shadow: none;
+      box-shadow: none;
     }
 
     .remark-slide-content h1 {
@@ -186,6 +196,10 @@
       float: right;
       padding-top: 1em;
     }
+    
+    #source {
+      display: none;
+    }
   </style>
 </head>
 
@@ -206,9 +220,8 @@ class: center
 
 # About 2hog.codes
 
-* Founders of [SourceLair](https://www.sourcelair.com) online IDE
+* Founders of [SourceLair](https://www.sourcelair.com) online IDE + Dimitris Togias
 * Docker and DevOps training and consulting
-* Contracting on integrations and services
 
 ---
 
@@ -222,6 +235,26 @@ class: center
 .center[I love automating stuff and sharing knowledge around all things containers, DevOps and optimizing developer workflows.]
 
 .footnote[[@akalipetis](https://twitter.com/akalipetis)]
+
+---
+
+# Paris Kasidiaris
+
+* Python lover and developer
+* CEO at SourceLair, Private Company
+* Docker training and consulting
+
+.footnote[[@pariskasid](https://twitter.com/pariskasid)]
+
+---
+
+# Dimitris Togias
+
+* Self-luminous, minimalist engineer
+* Co-founder of Warply and Niobium Labs
+* Previously, Mobile Engineer and Craftsman at Skroutz
+
+.footnote[[@demo9](https://twitter.com/demo9)]
 
 ---
 
@@ -317,17 +350,6 @@ Focus on:
 
 .footnote[*network is not a real cgroup, it’s used though for metering]
 
-???
-
-* Memory has both soft and hard limit, meaning that soft will be applied if system is resource constrained
-* CPU limits only when there is a lot of CPU demand
-* Other cgroups
-  * cpuacct - reports CPU usage
-  * freezer - suspends or resumes tasks
-  * Processes or container migration
-  * perf_event - allows monitoring using perf
-  * hugetlb - controls the amount of large pages
-
 ---
 
 class: center
@@ -336,27 +358,18 @@ class: center
 
 ---
 
-# How Docker started
-
-* Copy on Write filesystem
-  * Custom OS, lightning fast
-* Control over the network stack
-  * Join multi-host SDNs
-* Volume management and mounting
-  * Take your data with you
-* Orchestration built-in
-  * Move from nodes to clusters
-
----
-
 class: center
 
 # Docker is an operating system for your data center
 
-???
+---
 
-* Stop managing servers, start managing clusters
-* Have distributed applications and micro-services at your core
+# What is Docker
+
+* Copy on Write file system
+* Software Defined Networking
+* Volume management
+* Orchestration
 
 ---
 
@@ -389,10 +402,10 @@ docker run openjdk:7 javac -version
 
 - `docker`: Invokes the Docker Engine client
 - `run`: Instructs `docker` to run a container
-- `openjdk:8`: The tagged image to use as root file system
+- `openjdk:8`: The image to use as root file system
 - `javac -version`: The command that should be run as a container
 
-https://docs.docker.com/engine/reference/commandline/cli/
+https://docs.docker.com/engine/reference/commandline/run/
 
 ---
 # Docker Images
@@ -406,8 +419,8 @@ The basis of Docker Containers
 ---
 
 # Create your first image
-    
-[git.io/vdhKH](https://git.io/vdhKH)
+
+[https://git.io/vdhKH](https://git.io/vdhKH)
 
 ---
 
@@ -439,6 +452,17 @@ docker run myjava
 
 ---
 
+# Deconstructing `docker build`
+
+- `docker`: Invokes the Docker Engine client
+- `build`: Instructs `docker` to build a new image
+- `-t myjava`: Give the name `myjava` to the resulting image
+- `.`: Use the current directory to find the Dockerfile and needed files
+
+https://docs.docker.com/engine/reference/commandline/build/
+
+---
+
 class: center
 
 # Container principles
@@ -447,15 +471,10 @@ class: center
 
 # Container principles
 
-1. The container should be single-purposed program (e.g. avoid using `supervisord`)
-2. The image should be lightweight and slim
-3. Orchestration, load balancing etc. should be carried out by an external tool
-
-???
-
-* Always run one process
-* Make containers slim and single-purpose
-* Make way towards Docker Compose
+1. Containers should be considered ephemeral
+2. The container should be single-purposed program (e.g. avoid using `supervisord`)
+3. The image should be lightweight and slim
+4. Orchestration should be carried out by an external tool
 
 ---
 
@@ -507,14 +526,6 @@ Docker Volumes persist data through ephemeral containers.
 ---
 
 # A complete example with Docker Compose
-
-???
-
-* Very simple example of a Java application in Docker Compose with MySQL database
-* Create Dockerfile
-* Create Docker Compose file
-* Make sure it auto reloads
-* Do simple change and see it happen
 
 
     </textarea>
