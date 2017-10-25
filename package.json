@@ -1,0 +1,21 @@
+{
+  "name": "2hog-docker-training",
+  "version": "1.0.0",
+  "description": "Docker Training material of 2hog",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/2hog/docker-training.git"
+  },
+  "scripts": {
+    "start": "http-server ."
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/2hog/docker-training/issues"
+  },
+  "homepage": "https://github.com/2hog/docker-training#readme",
+  "dependencies": {
+    "http-server": "^0.10.0"
+  }
+}

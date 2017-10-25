@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Intro to Docker and Containers</title>
+  <meta charset="utf-8">
+  <style>
+    @import url(https://fonts.googleapis.com/css?family=Droid+Serif);
+    @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+    @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+    body {
+      font-family: 'Droid Serif';
+      background: #272822;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: 'Yanone Kaffeesatz';
+      font-weight: 400;
+      margin-bottom: 0;
+      line-height: 120%;
+    }
+
+    .remark-slide-container {
+      background: #272822;
+    }
+
+    .remark-slide-scaler {
+      -webkit-box-shadow: none;
+      box-shadow: none;
+    }
+
+    .remark-slide-content h1 {
+      font-size: 3em;
+    }
+
+    .remark-slide-content h2 {
+      font-size: 2em;
+    }
+
+    .remark-slide-content h3 {
+      font-size: 1.6em;
+    }
+
+    .footnote {
+      position: absolute;
+      bottom: 3em;
+    }
+
+    li {
+      padding: 8px 0;
+    }
+
+    li p {
+      line-height: 1.25em;
+    }
+
+    .red {
+      color: #fa0000;
+    }
+
+    .large {
+      font-size: 2em;
+    }
+
+    a,
+    a>code {
+      color: #545dd0;
+      text-decoration: none;
+    }
+
+    code {
+      border: 1px solid #e7e8e2;
+      border-radius: 5px;
+      font-size: 0.9em;
+      padding: 0 4px;
+      margin: 0 4px;
+    }
+
+    h1 code {
+      padding: 0 8px;
+      margin: 0 8px;
+    }
+
+    .remark-code {
+      display: block;
+      padding: 8px 16px;
+    }
+
+    .remark-inline-code {
+      display: inline-block;
+    }
+
+    .remark-code,
+    .remark-inline-code {
+      font-family: 'Ubuntu Mono';
+    }
+
+    .remark-code-line-highlighted {
+      background-color: #373832;
+    }
+
+    .pull-left {
+      float: left;
+      width: 47%;
+    }
+
+    .pull-right {
+      float: right;
+      width: 47%;
+    }
+
+    .pull-right~p {
+      clear: both;
+    }
+
+    #slideshow .slide .content code {
+      font-size: 0.8em;
+    }
+
+    #slideshow .slide .content pre code {
+      font-size: 0.9em;
+      padding: 15px;
+    }
+
+    .inverse {
+      background: #272822;
+      color: #777872;
+    }
+
+    .inverse h1,
+    .inverse h2 {
+      color: #f3f3f3;
+    }
+
+    /* Slide-specific styling */
+
+    #slide-inverse .footnote {
+      bottom: 12px;
+      left: 20px;
+    }
+
+    #slide-how .slides {
+      font-size: 0.9em;
+      position: absolute;
+      top: 151px;
+      right: 140px;
+    }
+
+    #slide-how .slides h3 {
+      margin-top: 0.2em;
+    }
+
+    #slide-how .slides .first,
+    #slide-how .slides .second {
+      padding: 1px 20px;
+      height: 90px;
+      width: 120px;
+      -moz-box-shadow: 0 0 10px #777;
+      -webkit-box-shadow: 0 0 10px #777;
+      box-shadow: 0 0 10px #777;
+    }
+
+    #slide-how .slides .first {
+      background: #fff;
+      position: absolute;
+      top: 20%;
+      left: 20%;
+      z-index: 1;
+    }
+
+    #slide-how .slides .second {
+      position: relative;
+      background: #fff;
+      z-index: 0;
+    }
+
+    /* Two-column layout */
+
+    .left-column {
+      color: #777;
+      width: 20%;
+      height: 92%;
+      float: left;
+    }
+
+    .left-column h2:last-of-type,
+    .left-column h3:last-child {
+      color: #000;
+    }
+
+    .right-column {
+      width: 75%;
+      float: right;
+      padding-top: 1em;
+    }
+    
+    #source {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <textarea id="source">
+
+name: inverse
+layout: true
+class: middle, inverse
+
+---
+
+class: center
+
+# Intro to Docker and Containers
+
+---
+
+# About 2hog.codes
+
+* Founders of [SourceLair](https://www.sourcelair.com) online IDE + Dimitris Togias
+* Docker and DevOps training and consulting
+
+---
+
+# Antonis Kalipetis
+
+* Docker Captain and Docker Certified Associate
+* Python lover and developer
+* Technology lead at SourceLair / stolos.io
+* Docker training and consulting
+
+.center[I love automating stuff and sharing knowledge around all things containers, DevOps and optimizing developer workflows.]
+
+.footnote[[@akalipetis](https://twitter.com/akalipetis)]
+
+---
+
+# Paris Kasidiaris
+
+* Python lover and developer
+* CEO at SourceLair, Private Company
+* Docker training and consulting
+
+.footnote[[@pariskasid](https://twitter.com/pariskasid)]
+
+---
+
+# Dimitris Togias
+
+* Self-luminous, minimalist engineer
+* Co-founder of Warply and Niobium Labs
+* Previously, Mobile Engineer and Craftsman at Skroutz
+
+.footnote[[@demo9](https://twitter.com/demo9)]
+
+---
+
+class: center
+
+# https://p.2hog.codes/intro-docker-containers/
+
+---
+
+# Agenda
+
+1. What is a container
+2. What is Docker
+3. Docker Containers
+4. Docker Images
+5. Docker Compose
+
+---
+
+# An outdated software delivery pipeline
+
+1. A developer implements a new software feature
+2. The developer commits the new feature in Source Control (e.g. Git, SVN etc.)
+3. The developer requests from an "operations person" to deploy the new feature
+4. The "operations person" prepares the host machine (updates libraries etc.)
+5. The "operations person" pulls and runs the new version of the software, replacing the old
+
+---
+
+# Issues
+
+1. Man hours are wasted on chores
+2. High risk of mistakes due to human factor
+3. High infrastructure costs
+4. Clear productivity bottleneck
+
+---
+
+# An old-school software delivery pipeline
+
+1. A developer implements a new software feature
+2. The developer commits the new feature in Source Control (e.g. Git, SVN etc.)
+3. A Virtual Machine with the new software gets deployed on the cloud
+
+---
+
+# Issues
+
+1. Super complex setup procedure
+2. Long lasting deployments
+3. High infrastructure costs
+
+---
+
+# A fresh software delivery pipeline
+
+1. A developer implements a new software feature
+2. The developer commits the new feature in Source Control (e.g. Git, SVN etc.)
+3. A new Docker Container gets deployed, replacing the old one automatically
+
+---
+
+class: center, middle
+
+# What is a Container though?
+
+Containers are a set of **kernel tools and features** that **jail** and **limit** a process based on our needs.
+
+---
+
+# What is a Container? (in a bit more details)
+
+* It’s a process
+* Isolated in it’s own world, using **namespaces**
+* With limited resources, using **cgroups**
+
+---
+
+# Namespaces
+
+.center[A **namespace** wraps a global system resource in an abstraction that makes it appear to the processes within the namespace that **they have their own isolated instance of the global resource**. Changes to the global resource are visible to other processes that are members of the namespace, but are invisible to other processes. One use of namespaces is to **implement containers**.]
+
+.footnote[The Linux man-pages project:<br />http://man7.org/linux/man-pages/man7/namespaces.7.html]
+
+---
+
+# Popular Namespaces
+
+* net
+* mnt
+* user
+* pid
+
+---
+
+# cgroups
+
+.center[**cgroups** (abbreviated from control groups) is a Linux kernel feature that **limits, accounts for, and isolates** the resource **usage** (CPU, memory, disk I/O, network, etc.) of a collection of processes.]
+
+.footnote[Wikipedia:<br />https://en.wikipedia.org/wiki/Cgroups]
+
+---
+
+# Popular cgroups
+
+* memory
+* cpu/cpuset
+* devices
+* blkio
+* network*
+
+.footnote[*network is not a real cgroup, it’s used though for metering]
+---
+
+# Virtuals Machines vs. Containers?
+
+They should co-exist.
+
+Imagine a Virtual Machine as a multi-floor building and a Container as a rented flat.
+
+* It’s a process
+* Isolated in it’s own world, using namespaces
+* With limited resources, using cgroups
+
+---
+
+# What is Docker
+
+Docker is an operating system for your data center.
+
+---
+
+# Docker core features
+
+* Copy on Write file system
+* Software Defined Networking
+* Volume management
+* Built-in Orchestration
+
+---
+
+# Run your first container
+
+```
+docker run openjdk:7 javac -version
+```
+
+---
+
+# Run your first container(s)
+
+```
+# Next, run the following commands and compare the output
+
+docker run openjdk:8 javac -version
+
+docker run openjdk:7 javac -version
+```
+
+???
+* Let them run a container with a different image tag, to see that pulling happens and understand the containment
+* Let them run a container twice, to see that pulling happens only once
+* Show the speed of container start, as it's just a process
+
+---
+
+# Deconstructing `docker run`
+
+- `docker`: Invokes the Docker Engine client
+- `run`: Instructs `docker` to run a container
+- `openjdk:8`: The image to use as root file system
+- `javac -version`: The command that should be run as a container
+
+https://docs.docker.com/engine/reference/commandline/run/
+
+---
+# Docker Images
+
+The basis of Docker Containers
+
+- They provide the root file system for a Docker Container
+- They contain the context needed to run (e.g. exposed ports, health check instructions etc.)
+- They are structured in sequential layers
+- They are distributed via Docker Registry instances (mostly via [https://hub.docker.com/](https://hub.docker.com/))
+---
+
+# Create your first image
+
+[https://git.io/vdhKH](https://git.io/vdhKH)
+
+---
+
+# The `Dockerfile`
+
+The Dockerfile is a text file that contains all commands needed to build an image.
+
+*(The Dockerfile plays the same role as a recipe for a food)*
+
+## Example
+
+```dockerfile
+FROM openjdk:8
+
+COPY Main.java /usr/src/app/Main.java
+WORKDIR /usr/src/app
+RUN javac Main.java
+CMD ["java", "Main"]
+```
+
+https://docs.docker.com/engine/reference/builder/
+
+---
+
+# Building your Docker Image
+
+Run the following command to build your Docker Image, based on the Dockerfile and run a container with it.
+
+*(The Docker Image plays the same role as the cooked food of the recipe)*
+
+## Example
+
+```
+docker build -t myjava .
+docker run myjava
+```
+
+---
+
+# Deconstructing `docker build`
+
+- `docker`: Invokes the Docker Engine client
+- `build`: Instructs `docker` to build a new image
+- `-t myjava`: Give the name `myjava` to the resulting image
+- `.`: Use the current directory to find the Dockerfile and needed files
+
+https://docs.docker.com/engine/reference/commandline/build/
+
+---
+
+class: center
+
+# Container principles
+
+---
+
+# Container principles
+
+1. Containers should be considered ephemeral
+2. The container should be single-purposed program (e.g. avoid using `supervisord`)
+3. The image should be lightweight and slim
+4. Orchestration should be carried out by an external tool
+
+---
+
+class: center
+
+# Docker Compose
+
+---
+
+# Docker Compose
+
+A tool for defining and running multi-container Docker applications.
+
+It manages complete stacks containing:
+
+- Containers
+- Networks
+- Volumes
+
+[https://docs.docker.com/compose/](https://docs.docker.com/compose/)
+
+---
+
+# Docker Networks
+
+Docker Networks connect separate containers via a Software Defined Network.
+
+## Use cases
+- Accessing a container without knowing its IP address
+- Isolate sets of connected containers (stacks)
+
+---
+
+# Docker Volumes
+
+Docker Volumes persist data through ephemeral containers.
+
+## Use cases
+
+- Store database data
+- Store binary files (e.g. images)
+
+---
+
+class: center
+
+# That's all folks!
+
+## Thank you
+
+---
+
+
+    </textarea>
+  <script src="https://remarkjs.com/downloads/remark-latest.min.js">
+  </script>
+  <script>
+    var slideshow = remark.create({
+      highlightStyle: 'monokai',
+      highlightLines: true,
+      ratio: '16:9',
+    });
+    slideshow.on('afterShowSlide', function (slide) {
+      console.log(arguments);
+    });
+  </script>
+</body>
+
+</html>
