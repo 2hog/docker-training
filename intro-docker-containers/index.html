@@ -377,13 +377,12 @@ Containers are a set of **kernel tools and features** that **jail** and **limit*
 
 # Virtuals Machines vs. Containers?
 
-They should co-exist.
+They should co-exist. We should run N Containers in M Virtual Machines (N > M).
 
 Imagine a Virtual Machine as a multi-floor building and a Container as a rented flat.
 
-* It’s a process
-* Isolated in it’s own world, using namespaces
-* With limited resources, using cgroups
+- **Virtual Machines** provide deep isolation, so they are heavy and not versatile
+- **Containers** are fast and lightweight
 
 ---
 
