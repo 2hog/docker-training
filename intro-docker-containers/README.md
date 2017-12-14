@@ -23,4 +23,5 @@ Below is a typical agenda for this training
 * Introduction to the Docker platform
 * Understanding Docker images
 * Dockerfiles
+* Volumes and networks
 * Introduction to Docker Compose
