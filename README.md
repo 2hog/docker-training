@@ -32,16 +32,16 @@ This repo shall be kept private, while other resources - like presentations and 
   * Container deployment principles
 
 * Container orchestration with Docker Swarm: from theory to practice [4h]  
-  Docker and containers have drastically changed the way we develop and deploy applications. Deploying an orchestrator is being easier as the days go by, but what happens after the cluster is ready? This module aims at introducing participants to orchestrator principles through Docker Swarm, showcasing the different concepts, pros, cons and common best practices.
+  Docker and containers have drastically changed the way we develop and deploy applications. Deploying an orchestrator is being easier as the days go by, but what happens after the cluster is ready? This module aims at introducing participants to orchestrator principles through Docker Swarm, showcasing the different concepts, pros, cons and common best practices to start moving payloads to production.
   * Container orchestration concepts in action
   * Docker Swarm management
   * Docker Compose as a deployment format
-  * Monitoring
-  * Debugging
+  * Monitoring a cluster
+  * Debugging service failures
 
 * CI/CD in the container world, with Docker [4h]  
-  Continuously integrating and deploying your applications and services is crucial to the success and speed of your development team. With containers, this has been made really easy, as deployment processes that took hours, can be now made within minutes. There are different challenges though and a need for a change in mindset.
-  * Concepts of CI system (can be based on Drone CI or Gitlab CI)
+  Continuously integrating and deploying your applications and services is crucial to the success and speed of your development team. With containers, this is really easy now, as deployment processes that took hours, can be now made within minutes. There are different challenges though and a need for a change in mindset.
+  * Concepts of a CI system (can be based on Drone CI or Gitlab CI)
   * Understanding the need for dev-prod parity
   * Using Docker Compose from development to production
   * Using Docker Compose in a CI system
