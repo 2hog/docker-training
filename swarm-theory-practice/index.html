@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Title</title>
+  <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans|IBM+Plex+Sans+Condensed|IBM+Plex+Serif" rel="stylesheet">
+  <style>
+
+    body {
+      font-family: 'IBM Plex Sans Condensed', sans-serif;
+      background: #272822;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-weight: 500;
+      margin-bottom: 0;
+      line-height: 120%;
+    }
+
+    .remark-slide-container {
+      background: #272822;
+    }
+
+    .remark-slide-scaler {
+      -webkit-box-shadow: none;
+      box-shadow: none;
+    }
+
+    .remark-slide-content h1 {
+      font-size: 3em;
+    }
+
+    .remark-slide-content h2 {
+      font-size: 2em;
+    }
+
+    .remark-slide-content h3 {
+      font-size: 1.6em;
+    }
+
+    .footnote {
+      position: absolute;
+      bottom: 3em;
+    }
+
+    li {
+      padding: 8px 0;
+    }
+
+    li p {
+      line-height: 1.25em;
+    }
+
+    .red {
+      color: #fa0000;
+    }
+
+    .large {
+      font-size: 2em;
+    }
+
+    a,
+    a>code {
+      color: #545dd0;
+      text-decoration: none;
+    }
+
+    code {
+      border: 1px solid #e7e8e2;
+      border-radius: 5px;
+      font-size: 0.9em;
+      padding: 0 4px;
+      margin: 0 4px;
+    }
+
+    h1 code {
+      padding: 0 8px;
+      margin: 0 8px;
+    }
+
+    .remark-code {
+      display: block;
+      padding: 8px 16px;
+    }
+
+    .remark-inline-code {
+      display: inline-block;
+    }
+
+    .remark-code,
+    .remark-inline-code {
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .remark-code-line-highlighted {
+      background-color: #373832;
+    }
+
+    .pull-left {
+      float: left;
+      width: 47%;
+    }
+
+    .pull-right {
+      float: right;
+      width: 47%;
+    }
+
+    .pull-right~p {
+      clear: both;
+    }
+
+    #slideshow .slide .content code {
+      font-size: 0.8em;
+    }
+
+    #slideshow .slide .content pre code {
+      font-size: 0.9em;
+      padding: 15px;
+    }
+
+    .inverse {
+      background: #272822;
+      color: #777872;
+    }
+
+    .inverse h1,
+    .inverse h2 {
+      color: #f3f3f3;
+    }
+
+    /* Slide-specific styling */
+
+    #slide-inverse .footnote {
+      bottom: 12px;
+      left: 20px;
+    }
+
+    #slide-how .slides {
+      font-size: 0.9em;
+      position: absolute;
+      top: 151px;
+      right: 140px;
+    }
+
+    #slide-how .slides h3 {
+      margin-top: 0.2em;
+    }
+
+    #slide-how .slides .first,
+    #slide-how .slides .second {
+      padding: 1px 20px;
+      height: 90px;
+      width: 120px;
+      -moz-box-shadow: 0 0 10px #777;
+      -webkit-box-shadow: 0 0 10px #777;
+      box-shadow: 0 0 10px #777;
+    }
+
+    #slide-how .slides .first {
+      background: #fff;
+      position: absolute;
+      top: 20%;
+      left: 20%;
+      z-index: 1;
+    }
+
+    #slide-how .slides .second {
+      position: relative;
+      background: #fff;
+      z-index: 0;
+    }
+
+    /* Two-column layout */
+
+    .left-column {
+      color: #777;
+      width: 20%;
+      height: 92%;
+      float: left;
+    }
+
+    .left-column h2:last-of-type,
+    .left-column h3:last-child {
+      color: #000;
+    }
+
+    .right-column {
+      width: 75%;
+      float: right;
+      padding-top: 1em;
+    }
+    
+    #source {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <textarea id="source">
+
+layout: true
+class: middle
+
+---
+
+# Docker Swarm: from theory to practice
+
+--
+
+[p.2hog.codes/swarm-theory-practice](https://p.2hog.codes/swarm-theory-practice)
+
+---
+
+
+# About 2hog.codes
+
+* Founders of [SourceLair](https://www.sourcelair.com) online IDE + Dimitris Togias
+* Docker and DevOps training and consulting
+
+---
+
+# Antonis Kalipetis
+
+* Docker Captain and Docker Certified Associate
+* Python lover and developer
+* Technology lead at SourceLair, Private Company
+
+.footnote[[@akalipetis](https://twitter.com/akalipetis)]
+
+---
+
+# Paris Kasidiaris
+
+* Python lover and developer
+* CEO at SourceLair, Private Company
+* Docker training and consulting
+
+.footnote[[@pariskasid](https://twitter.com/pariskasid)]
+
+---
+
+# Dimitris Togias
+
+* Self-luminous, minimalist engineer
+* Co-founder of Warply and Niobium Labs
+* Previously, Mobile Engineer and Craftsman at Skroutz
+
+.footnote[[@demo9](https://twitter.com/demo9)]
+
+---
+
+class: center
+
+# https://p.2hog.codes/swarm-theory-practice/
+
+---
+
+# Agenda
+
+1. What is a container, a crash course
+1. From servers to clusters: intro to containerized infrastructure
+1. Docker Swarm concepts and topology
+1. Docker swarm in practice, setting up and managing a cluster
+1. Deploying services
+1. Debugging services in a containerized infrastructure
+1. Tech chat + coffee
+---
+
+# What is a Container?
+
+Containers are a set of **kernel tools and features** that **jail** and **limit** a process based on our needs.
+
+---
+
+# Virtual Machines vs. Containers?
+
+They should co-exist. We should run N Containers in M Virtual Machines (N > M).
+
+Imagine a Virtual Machine as a multi-floor building and a Container as a rented flat.
+
+- **Virtual Machines** provide deep isolation, so they are heavy and not versatile
+- **Containers** are fast and lightweight
+
+???
+* They share the same plumbing
+* Each flat has its own limits
+* They all must cooperate for the good operation of the building
+
+VS
+
+* You have your own pool
+* You can turn up the heat whenever you want
+* Comes at a cost
+* Fixing infrastructure issues is more time and money consuming
+
+---
+
+# What is a Container? (in a bit more details)
+
+* It’s a process
+* Isolated in it’s own world, using **namespaces**
+* With limited resources, using **cgroups**
+
+---
+
+# Namespaces
+
+A **namespace** wraps a global system resource in an abstraction that makes it appear to the processes within the namespace that **they have their own isolated instance of the global resource**. Changes to the global resource are visible to other processes that are members of the namespace, but are invisible to other processes. One use of namespaces is to **implement containers**.
+
+.footnote[The Linux man-pages project:<br />http://man7.org/linux/man-pages/man7/namespaces.7.html]
+
+---
+
+# Popular Namespaces
+
+* net
+* mnt
+* user
+* pid
+
+---
+
+# cgroups
+
+.center[**cgroups** (abbreviated from control groups) is a Linux kernel feature that **limits, accounts for, and isolates** the resource **usage** (CPU, memory, disk I/O, network, etc.) of a collection of processes.]
+
+.footnote[Wikipedia:<br />https://en.wikipedia.org/wiki/Cgroups]
+
+---
+
+# Popular cgroups
+
+* memory
+* cpu/cpuset
+* devices
+* blkio
+* network*
+
+.footnote[*network is not a real cgroup, it’s used though for metering]
+
+---
+
+# Containers and images
+
+* Images are checkpoints of the file system, from which we start containers
+* They are layered, using a copy on write file system
+* We can start containers from images and create images from containers in a specific point in time
+
+???
+
+* Imagine layers as paintings
+* I can start from the same painting
+* Each time, I can add a transparent layer on top and draw my changes to the painting
+* The initial painting and the layer have all the information
+* The footprint of the new painting is just the layer
+--
+
+## Imagine the following pieces, as different image layers
+
+* Ubuntu
+* Python 3.6
+* Dependencies
+* Application code
+* Base configuration
+
+???
+
+All images start from `scratch` and build on top of it
+
+---
+
+# Dockerfiles, the recipes for images
+
+* Start from a base image
+* Follow a set of reproducible instructions
+  * Run commands
+  * Add code
+  * Define meta-data
+* After running them, a new image is created
+
+---
+
+# What if my image needs a lot of stuff to create a smaller artifact?
+
+* Multi-stage builds to the rescue
+* Start from a thin image
+* Add all needed dependencies to build your artifact
+* Start again, from a smaller image
+* Copy your artifact
+* Produce a thinner final image
+
+---
+
+# Common examples
+
+* Build a JAR and deploy it to Tomcat
+* Build a binary and do not include the source in the image
+
+---
+
+# Managing state
+
+* Containers are ephemeral
+* Restarting a container, does not persist its state
+--
+
+## Managing state with volumes
+
+* Volumes could be as simple as a directory on the host
+* ...or as complex as a block storage device
+* Containers can have volumes mounted, to save persistent state in them
+
+---
+
+# Where's my localhost?
+
+* Each container gets its own virtual ethernet
+* Container cannot talk with each other, or the host, using localhost
+* We need a way to network containers
+--
+
+## Mutli-container networks
+
+* All containers get their unique IP within a network
+* Service discovery is done through DNS, using the internal DNS server
+* Each container can be part of multiple networks
+
+???
+
+* Networks are software defined
+
+---
+
+# From servers to clusters: intro to containerized infrastructure
+
+???
+
+* We talked about running Docker containers in a single node, but we need more for production
+* Swarm takes care of managing your whole cluster
+* You don't have to know the health of each node any more
+* Start knowing the health of your services
+
+---
+
+# Key concepts
+
+--
+
+* Nodes
+  * The servers in your cluster, either managers or workers
+* Services
+  * A group of tasks that share the same configuration
+* Tasks
+  * Mapped 1-1 with containers, but could be any deployable unit
+
+---
+
+# Topology Docker Engine
+
+.center[![:scale 50%](images/docker-engine-topology.png)]
+
+---
+
+# Swarm roles
+
+---
+
+# Swarm roles
+
+.left-column[
+## Managers
+
+.right-column[
+* Use Raft Consensus Algorithm
+* Are responsible for applying the declarative state in the cluster
+* M-TLS, encrypted on operation
+  * Optionally encrypted at rest
+* Should direct to them in order to manage the cluster
+* Can run payload, but should be avoided in bigger clusters
+]
+
+---
+
+# Swarm roles
+
+.left-column[
+## Managers
+## Workers
+]
+
+.right-column[
+* Only run payload within a cluster, when directed by managers
+* Are responsible for applying the declarative state in the cluster
+* mTLS communication with managers
+* Wait for payload to be pushed to them
+* Only have access to the resources assigned to them
+]
+
+???
+
+* Have cryptographic identity
+* Minimal threat-model, as they do not have access to things like secrets if they're not assigned to them
+* Only have access to the payload sent to them, aka registry secrets, etc
+
+---
+
+# Topology Docker Swarm
+
+.center[![:scale 80%](images/swarm-topology.png)]
+
+---
+
+# Declarative vs imperative infrastructure
+
+--
+
+## Say what you want, not how to achieve this
+
+---
+
+# A simple example
+
+* _Declarative:_ I want a coffee, sweet, without milk
+--
+
+  * ...never drink sweet coffee, but ¯\\_(ツ)_/¯
+--
+
+
+VS
+
+--
+
+* _Imperative:_ I want you to take the beans, ground them, boil water and then mix them. Then, add some sugar and give it to me.
+
+---
+
+# A bit more on declarative infrastructure
+
+* It's easier for the user, as long as the software is logical
+* All the state is saved within the cluster
+* The cluster continuously tries to make sure that the declared state and the current state of the cluster are a match
+
+---
+
+# Where is everything stored?
+
+--
+
+* Behind the scenes, Docker Swarm is using a distributed KV store, based on RAFT
+* RAFT is a consensus algorithm, also used in other distributed systems like ETCD
+* It needs at least N / 2 + 1 members to be able to operate
+  * Always create clusters with odd number of members
+
+---
+exclude: true
+
+.center[<iframe src="https://raft.github.io/raftscope/index.html" style="border: 0; width: 800px; height: 580px; margin-bottom: 20px"></iframe>]
+
+---
+
+# Docker Swarm has security in its DNA
+
+--
+
+* Least privilege architecture, using the push model
+* Every node within the cluster has a cryptographic identity
+* All communications are encrypted, using mTLS
+* Option for everything to be encrypted at rest
+
+???
+
+* The managers push the information that is needed, only when it's needed, to the worker nodes that need it
+* Certificates are rotated automatically, without producing cluster breakage
+* Mutual TLS is used both for encrypting communications, but also for authentication and authorization
+* Nodes can either save the key in disk, or request it when booting to be unlocked
+
+---
+class: center
+
+# Docker swarm in practice, setting up and managing a cluster
+
+---
+
+# Creating a new Swarm
+
+--
+
+```bash
+[node1]
+$ docker swarm init --advertise-addr=eth0
+```
+
+---
+
+# What just happened?
+
+--
+
+* a keypair is created for the root CA of our Swarm
+* a keypair is created for the first node
+* a certificate is issued for this node
+* the join tokens are created
+
+???
+
+* The CA is used to generate keys for every node and verify their identity
+* Join tokens include the role of the node that will be joined and are rotated when all keys are rotated
+
+---
+
+# Inspecting the cluster
+
+```bash
+[node1]
+$ docker node ls
+```
+
+--
+```bash
+ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS      ENGINE VERSION
+8z8uqavgsyupbs0t3ormc84ya *   workshop-node-00    Ready               Active              Leader              18.03.0-ce
+```
+
+???
+
+Currently, there's just one node in the cluster, which is a manager and a leader.
+
+---
+
+# Join another node in the Swarm as worker
+
+```bash
+[node2]
+$ docker swarm join --token SWMTKN-1-WWW 10.0.74.3:2377
+```
+
+---
+
+# Join another node in the Swarm as manager
+
+```bash
+[node2]
+$ docker swarm join-token manager
+```
+--
+```bash
+[node1]
+$ docker swarm join-token manager
+```
+
+???
+
+* They can try to get the token from a worker, which will not work
+* Help them understand the importance of the manager
+
+--
+
+```bash
+[node3]
+$ docker swarm join --token SWMTKN-1-MMM  10.0.74.3:2377
+```
+
+---
+
+# List the nodes in your cluster
+
+```bash
+[node3]
+$ docker node ls
+```
+
+--
+
+```bash
+ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS      ENGINE VERSION
+8z8uqavgsyupbs0t3ormc84ya *   workshop-node-00    Ready               Active              Leader              18.03.0-ce
+2wowq8ms2lqkixzz9mzzjx0je     workshop-node-01    Ready               Active                                  18.03.0-ce
+v20fuo5g8lnfy96sr19315166     workshop-node-02    Ready               Active              Reachable           18.03.0-ce
+```
+
+---
+
+# Checking the different information
+
+```bash
+[node1]
+$ docker info
+```
+
+--
+
+```bash
+[node2]
+$ docker info
+```
+
+---
+
+# Let's play a game, kill the daemon in one node
+
+```bash
+[node3]
+$ sudo systemctl stop docker
+```
+--
+
+```bash
+[node1]
+$ docker node ls
+```
+
+--
+
+```bash
+Error response from daemon: rpc error: code = Unknown desc = The swarm does not have a leader. It's possible that too few managers are online. Make sure more than half of the managers are online.
+```
+
+???
+
+* 2 managers is a bad idea, you always need N / 2 + 1 for consensus
+* let's increase the managers
+
+---
+
+# Let's restore the node
+
+--
+
+```bash
+[node3]
+$ sudo systemctl start docker
+```
+
+---
+
+# Let's promote node2 to manager
+
+--
+
+```bash
+[node3]
+$ docker node promote workshop-node-00
+```
+
+--
+
+```bash
+[node3]
+$ docker node ls
+ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS
+vz22xh8zj1xjouflm9rlnfhxu     node1               Ready               Active              Leader
+ec0eypoz0o6btv77uyjqux1l9     node2               Ready               Active              Reachable
+hguvzetdq838qseegng6n58ow *   node3               Ready               Active              Reachable
+```
+
+---
+
+# Let's destroy everything, again
+
+--
+
+```bash
+[node3]
+$ sudo systemctl stop docker
+```
+
+--
+
+## or not...
+
+--
+
+```bash
+[node1]
+$ docker node ls
+ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS
+vz22xh8zj1xjouflm9rlnfhxu *   node1               Ready               Active              Leader
+ec0eypoz0o6btv77uyjqux1l9     node2               Ready               Active              Reachable
+hguvzetdq838qseegng6n58ow     node3               Ready               Active              Unreachable
+```
+
+???
+
+* Now even though we have 2 managers, even if one goes down the cluster is unmanageable
+* We need at least 3 to make sure we have HA
+
+---
+
+# Encryption at rest
+
+--
+
+* Docker Swarm supports encryption at rest, but we have to enable it
+* This means that the key to decrypt the RAFT log is saved in the disk
+* We need a way to unlock the Swarm
+
+---
+
+# Enabling auto-lock
+
+--
+
+```bash
+[node1]
+docker swarm update --autolock=true
+```
+
+--
+
+```bash
+Swarm updated.
+To unlock a swarm manager after it restarts, run the `docker swarm unlock`
+command and provide the following key:
+
+    SWMKEY-1-ZZZ
+
+Please remember to store this key in a password manager, since without it you
+will not be able to restart the manager.
+```
+
+???
+
+* This key is needed to unlock the node when it boots
+* If we lose the key and all manager shut down, we doomed!
+* Keep this in a safe place
+
+---
+
+# Let's lock a node
+
+--
+
+```bash
+[node1]
+# Lock the node, just by stopping the daemon
+sudo systemctl stop docker
+```
+
+--
+
+```bash
+# Verify that the node is locked after restart
+sudo systemctl start docker
+docker node ls
+```
+
+--
+
+
+```bash
+Error response from daemon: Swarm is encrypted and needs to be unlocked before it can be used. Please use "docker swarm unlock" to unlock it.
+```
+
+---
+
+# ... and unlock it
+
+```bash
+[node1]
+docker swarm unlock
+```
+
+--
+
+## Remember that to unlock a node, you need the key
+
+---
+
+# In a nutshell
+
+* Removing auto-lock adds a greater layer of security
+* ...by reducing automation
+
+???
+
+* This will be a pain in 3-node clusters, but could be easier to handle in larger clusters, which have 5+ managers
+* If more than half of the nodes are locked, the cluster cannot operate
+
+---
+class: center
+
+# Deploying services to Docker Swarm
+
+---
+
+# What is a service?
+
+* Services are the definition of the state that we want the cluster to move in
+* From services, tasks are created, which map 1-1 with containers
+
+???
+
+* Services are the desired state, the coffee
+* Tasks are the realization of this desired state, they are created so that they match
+
+--
+
+```bash
+[node1]
+$ docker service create --publish=8080:80 --nane=nginx nginx:latest
+```
+
+--
+
+## Now click on the port in the UI
+
+???
+
+* No matter which node you are in, the port opens
+* This is because Docker Swarm have ingress load balancing
+
+--
+
+```bash
+[node1]
+$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+```
+
+---
+
+# Docker load-balancing
+
+--
+
+* Each service in the Swarm gets a virtual IP
+  * The Swarm makes sure connections to this internal IP are routed to the correct container, in any host in the Swarm
+* Multi-host networking is made with pluggable network drivers
+* If desired, a port is opened to each node of the Swarm
+  * Connections to this port are routed to the service virtual IP, at a defined port
+
+???
+
+Benefits:
+* You don't need to know where in the cluster every service runs
+* You don't need to do health management
+
+---
+
+# Updating the service
+
+--
+
+```bash
+[node1]
+$ docker service update --image=nginx:does-not-exists nginx
+```
+
+--
+
+```bash
+[node1]
+$ docker service ps nginx
+ID                  NAME                IMAGE                   NODE                DESIRED STATE       CURRENT STATE             ERROR                           PORTS
+z38051h4kf4t        nginx.1             nginx:does-not-exists   node2               Ready               Rejected 4 seconds ago    "No such image: nginx:does-not…"
+yadhc69tuauz         \_ nginx.1         nginx:does-not-exists   node1               Shutdown            Rejected 9 seconds ago    "No such image: nginx:does-not…"
+xwxtx6fc5hmp         \_ nginx.1         nginx:does-not-exists   node1               Shutdown            Rejected 13 seconds ago   "No such image: nginx:does-not…"
+ov5i7c5y71zc         \_ nginx.1         nginx:latest            node1               Shutdown            Shutdown 9 seconds ago
+```
+
+---
+
+# Rolling back
+
+--
+
+```bash
+[node1]
+$ docker service rollback nginx
+```
+
+--
+
+```bash
+[node1]$ docker service ps nginx
+ID                  NAME                IMAGE                   NODE                DESIRED STATE       CURRENT STATE                 ERROR                              PORTS
+hak9ijaaubgi        nginx.1             nginx:latest            node1               Running             Running 11 seconds ago
+yylxs4ktx0ab         \_ nginx.1         nginx:does-not-exists   node2               Shutdown            Rejected 49 seconds ago       "No such image: nginx:does-not…"
+yy1z6lb6rqsm         \_ nginx.1         nginx:does-not-exists   node1               Shutdown            Rejected about a minute ago   "No such image: nginx:does-not…"
+z38051h4kf4t         \_ nginx.1         nginx:does-not-exists   node2               Shutdown            Rejected about a minute ago   "No such image: nginx:does-not…"
+yadhc69tuauz         \_ nginx.1         nginx:does-not-exists   node1               Shutdown            Rejected about a minute ago   "No such image: nginx:does-not…"
+[node1]
+```
+
+---
+
+# Securely storing secrets
+
+--
+
+* Manage sensitive data within containers
+* Database passwords, SSH keys, TLS certificates
+
+---
+
+# Secrets security
+* Cryptographically stored inside the Raft log
+* Mounted as an in-memory filesystem to the container
+  * Available only to the node that the payload runs
+  * Cannot be found in the disk
+  * Seen as file within the container
+
+???
+
+* Environment variables leak
+* Minimum attack vector
+
+---
+
+# Let's see this in an example
+
+--
+
+```bash
+[node1]
+$ docker secret create some-sec -
+```
+
+???
+
+* Create a new secret using stdin
+
+--
+
+```bash
+[node1]
+$ docker service create --secret=some-sec --workdir=/run/secrets --publish=8888:8000 python:3.6 python -m http.server 8000
+```
+
+???
+
+* Click the port in the UI, to see the secrets
+
+---
+
+# Configuring services
+
+* Docker configs allow you to store configuration inside the Swarm cluster
+* Like secrets, but can be retrieved and mounted to any path
+
+---
+
+# Create a new config
+
+
+```bash
+[node1]
+$ cat << EOF > index.html
+<html>
+  <head><title>Hello Docker</title></head>
+  <body>
+    <p>Hello Docker! You have deployed a HTML page.</p>
+  </body>
+</html>
+EOF
+```
+
+--
+
+```bash
+[node1]
+$ docker config create homepage index.html
+```
+
+--
+
+```bash
+[node1]
+$ docker service create --config=source=homepage,target=/usr/share/nginx/html/index.html --publish=9999:80 nginx
+```
+
+---
+
+# From services to stacks
+
+???
+
+* Services are orchestrated containers
+* Stacks are orchestrated Docker Compose files
+
+--
+
+```bash
+[node1]
+$ cat << EOF > stack.yml
+version: '3.3'
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - 9090:80
+EOF
+$ docker stack deploy -c stack.yml my-stack
+```
+
+---
+
+class: center
+
+# Thanks!
+
+    </textarea>
+  <script src="https://remarkjs.com/downloads/remark-latest.min.js">
+  </script>
+  <script>
+    remark.macros.scale = function (percentage) {
+      var url = this;
+      return '<img src="' + url + '" style="width: ' + percentage + '" />';
+    };
+    var slideshow = remark.create({
+      highlightStyle: 'monokai',
+      highlightLines: true,
+      ratio: '16:9',
+    });
+    slideshow.on('afterShowSlide', function (slide) {
+      console.log(arguments);
+    });
+  </script>
+</body>
+
+</html>
