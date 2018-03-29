@@ -264,11 +264,17 @@ class: center
 
 1. What is a container, a crash course
 1. From servers to clusters: intro to containerized infrastructure
-1. Docker Swarm concepts and topology
 1. Docker swarm in practice, setting up and managing a cluster
-1. Deploying services
-1. Debugging services in a containerized infrastructure
+1. Deploying services to Docker Swarm
+1. Production deployments in a containerized infrastructure
+1. Swarm debugging
 1. Tech chat + coffee
+
+---
+class: center
+
+# What is a container, a crash course
+
 ---
 
 # What is a Container?
@@ -327,7 +333,7 @@ A **namespace** wraps a global system resource in an abstraction that makes it a
 
 # cgroups
 
-.center[**cgroups** (abbreviated from control groups) is a Linux kernel feature that **limits, accounts for, and isolates** the resource **usage** (CPU, memory, disk I/O, network, etc.) of a collection of processes.]
+**cgroups** (abbreviated from control groups) is a Linux kernel feature that **limits, accounts for, and isolates** the resource **usage** (CPU, memory, disk I/O, network, etc.) of a collection of processes.
 
 .footnote[Wikipedia:<br />https://en.wikipedia.org/wiki/Cgroups]
 
@@ -435,6 +441,7 @@ All images start from `scratch` and build on top of it
 * Networks are software defined
 
 ---
+class: center
 
 # From servers to clusters: intro to containerized infrastructure
 
@@ -474,6 +481,7 @@ All images start from `scratch` and build on top of it
 
 .left-column[
 ## Managers
+]
 
 .right-column[
 * Use Raft Consensus Algorithm
@@ -745,7 +753,7 @@ $ sudo systemctl start docker
 
 ```bash
 [node3]
-$ docker node promote workshop-node-00
+$ docker node promote node1
 ```
 
 --
@@ -797,8 +805,7 @@ hguvzetdq838qseegng6n58ow     node3               Ready               Active    
 --
 
 * Docker Swarm supports encryption at rest, but we have to enable it
-* This means that the key to decrypt the RAFT log is saved in the disk
-* We need a way to unlock the Swarm
+* We need to unlock the Swarm when it's restarted using a key
 
 ---
 
@@ -903,17 +910,28 @@ class: center
 
 ```bash
 [node1]
-$ docker service create --publish=8080:80 --nane=nginx nginx:latest
+$ docker service create --publish=8080:80 --name=nginx nginx:latest
 ```
 
 --
 
-## Now click on the port in the UI
+## Let's check this out
 
 ???
 
 * No matter which node you are in, the port opens
 * This is because Docker Swarm have ingress load balancing
+
+--
+
+```bash
+[node1]
+curl localhost:8080
+```
+
+???
+
+You can also open the external IP, port of a node
 
 --
 
@@ -955,6 +973,20 @@ $ docker service update --image=nginx:does-not-exists nginx
 --
 
 ```bash
+image nginx:does-not-exists could not be accessed on a registry to record
+its digest. Each node will access nginx:does-not-exists independently,
+possibly leading to different nodes running different
+versions of the image.
+
+nginx
+overall progress: 0 out of 1 tasks
+1/1: No such image: nginx:does-not-exists
+service update paused: update paused due to failure or early termination of task a01zttpvvavwsedgx6lerw2xc
+```
+
+--
+
+```bash
 [node1]
 $ docker service ps nginx
 ID                  NAME                IMAGE                   NODE                DESIRED STATE       CURRENT STATE             ERROR                           PORTS
@@ -963,6 +995,16 @@ yadhc69tuauz         \_ nginx.1         nginx:does-not-exists   node1           
 xwxtx6fc5hmp         \_ nginx.1         nginx:does-not-exists   node1               Shutdown            Rejected 13 seconds ago   "No such image: nginx:does-not…"
 ov5i7c5y71zc         \_ nginx.1         nginx:latest            node1               Shutdown            Shutdown 9 seconds ago
 ```
+
+---
+
+# How to get to a previous state
+
+--
+
+* Swarm keeps the state in RAFT
+* For each service, it also keeps the previously deployed state
+* Let's head a state back!
 
 ---
 
@@ -1005,6 +1047,7 @@ yadhc69tuauz         \_ nginx.1         nginx:does-not-exists   node1           
   * Available only to the node that the payload runs
   * Cannot be found in the disk
   * Seen as file within the container
+* Secrets cannot be retrieved through the API
 
 ???
 
@@ -1030,12 +1073,25 @@ $ docker secret create some-sec -
 
 ```bash
 [node1]
-$ docker service create --secret=some-sec --workdir=/run/secrets --publish=8888:8000 python:3.6 python -m http.server 8000
+$ docker service create \
+  --secret=some-sec \
+  --workdir=/run/secrets \
+  --publish=8888:8000 \
+  python:3.6 \
+  python -m http.server 8000
 ```
 
 ???
 
-* Click the port in the UI, to see the secrets
+* Curl the file now
+
+--
+
+```bash
+[node1]
+$ curl localhost:8888/some-sec
+Don't tell this to anyone
+```
 
 ---
 
@@ -1055,7 +1111,7 @@ $ cat << EOF > index.html
 <html>
   <head><title>Hello Docker</title></head>
   <body>
-    <p>Hello Docker! You have deployed a HTML page.</p>
+    <p>Hello Docker! You have deployed an HTML page.</p>
   </body>
 </html>
 EOF
@@ -1072,35 +1128,367 @@ $ docker config create homepage index.html
 
 ```bash
 [node1]
-$ docker service create --config=source=homepage,target=/usr/share/nginx/html/index.html --publish=9999:80 nginx
+$ docker service create \
+  --config=source=homepage,target=/usr/share/nginx/html/index.html \
+  --publish=9999:80 \
+  nginx
 ```
+
+---
+class: center
+
+# Production deployments in a containerized infrastructure
 
 ---
 
 # From services to stacks
 
-???
+--
 
-* Services are orchestrated containers
-* Stacks are orchestrated Docker Compose files
+Stacks are logical collections of services, which define complete applications
+
+---
+
+# Stacks in Docker Swarm
+
+--
+
+* They are compose files
+* They are just a client abstraction, using labels, not a server resource
+* They rock!
+
+---
+
+# Deploying stacks
 
 --
 
 ```bash
 [node1]
+# First, let's create a compose file
 $ cat << EOF > stack.yml
-version: '3.3'
+version: '3.5'
 services:
   nginx:
     image: nginx:alpine
     ports:
       - 9090:80
 EOF
+```
+
+--
+
+```bash
+# ...and now, let's deploy it
 $ docker stack deploy -c stack.yml my-stack
 ```
 
 ---
 
+# Let's do something more interesting
+
+--
+
+```bash
+[node1]
+# Update the compose file, to have a different image
+$ cat << EOF > stack.yml
+version: '3.5'
+services:
+  nginx:
+    image: akalipetis/flask-hostname:latest
+    command: flask run --host=0.0.0.0
+    environment:
+      FLASK_APP: app.py
+    ports:
+      - 9090:5000
+EOF
+$ docker stack deploy -c stack.yml my-stack
+```
+
+---
+
+# Let's see the load-balancing in action
+
+Scaling a service
+
+--
+
+```bash
+[node1]
+$ docker service scale my-stack_nginx=10
+```
+
+--
+
+```bash
+# Does it really work?
+$ for i in $(seq 1 20); do curl localhost:9090; echo; done
+```
+
+--
+
+```bash
+$ docker ps -f label=com.docker.swarm.service.name=my-stack_nginx
+```
+
+???
+
+* Services were distributed throughout the cluster
+* Requests were load balanced to all services, not depending on the node that was hit
+
+---
+
+# Separating a cluster in groups
+
+--
+
+There are times that not every payload should be deployed to every node
+
+* a service needs an SSD disk
+* there's a special CPU somewhere
+* the node needs to be PCI-DSS certified
+* a service should span multiple availability zones
+
+---
+
+# Let's first start by labeling our nodes
+
+--
+
+```bash
+[node1]
+# Add PCI label to nodes 1 and 2
+$ docker node update --label-add=com.example.pci=true node1
+$ docker node update --label-add=com.example.pci=true node2
+# Add node 1 to AZ A and nodes 2 and 3 to AZ B
+$ docker node update --label-add=com.example.az=a node1
+$ docker node update --label-add=com.example.az=b node2
+$ docker node update --label-add=com.example.az=b node3
+```
+
+---
+
+# Let's deploy a constrained service
+
+--
+
+```bash
+[node1]
+$ docker service create \
+  --constraint=node.labels.com.example.pci==true \
+  --replicas=6 \
+  --name=constrained \
+  nginx
+```
+
+--
+
+```bash
+[node1]
+# Check what we did
+$ docker service ps constrained
+```
+
+---
+
+# We can't satisfy everyone
+
+--
+
+```bash
+[node1]
+$ docker service create \
+  --constraint=node.labels.com.example.unsatisfied==true \
+  --name=unsatisfied \
+  nginx
+```
+
+--
+
+```bash
+[node3]
+# Let's fix This
+docker node update --label-add=com.example.unsatisfied=true node3
+```
+
+---
+
+# Let's deploy a constrained service
+
+* The service was only deployed to nodes satisfying the constraint
+* This was true, even when the constraint was not satisfied by any node
+* When labels change, unscheduled payload gets scheduled, if its constraints are met
+* ...or scheduled payload might be evicted
+
+???
+
+* The service has only beed deployed on the nodes that satisfy the constraint
+* Every time a label is changed, the Swarm checks if there are payloads that can either be scheduled, or should be evicted
+
+
+---
+
+# Let's spread things around availability zones
+
+--
+
+```bash
+[node1]
+$ docker service create \
+  --placement-pref=spread=node.labels.com.example.az \
+  --replicas=6 \
+  --name=spread \
+  nginx
+```
+
+--
+
+```bash
+[node1]
+$ docker service ps spread
+```
+
+???
+
+* The service was evenly distributed between different availability zones
+* Since node1 was the only one in its zone, it got half the services
+
+---
+
+# Let's spread things around availability zones
+
+--
+
+* Services can be spread among the nodes with different values
+* A common pitfall here, is that missing labels are considered as a null value
+
+---
+
+# How does Swarm schedule things
+
+* finds the nodes that satisfy the constraints of a service
+  * label constraints
+  * architecture/OS constraints
+  * resource (RAM/CPU) needs and availability
+* spreads the tasks to nodes, taking into account
+  * placement preferences
+  * node load, trying to distribute load in the best way
+
+---
+class: center
+
+# Swarm debugging
+
+---
+
+# Recovering from failed RAFT state
+
+* the RAFT log might get corrupted
+* catastrophic failure of more than half of the nodes
+
+---
+
+# Recovering from failed RAFT state
+
+--
+
+```bash
+[node1]
+# Stop the Docker daemon
+$ sudo systemctl stop docker
+# Back up the Swarm directory
+$ sudo cp -r /var/lib/docker/swarm /swarm.back
+# Restart the Docker daemon
+$ sudo systemctl start docker
+# Force re-initialize the cluster
+$ docker swarm init --force-new-cluster
+```
+
+--
+
+Then we need to rejoin nodes and remove the old, not obsolete ones
+
+---
+
+# Debugging service failures
+
+--
+
+Reading logs is usually the first thing to do
+
+--
+
+```bash
+[node1]
+# Read the logs of all tasks of service
+$ docker service logs my-stack_nginx
+```
+
+--
+
+```bash
+[node1]
+# ...or just a single tasks
+$ docker service logs kxqxntzly0bn
+```
+
+???
+
+* Get the task ID from the previous logs
+* Alternatively, use docker service ps ...
+* And of course, there are many ways to query specific dates/times
+
+---
+
+# Checking DNS and connectivity
+
+--
+
+```bash
+[node1]
+# Jump into a container
+$ docker exec -it \
+  $(docker ps -q -f label=com.docker.swarm.service.name=my-stack_nginx | head -n 1) \
+  sh
+# Check the DNS records for the service and the tasks
+$ dig nginx
+$ dig tasks.nginx
+# For multiple networks, use the network namespaced DNS
+$ dig nginx.my-stack_default
+$ dig tasks.nginx.my-stack_default
+```
+
+---
+
+# Checking services one by ones
+
+Using the IPs previously acquired
+
+--
+
+```bash
+$ apk add -U curl
+$ curl 10.0.0.12:5000
+```
+
+---
+
+# Monitoring our cluster
+
+--
+
+* Prometheus is the hottest monitoring solution
+  * it has native support for Docker Swarm services
+  * there are great examples in the internets to get up and running quickly
+* there are other tools, Like
+  * the ELK stack
+  * DataDog
+  * lots more...
+
+.footnote[[stefanprodan/swarmprom](https://github.com/stefanprodan/swarmprom)]
+
+---
 class: center
 
 # Thanks!
