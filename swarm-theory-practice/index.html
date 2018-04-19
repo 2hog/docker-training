@@ -1325,6 +1325,36 @@ docker node update --label-add=com.example.unsatisfied=true node3
 * The service has only beed deployed on the nodes that satisfy the constraint
 * Every time a label is changed, the Swarm checks if there are payloads that can either be scheduled, or should be evicted
 
+---
+
+# Let's see what happens when we set memory reservation
+
+```bash
+[node1]
+docker service create \
+  --reserve-memory=4G \
+  --name=mem-hungry \
+  nginx
+```
+
+???
+
+Everything is good, but what happens after we scale this?
+
+--
+
+```bash
+# Let's scale this a bit
+[node1]
+docker service scale mem-hungry=7
+```
+
+---
+
+# Let's see what happens when we set memory reservation
+
+* The service was successfully deployed, as the available memory was more than the reserved one
+* When we scaled, tasks were successfully scheduled, until the capacity of the nodes was reached
 
 ---
 
