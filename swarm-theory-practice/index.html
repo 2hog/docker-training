@@ -6,7 +6,6 @@
   <meta charset="utf-8">
   <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans|IBM+Plex+Sans+Condensed|IBM+Plex+Serif" rel="stylesheet">
   <style>
-
     body {
       font-family: 'IBM Plex Sans Condensed', sans-serif;
       background: #272822;
@@ -193,7 +192,7 @@
       float: right;
       padding-top: 1em;
     }
-    
+
     #source {
       display: none;
     }
@@ -256,7 +255,7 @@ class: middle
 
 class: center
 
-# https://p.2hog.codes/swarm-theory-practice/
+# [p.2hog.codes/swarm-theory-practice](https://p.2hog.codes/swarm-theory-practice)
 
 ---
 
@@ -1389,28 +1388,6 @@ class: center
 
 ---
 
-# Recovering from failed RAFT state
-
---
-
-```bash
-[node1]
-# Stop the Docker daemon
-$ sudo systemctl stop docker
-# Back up the Swarm directory
-$ sudo cp -r /var/lib/docker/swarm /swarm.back
-# Restart the Docker daemon
-$ sudo systemctl start docker
-# Force re-initialize the cluster
-$ docker swarm init --force-new-cluster
-```
-
---
-
-Then we need to rejoin nodes and remove the old, not obsolete ones
-
----
-
 # Debugging service failures
 
 --
@@ -1461,7 +1438,7 @@ $ dig tasks.nginx.my-stack_default
 
 ---
 
-# Checking services one by ones
+# Checking services one by one
 
 Using the IPs previously acquired
 
@@ -1471,6 +1448,28 @@ Using the IPs previously acquired
 $ apk add -U curl
 $ curl 10.0.0.12:5000
 ```
+
+---
+
+# Recovering from failed RAFT state
+
+--
+
+```bash
+[node1]
+# Stop the Docker daemon
+$ sudo systemctl stop docker
+# Back up the Swarm directory
+$ sudo cp -r /var/lib/docker/swarm /swarm.back
+# Restart the Docker daemon
+$ sudo systemctl start docker
+# Force re-initialize the cluster
+$ docker swarm init --force-new-cluster
+```
+
+--
+
+Then we need to rejoin nodes and remove the old, not obsolete ones
 
 ---
 
