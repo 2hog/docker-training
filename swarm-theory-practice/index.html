@@ -599,7 +599,7 @@ class: center
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 $ docker swarm init --advertise-addr=eth0
 ```
 
@@ -624,7 +624,7 @@ $ docker swarm init --advertise-addr=eth0
 # Inspecting the cluster
 
 ```bash
-[node1]
+[workshop-node-1]
 $ docker node ls
 ```
 
@@ -643,7 +643,7 @@ Currently, there's just one node in the cluster, which is a manager and a leader
 # Join another node in the Swarm as worker
 
 ```bash
-[node2]
+[workshop-node-2]
 $ docker swarm join --token SWMTKN-1-WWW 10.0.74.3:2377
 ```
 
@@ -652,12 +652,12 @@ $ docker swarm join --token SWMTKN-1-WWW 10.0.74.3:2377
 # Join another node in the Swarm as manager
 
 ```bash
-[node2]
+[workshop-node-2]
 $ docker swarm join-token manager
 ```
 --
 ```bash
-[node1]
+[workshop-node-1]
 $ docker swarm join-token manager
 ```
 
@@ -669,7 +669,7 @@ $ docker swarm join-token manager
 --
 
 ```bash
-[node3]
+[workshop-node-3]
 $ docker swarm join --token SWMTKN-1-MMM  10.0.74.3:2377
 ```
 
@@ -678,7 +678,7 @@ $ docker swarm join --token SWMTKN-1-MMM  10.0.74.3:2377
 # List the nodes in your cluster
 
 ```bash
-[node3]
+[workshop-node-3]
 $ docker node ls
 ```
 
@@ -696,14 +696,14 @@ v20fuo5g8lnfy96sr19315166     workshop-node-02    Ready               Active    
 # Checking the different information
 
 ```bash
-[node1]
+[workshop-node-1]
 $ docker info
 ```
 
 --
 
 ```bash
-[node2]
+[workshop-node-2]
 $ docker info
 ```
 
@@ -712,13 +712,13 @@ $ docker info
 # Let's play a game, kill the daemon in one node
 
 ```bash
-[node3]
+[workshop-node-3]
 $ sudo systemctl stop docker
 ```
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 $ docker node ls
 ```
 
@@ -740,30 +740,30 @@ Error response from daemon: rpc error: code = Unknown desc = The swarm does not 
 --
 
 ```bash
-[node3]
+[workshop-node-3]
 $ sudo systemctl start docker
 ```
 
 ---
 
-# Let's promote node2 to manager
+# Let's promote workshop-node-2 to manager
 
 --
 
 ```bash
-[node3]
-$ docker node promote node1
+[workshop-node-3]
+$ docker node promote workshop-node-1
 ```
 
 --
 
 ```bash
-[node3]
+[workshop-node-3]
 $ docker node ls
 ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS
-vz22xh8zj1xjouflm9rlnfhxu     node1               Ready               Active              Leader
-ec0eypoz0o6btv77uyjqux1l9     node2               Ready               Active              Reachable
-hguvzetdq838qseegng6n58ow *   node3               Ready               Active              Reachable
+vz22xh8zj1xjouflm9rlnfhxu     workshop-node-1               Ready               Active              Leader
+ec0eypoz0o6btv77uyjqux1l9     workshop-node-2               Ready               Active              Reachable
+hguvzetdq838qseegng6n58ow *   workshop-node-3               Ready               Active              Reachable
 ```
 
 ---
@@ -773,7 +773,7 @@ hguvzetdq838qseegng6n58ow *   node3               Ready               Active    
 --
 
 ```bash
-[node3]
+[workshop-node-3]
 $ sudo systemctl stop docker
 ```
 
@@ -784,12 +784,12 @@ $ sudo systemctl stop docker
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 $ docker node ls
 ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS
-vz22xh8zj1xjouflm9rlnfhxu *   node1               Ready               Active              Leader
-ec0eypoz0o6btv77uyjqux1l9     node2               Ready               Active              Reachable
-hguvzetdq838qseegng6n58ow     node3               Ready               Active              Unreachable
+vz22xh8zj1xjouflm9rlnfhxu *   workshop-node-1               Ready               Active              Leader
+ec0eypoz0o6btv77uyjqux1l9     workshop-node-2               Ready               Active              Reachable
+hguvzetdq838qseegng6n58ow     workshop-node-3               Ready               Active              Unreachable
 ```
 
 ???
@@ -813,7 +813,7 @@ hguvzetdq838qseegng6n58ow     node3               Ready               Active    
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 docker swarm update --autolock=true
 ```
 
@@ -843,7 +843,7 @@ will not be able to restart the manager.
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 # Lock the node, just by stopping the daemon
 sudo systemctl stop docker
 ```
@@ -868,7 +868,7 @@ Error response from daemon: Swarm is encrypted and needs to be unlocked before i
 # ... and unlock it
 
 ```bash
-[node1]
+[workshop-node-1]
 docker swarm unlock
 ```
 
@@ -908,7 +908,7 @@ class: center
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 $ docker service create --publish=8080:80 --name=nginx nginx:latest
 ```
 
@@ -924,7 +924,7 @@ $ docker service create --publish=8080:80 --name=nginx nginx:latest
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 curl localhost:8080
 ```
 
@@ -935,7 +935,7 @@ You can also open the external IP, port of a node
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 $ docker ps
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 ```
@@ -965,7 +965,7 @@ Benefits:
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 $ docker service update --image=nginx:does-not-exists nginx
 ```
 
@@ -986,13 +986,13 @@ service update paused: update paused due to failure or early termination of task
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 $ docker service ps nginx
 ID                  NAME                IMAGE                   NODE                DESIRED STATE       CURRENT STATE             ERROR                           PORTS
-z38051h4kf4t        nginx.1             nginx:does-not-exists   node2               Ready               Rejected 4 seconds ago    "No such image: nginx:does-not…"
-yadhc69tuauz         \_ nginx.1         nginx:does-not-exists   node1               Shutdown            Rejected 9 seconds ago    "No such image: nginx:does-not…"
-xwxtx6fc5hmp         \_ nginx.1         nginx:does-not-exists   node1               Shutdown            Rejected 13 seconds ago   "No such image: nginx:does-not…"
-ov5i7c5y71zc         \_ nginx.1         nginx:latest            node1               Shutdown            Shutdown 9 seconds ago
+z38051h4kf4t        nginx.1             nginx:does-not-exists   workshop-node-2               Ready               Rejected 4 seconds ago    "No such image: nginx:does-not…"
+yadhc69tuauz         \_ nginx.1         nginx:does-not-exists   workshop-node-1               Shutdown            Rejected 9 seconds ago    "No such image: nginx:does-not…"
+xwxtx6fc5hmp         \_ nginx.1         nginx:does-not-exists   workshop-node-1               Shutdown            Rejected 13 seconds ago   "No such image: nginx:does-not…"
+ov5i7c5y71zc         \_ nginx.1         nginx:latest            workshop-node-1               Shutdown            Shutdown 9 seconds ago
 ```
 
 ---
@@ -1012,21 +1012,21 @@ ov5i7c5y71zc         \_ nginx.1         nginx:latest            node1           
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 $ docker service rollback nginx
 ```
 
 --
 
 ```bash
-[node1]$ docker service ps nginx
+[workshop-node-1]$ docker service ps nginx
 ID                  NAME                IMAGE                   NODE                DESIRED STATE       CURRENT STATE                 ERROR                              PORTS
-hak9ijaaubgi        nginx.1             nginx:latest            node1               Running             Running 11 seconds ago
-yylxs4ktx0ab         \_ nginx.1         nginx:does-not-exists   node2               Shutdown            Rejected 49 seconds ago       "No such image: nginx:does-not…"
-yy1z6lb6rqsm         \_ nginx.1         nginx:does-not-exists   node1               Shutdown            Rejected about a minute ago   "No such image: nginx:does-not…"
-z38051h4kf4t         \_ nginx.1         nginx:does-not-exists   node2               Shutdown            Rejected about a minute ago   "No such image: nginx:does-not…"
-yadhc69tuauz         \_ nginx.1         nginx:does-not-exists   node1               Shutdown            Rejected about a minute ago   "No such image: nginx:does-not…"
-[node1]
+hak9ijaaubgi        nginx.1             nginx:latest            workshop-node-1               Running             Running 11 seconds ago
+yylxs4ktx0ab         \_ nginx.1         nginx:does-not-exists   workshop-node-2               Shutdown            Rejected 49 seconds ago       "No such image: nginx:does-not…"
+yy1z6lb6rqsm         \_ nginx.1         nginx:does-not-exists   workshop-node-1               Shutdown            Rejected about a minute ago   "No such image: nginx:does-not…"
+z38051h4kf4t         \_ nginx.1         nginx:does-not-exists   workshop-node-2               Shutdown            Rejected about a minute ago   "No such image: nginx:does-not…"
+yadhc69tuauz         \_ nginx.1         nginx:does-not-exists   workshop-node-1               Shutdown            Rejected about a minute ago   "No such image: nginx:does-not…"
+[workshop-node-1]
 ```
 
 ---
@@ -1060,7 +1060,7 @@ yadhc69tuauz         \_ nginx.1         nginx:does-not-exists   node1           
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 $ docker secret create some-sec -
 ```
 
@@ -1071,7 +1071,7 @@ $ docker secret create some-sec -
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 $ docker service create \
   --secret=some-sec \
   --workdir=/run/secrets \
@@ -1087,7 +1087,7 @@ $ docker service create \
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 $ curl localhost:8888/some-sec
 Don't tell this to anyone
 ```
@@ -1105,7 +1105,7 @@ Don't tell this to anyone
 
 
 ```bash
-[node1]
+[workshop-node-1]
 $ cat << EOF > index.html
 <html>
   <head><title>Hello Docker</title></head>
@@ -1119,14 +1119,14 @@ EOF
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 $ docker config create homepage index.html
 ```
 
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 $ docker service create \
   --config=source=homepage,target=/usr/share/nginx/html/index.html \
   --publish=9999:80 \
@@ -1163,7 +1163,7 @@ Stacks are logical collections of services, which define complete applications
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 # First, let's create a compose file
 $ cat << EOF > stack.yml
 version: '3.5'
@@ -1189,7 +1189,7 @@ $ docker stack deploy -c stack.yml my-stack
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 # Update the compose file, to have a different image
 $ cat << EOF > stack.yml
 version: '3.5'
@@ -1214,7 +1214,7 @@ Scaling a service
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 $ docker service scale my-stack_nginx=10
 ```
 
@@ -1256,14 +1256,14 @@ There are times that not every payload should be deployed to every node
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 # Add PCI label to nodes 1 and 2
-$ docker node update --label-add=com.example.pci=true node1
-$ docker node update --label-add=com.example.pci=true node2
+$ docker node update --label-add=com.example.pci=true workshop-node-1
+$ docker node update --label-add=com.example.pci=true workshop-node-2
 # Add node 1 to AZ A and nodes 2 and 3 to AZ B
-$ docker node update --label-add=com.example.az=a node1
-$ docker node update --label-add=com.example.az=b node2
-$ docker node update --label-add=com.example.az=b node3
+$ docker node update --label-add=com.example.az=a workshop-node-1
+$ docker node update --label-add=com.example.az=b workshop-node-2
+$ docker node update --label-add=com.example.az=b workshop-node-3
 ```
 
 ---
@@ -1273,7 +1273,7 @@ $ docker node update --label-add=com.example.az=b node3
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 $ docker service create \
   --constraint=node.labels.com.example.pci==true \
   --replicas=6 \
@@ -1284,7 +1284,7 @@ $ docker service create \
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 # Check what we did
 $ docker service ps constrained
 ```
@@ -1296,7 +1296,7 @@ $ docker service ps constrained
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 $ docker service create \
   --constraint=node.labels.com.example.unsatisfied==true \
   --name=unsatisfied \
@@ -1306,9 +1306,9 @@ $ docker service create \
 --
 
 ```bash
-[node3]
+[workshop-node-3]
 # Let's fix This
-docker node update --label-add=com.example.unsatisfied=true node3
+docker node update --label-add=com.example.unsatisfied=true workshop-node-3
 ```
 
 ---
@@ -1330,7 +1330,7 @@ docker node update --label-add=com.example.unsatisfied=true node3
 # Let's see what happens when we set memory reservation
 
 ```bash
-[node1]
+[workshop-node-1]
 docker service create \
   --reserve-memory=4G \
   --name=mem-hungry \
@@ -1345,7 +1345,7 @@ Everything is good, but what happens after we scale this?
 
 ```bash
 # Let's scale this a bit
-[node1]
+[workshop-node-1]
 docker service scale mem-hungry=7
 ```
 
@@ -1363,7 +1363,7 @@ docker service scale mem-hungry=7
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 $ docker service create \
   --placement-pref=spread=node.labels.com.example.az \
   --replicas=6 \
@@ -1374,14 +1374,14 @@ $ docker service create \
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 $ docker service ps spread
 ```
 
 ???
 
 * The service was evenly distributed between different availability zones
-* Since node1 was the only one in its zone, it got half the services
+* Since workshop-node-1 was the only one in its zone, it got half the services
 
 ---
 
@@ -1427,7 +1427,7 @@ Reading logs is usually the first thing to do
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 # Read the logs of all tasks of service
 $ docker service logs my-stack_nginx
 ```
@@ -1435,7 +1435,7 @@ $ docker service logs my-stack_nginx
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 # ...or just a single tasks
 $ docker service logs kxqxntzly0bn
 ```
@@ -1453,7 +1453,7 @@ $ docker service logs kxqxntzly0bn
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 # Jump into a container
 $ docker exec -it \
   $(docker ps -q -f label=com.docker.swarm.service.name=my-stack_nginx | head -n 1) \
@@ -1486,7 +1486,7 @@ $ curl 10.0.0.12:5000
 --
 
 ```bash
-[node1]
+[workshop-node-1]
 # Stop the Docker daemon
 $ sudo systemctl stop docker
 # Back up the Swarm directory
