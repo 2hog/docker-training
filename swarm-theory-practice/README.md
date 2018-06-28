@@ -6,7 +6,7 @@ Docker and containers have drastically changed the way we develop and deploy app
 
 ## Duration
 
-The duration of this training is 6 hours (almost full-day)
+The duration of this training is 6 hours (almost full-day).
 
 ## Topics covered
 

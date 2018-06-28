@@ -4,7 +4,7 @@ The purpose of this training is to introduce students to the world of orchestrat
 
 ## Duration
 
-The duration of this training is 4 hours (half-day)
+The duration of this training is 4 hours (half-day).
 
 ## Topics covered
 
