@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Migrating 12 factor applications to Kubernetes</title>
+  <meta name="description" content="Get the slides for 2hog's workshop on Kubernetes basics." />
+  <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans|IBM+Plex+Sans+Condensed|IBM+Plex+Serif" rel="stylesheet">
+  <link href="/p-style.css" rel="stylesheet">
+</head>
+
+<body>
+  <textarea id="source">
+
+layout: true
+class: middle
+
+---
+class: center
+
+# Migrating 12 factor applications to Kubernetes
+
+
+--
+
+[p.2hog.codes/kubernetes-12f-migration](https://p.2hog.codes/kubernetes-12f-migration)
+
+---
+
+
+# About 2hog.codes
+
+* Founders of [SourceLair](https://www.sourcelair.com) online IDE + Dimitris Togias
+* Docker and DevOps training and consulting
+
+---
+
+# Antonis Kalipetis
+
+* Docker Captain and Docker Certified Associate
+* Python lover and developer
+* Technology lead at SourceLair, Private Company
+
+.footnote[[@akalipetis](https://twitter.com/akalipetis)]
+
+---
+
+# Paris Kasidiaris
+
+* Python lover and developer
+* CEO at SourceLair, Private Company
+* Docker training and consulting
+
+.footnote[[@pariskasid](https://twitter.com/pariskasid)]
+
+---
+
+# Dimitris Togias
+
+* Self-luminous, minimalist engineer
+* Co-founder of Warply and Niobium Labs
+* Previously, Mobile Engineer and Craftsman at Skroutz
+
+.footnote[[@demo9](https://twitter.com/demo9)]
+
+---
+
+class: center
+
+# [p.2hog.codes/kubernetes-12f-migration](https://p.2hog.codes/kubernetes-12f-migration)
+
+---
+
+# Agenda
+
+1. The art of continuous integration with Docker
+1. Continuous delivery
+1. Quick intro to Drone CI
+1. Exercise: setting up a Ruby microservice with Sinatra
+1. Exercise: setting up a Python microservice with Flask, which needs static assets built with Node.js
+1. Exercise: setting up a Python microservice with Django, which connects to the other two services and needs migrations
+1. Bonus: exposing the Django microservice to the world with Ceryx
+1. Case study: from monoliths to a containerized infrastructure
+
+---
+class: center
+
+# The art of continuous integration with Docker
+
+---
+class: center
+
+# Continuous delivery
+
+---
+class: center
+
+# Quick intro to Drone CI
+
+---
+class: center
+
+# Exercise: setting up a Ruby microservice with Sinatra
+
+---
+
+# Let's get the code
+
+```bash
+git clone https://github.com/2hog/docker-training-samples
+cd docker-training-samples
+```
+
+---
+
+# Create a Docker image for the microservice
+
+???
+
+* Should install dependencies separately to improve caching
+
+---
+
+# Create a Docker Compose file for local development
+
+???
+
+* Should use an auto-reloading server
+
+---
+
+# Create a Kubernetes deployment manifest
+
+???
+
+* Should also contain an internal service definition
+
+---
+
+# Create a CI/CD file
+
+---
+
+# See it in action
+
+---
+class: center
+
+# Exercise: setting up a Python microservice with Flask, which needs static assets built with Node.js
+
+---
+
+# Create a Docker image for the microservice
+
+???
+
+* Should install dependencies separately to improve caching
+* Should use multi-stage builds for building and including static assets
+
+---
+
+# Create a Docker Compose file for local development
+
+???
+
+* Should use an auto-reloading server
+* Should contain a separate container for the static assets
+
+---
+
+# Create a Kubernetes deployment manifest
+
+???
+
+* Should also contain an internal service definition
+
+---
+
+# Create a CI/CD file
+
+---
+
+# See it in action
+
+---
+class: center
+
+# Exercise: setting up a Python microservice with Django, which connects to the other two services and needs migrations
+
+---
+
+# Create a Docker image for the microservice
+
+???
+
+* Should install dependencies separately to improve caching
+
+---
+
+# Create a Docker Compose file for local development
+
+???
+
+* Should use an auto-reloading server
+* Should contain the database for easy local development
+* Should contain a static (that is pre-built) reference to its depending services
+
+---
+
+# Create a Kubernetes deployment manifest
+
+???
+
+* Should also contain an internal service definition
+* Should have environment configuration for discovering the rest of the services
+* Should use secrets for the API keys to contact the other services
+* Should contain a separate job manifest for running migrations
+
+---
+
+# Create a CI/CD file
+
+???
+
+* Should run migrations using a job
+
+---
+
+# See it in action
+
+---
+class: center
+
+# Bonus: exposing the Django microservice to the world with Ceryx
+
+---
+class: center
+
+# Case study: from monoliths to a containerized infrastructure
+
+---
+class: center
+
+# Thanks!
+
+    </textarea>
+  <script src="https://remarkjs.com/downloads/remark-latest.min.js">
+  </script>
+  <script>
+    remark.macros.scale = function (percentage) {
+      var url = this;
+      return '<img src="' + url + '" style="width: ' + percentage + '" />';
+    };
+    var slideshow = remark.create({
+      highlightStyle: 'monokai',
+      highlightLines: true,
+      ratio: '16:9',
+    });
+  </script>
+</body>
+
+</html>

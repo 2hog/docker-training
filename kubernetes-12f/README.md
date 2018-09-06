@@ -23,7 +23,6 @@ Below is a typical agenda for this training
 
 * Unifying development, test and production environments
 * From buildpacks to Docker images
-* Deploying applications in Kubernetes
-* Configuring applications the right way
+* Deploying 12 factor applications in Kubernetes
+* Configuring applications
 * Sharing secrets and keeping them secret
-* Talking with other services in Kubernetes
