@@ -56,12 +56,18 @@ class: center
 
 1. Background, Motivation and the 12 factors
 2. Topology and Examples
-3. 12-factor apps with Docker 
+3. 12-factor apps with Docker
 
 ---
 class: center
 
 # Background, Motivation and the 12 factors
+    
+---
+
+# The 12-factor methodology
+
+A methodology for building scalable, durable and maintanable apps.
     
 ---
 
@@ -75,7 +81,7 @@ Essentially, it describes the contract between Heroku and the apps deployed on i
 
 # Motivation
 
-There was need for a set of concepts for building **scalable**, **maintainable** and **durable** web apps.
+There was need for a set of concepts for building **scalable**, **durable** and **maintainable** web apps.
 
 ---
 
@@ -238,21 +244,42 @@ https://12factor.net/admin-processes
 
 # Topology
 
-[Illustrations]
+![Topology](images/topology.svg)
 
 ---
 
-# A few before/after examplesr
+# A few before/after examples
 
-TBD
+---
 
-1. PHP before / after
-2. Config before / after
-3. Logs before / after
+# PHP: before/after
+
+- **Before**: Run PHP embedded in Apache via `mod_php`
+- **After**: Run PHP as a standalone process via `php-fpm`
+
+---
+
+# Configuration: before/after
+
+- **Before**: Write a custom configuration file for your app
+- **After**: Use a environment variable to store each setting of your app
+
+---
+
+# Logging: before/after
+
+- **Before**: Write logs in `/var/log/...` and collect them with Logstash
+- **After**: Write all logs in `stdout/stderr` and let the infrastructure provider collect them
 
 ---
 
 # 12-factor apps in Docker-land
+
+---
+
+# 12-factor recap
+
+![Recap](images/recap.svg)
 
 ---
 
