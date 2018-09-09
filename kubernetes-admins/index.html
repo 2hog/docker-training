@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Kubernetes for Admins</title>
+  <meta charset="utf-8">
+  <link href="/p-style.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans|IBM+Plex+Sans+Condensed|IBM+Plex+Serif" rel="stylesheet">
+</head>
+
+<body>
+  <textarea id="source">
+
+layout: true
+class: middle
+
+---
+
+# Kubernetes for Admins
+
+--
+
+[p.2hog.codes/kubernetes-admins](https://p.2hog.codes/kubernetes-admins)
+
+---
+
+
+# About 2hog.codes
+
+* Founders of [SourceLair](https://www.sourcelair.com) online IDE + Dimitris Togias
+* Docker and DevOps training and consulting
+
+---
+
+# Antonis Kalipetis
+
+* Docker Captain and Docker Certified Associate
+* Python lover and developer
+* Technology lead at SourceLair, Private Company
+
+.footnote[[@akalipetis](https://twitter.com/akalipetis)]
+
+---
+
+# Paris Kasidiaris
+
+* Python lover and developer
+* CEO at SourceLair, Private Company
+* Docker training and consulting
+
+.footnote[[@pariskasid](https://twitter.com/pariskasid)]
+
+---
+
+# Dimitris Togias
+
+* Self-luminous, minimalist engineer
+* Co-founder of Warply and Niobium Labs
+* Previously, Mobile Engineer and Craftsman at Skroutz
+
+.footnote[[@demo9](https://twitter.com/demo9)]
+
+---
+
+class: center
+
+# [p.2hog.codes/kubernetes-admins](https://p.2hog.codes/kubernetes-admins)
+
+---
+
+# Agenda
+
+1. Kubernetes intro crash course
+1. Setting up a cluster with kubeadm
+1. Inspecting and managing the cluster
+1. Ingress and networking in Kubernetes
+1. Managing storage for Kubernetes workloads
+1. Security principles best practices
+1. Managing available resources
+
+---
+class: center
+
+# Kubernetes intro crash course
+
+---
+
+# What is Kubernetes?
+
+Kubernetes is an open-source system for automating deployment, scaling, and management of containerized applications.
+
+--
+
+What does that mean though?
+
+--
+
+Kubernetes does the following tasks for you:
+
+* Abstracts low level resources, like containers, so that we don't have to pumper our cluster
+* Automates deployment, by applying our needs and wants to inside a cluster
+* Integrates with cloud providers, allowing easy access to compute and storage
+
+---
+
+# Core Kubernetes components
+
+--
+
+* Kubernetes API server
+* Controllers
+    * Kube controller manager
+    * Cloud controller manager
+
+---
+
+# Key concepts
+
+--
+
+* Master node(s)
+  * The server(s) responsible for meta data storage, API availability and decision making
+* Worker nodes
+  * The server(s) that are used to run workloads, decided by the management plane
+* Pods
+  * A collection of one or more containers, the atom of Kubernetes workloads
+* Controllers
+  * Components responsible for creating or removing pods, based on certain criteria
+* Services
+  * Logical sets of Pods with an access policy, abstracting the mortallity of Pods
+
+---
+
+# Kubernetes Topology
+
+.center[![:scale 50%](images/kube-architecture.png)]
+
+---
+
+# Kubernetes Topology — a more common example
+
+.center[![:scale 50%](images/kube-architecture-combined.png)]
+
+---
+
+# Kubernetes Topology — a more "cloudy" example
+
+.center[![:scale 50%](images/kube-architecture-cloud.png)]
+
+???
+
+* Story about infrastructure providers to start selling infrastructure in a different way
+* Same concept as selling bare metal machines through VMs
+
+---
+
+# Declarative vs imperative infrastructure
+
+--
+
+## Say what you want, not how to achieve this
+
+---
+
+# A simple example
+
+* _Declarative:_ I want a coffee, sweet, without milk
+--
+
+  * ...never drink sweet coffee, but ¯\\_(ツ)_/¯
+--
+
+
+VS
+
+--
+
+* _Imperative:_ I want you to take the beans, ground them, boil water and then mix them. Then, add some sugar and give it to me.
+
+---
+
+# A bit more on declarative infrastructure
+
+* It's easier for the user, as long as the software is logical
+* All the state is saved within the cluster
+* The cluster continuously tries to make sure that the declared state and the current state of the cluster are a match
+
+---
+
+# Where is everything stored?
+
+--
+
+* Behind the scenes, Kubernetes is using a distributed KV store, based on RAFT - ETCD
+* RAFT is a consensus algorithm, also used in other distributed systems like Swarm or Consul
+* It needs at least N / 2 + 1 members to be able to operate
+  * Always create clusters with odd number of members
+
+---
+exclude: true
+
+.center[<iframe src="https://raft.github.io/raftscope/index.html" style="border: 0; width: 800px; height: 580px; margin-bottom: 20px"></iframe>]
+
+---
+class: center
+
+# Setting up a cluster with kubeadm
+
+---
+
+# kubeadm — making Kubernetes cluster bootstrap easy
+
+--
+
+Kubeadm is a tool built to provide `kubeadm init` and `kubeadm join` as best-practice "fast paths" for creating Kubernetes clusters
+
+???
+
+* Making Kubernetes cluster management more close to Swarm
+* Making it more secure
+
+--
+
+* Generates a self-signed CA, used to create and verify identities of components in the cluster
+* Bootstraps an etcd backend, if an external one is not provided
+* Generates default `kubectl` configuration for talking to the cluster
+
+---
+
+# Bootstrapping the cluster
+
+--
+
+```bash
+# [workshop-vm-XX-00]
+sudo kubeadm init
+```
+
+???
+
+* This makes the API server be publicly available
+* Possibly, we'd like to change this to a private IP, but during the training that's easier if we want to remotely access the cluster
+* This has set up a single master node cluster, without any networking
+
+---
+
+# Add the cluster credentials to the `workshop` user
+
+--
+
+```bash
+# [workshop-vm-XX-00]
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+---
+
+# Bootstrap networking
+
+--
+
+* Kubernetes supports any network plugin, as long as it's CNI compatible
+* `kubeadm` does not have any network plugin installed, to allow the user to decide one
+* We'll go with Weave
+
+???
+
+* Easy to use and deploy
+* Fast
+* Even supports multicast
+
+---
+
+# Setting up Weave
+
+--
+
+```bash
+# [workshop-vm-XX-00]
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+kubectl rollout status daemonset weave-net -n kube-system
+```
+
+---
+
+# Joining more nodes to the cluster
+
+--
+
+```bash
+# [workshop-vm-XX-01]
+sudo kubeadm join IP-HERE:6443 --token TTT --discovery-token-ca-cert-hash sha256:HHH
+```
+
+---
+
+# See that everything works
+
+???
+
+* Let's deploy the Kubernetes dashboard
+* Let's start inspecting some things there
+
+--
+
+```bash
+# [workshop-vm-XX-00]
+kubectl apply -f https://gist.githubusercontent.com/akalipetis/968a29bd42b7944f788cb6332b480b62/raw/43c030a7cfd8490b83afd03ce2fb77ee27d1e359/dashboard-rbac.yml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+kubectl -n kube-system rollout status deployment kubernetes-dashboard
+kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')
+kubectl proxy
+```
+
+---
+
+# Let's check out the dashboard
+
+--
+
+```bash
+# [laptop]
+ssh -L 8001:127.0.0.1:8001 -C -N workshop@workshop-vm-XX-00.akalipetis.com
+```
+
+--
+
+Open http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
+
+---
+class: center
+
+# Inspecting and managing the cluster
+
+---
+
+# Get general information about the cluster
+
+--
+
+```bash
+# [workshop-vm-XX-00]
+kubectl cluster-info
+```
+
+---
+
+# Get information about nodes
+
+--
+
+```bash
+# [workshop-vm-XX-00]
+kubectl get no
+kubectl describe node workshop-vm-XX-00
+kubectl describe node workshop-vm-XX-01
+kubectl descibe nodes
+kubectl get componentstatuses
+```
+
+---
+
+# See what's running inside the cluster
+
+--
+
+```bash
+# [workshop-vm-XX-00]
+kubectl get all --all-namespaces
+```
+
+---
+class: center
+
+# Ingress and networking in Kubernetes
+
+---
+
+# The Kubernetes networking model
+
+--
+
+* Kubernetes supports plugin implementing the CNI
+* All pods and nodes in the cluster are routable within a flat network
+  * That means that there's no network separation and thus all workloads should be trusted, or resources secured
+* Every pod gets an IP
+* Pods get DNS names, which work inside the cluster
+
+???
+
+* Sensitive resources should be secured
+* There are ways to handle that, but out of topic for this course
+
+---
+
+# Kubernetes load-balancing
+
+--
+
+* Each service in the Kubernetes gets a virtual IP
+  * Kubernetes services make sure connections to this internal IP are routed to the correct container, in any host in the cluster
+* Multi-host networking is made with CNI plugins
+* If desired, services can integrate with external load balancers or simply open a port to each node in the cluster
+  * Connections, as soon as they enter the cluster, are routed in the exact same way
+
+???
+
+Benefits:
+* You don't need to know where in the cluster every pod runs
+* You don't need to do health management
+
+---
+
+# How is DNS resolved in Kubernetes
+
+* Services
+    * A record: `my-svc.my-namespace.svc.cluster.local`
+        * Multiple A records for "headless" services
+    * SRV record: `_my-port-name._my-port-protocol.my-svc.my-namespace.svc.cluster.local`
+* Pods
+    * A record: `pod-ip-address.my-namespace.pod.cluster.local`
+
+---
+
+# Search domains
+
+Except from the full DNS records, you can also search the following DNS names
+
+* Services within the same namespace
+  * `svc` will resolve to `svc.the-namespace.cluster.local` when queried from a pod in this namespace
+* Services within the same cluster
+  * `svc.the-namespace` will resolve to `svc.the-namespace.cluster.local`, even when queried from other namespaces in the same cluster
+
+---
+
+# Exposing services to the world
+
+--
+
+* `LoadBalancer` service type
+    * Attaches a cloud provider LB to the service
+    * Can either be TCP or HTTP, depending on the cloud provider
+* `NodePort` service type
+    * Attaches ports (usually 80 and 443) on every node to related ports of the service
+    * Is more cloud agnostic
+    * It can have a LB on all worker nodes of the cluster in front of it
+* `Ingress` API resource
+
+---
+
+# Ingress
+
+--
+
+* A Kubernetes API object that abstracts external access to cluster services
+* Does nothing without an ingress controller configured
+* Usually implemented using a service of `LoadBalancer` or `NodePort` type with a combination with an ingress controller
+
+---
+
+# Why use Ingress
+
+--
+
+* Easier to expose new services — creating an ingress resource easily automates the process of exposing a service
+* Ingress controllers allow for "smarter" things to be done, like path based proxying and more
+* Can expose multiple services, using just a Load Balancer, or a set of A/CNAME records
+
+---
+
+# Ingress alternatives
+
+--
+
+* The goods from both worlds, create a "manual" ingress like service and create routes by hand
+* Expose every service using a different LB
+* Use [sourcelair/ceryx](https://github.com/sourcelair/ceryx) and manually add routes
+
+---
+class: center
+
+# Managing storage for Kubernetes workloads
+
+---
+
+# Kubernetes storage related API objects
+
+--
+
+* `PersistentVolume` — an actual, provisioned volume available for consumption
+* `PersistentVolumeClaim` — a request to claim a `PersistentVolume` and assign it to a pod
+* `StorageClass` — a `PersistentVolume` provisioner, that can dynamically provision `PersistentVolumes` as they are requested
+
+???
+
+* PersistentVolumes and PersistentVolumeClaims are the API that developers interact with admins
+* Admins should provide PersistentVolumes inside the cluster, which can be later on claimed by workloads deployed by the developers
+* StorageClasses can be configured on the other hand, so that PersistentVolumes can be provisioned dynamically — this is usually related to a cloud provider, or a shared FS like NFS
+
+---
+
+# Storage lifecycle
+
+--
+
+* Birth of a `PersistentVolume`
+    * An admin statically creates one
+    * One is dynamically created, after a claim could not be serviced and a storage class was provided
+* Binding and use
+    * The volume is bound, getting access to the `PersistentVolume`
+    * The `PersistentVolume` is marked and protected, to avoid accidental deletion and data loss
+* Reclaiming unused volumes
+    * After the claim is deleted, the volume can be `Retained`
+    * Or be `Delete`d
+    * The actual behavior is based on the initial provisioning (static VS dynamic) and the reclaim policy
+
+---
+
+# `PersistentVolume` access policies
+
+--
+
+* `RWO` — as soon as a pod claims the volume, it is not available any more
+* `ROX` — many pods can have readonly access to the volume
+* `RWX` — many pods can have read-write access to the volume
+
+???
+
+* RWO should be used for things like block storage and generally for single-node deployments
+* R(W|O)X should be used for volumes that can be mounted to many nodes, like a shared file system
+
+---
+class: center
+
+# Security principles best practices
+
+---
+
+# Securing services within the cluster
+
+--
+
+* Services and pods within a cluster are accessible from any pod
+* If untrusted pods are run, or if user-facing services exist with lesser access control, services should be secured even if they are internal
+
+---
+
+# Securing services within the cluster
+
+--
+
+* Adding TLS connection support
+* Using API keys and other credential types
+* Using tools like Istio to control and secure connections between applications
+
+---
+
+# How does Istio work
+
+--
+
+* Injects sidecar containers to every selected pod
+* Makes sure all pod traffic is routed from inside the injected Envoy proxy
+* It then given knobs to tune the features you want implemented
+
+???
+
+Indicative features:
+
+* Apply access policies
+* Secure connections
+* Manage traffic
+* Telemetry
+
+---
+
+# Istio components
+
+--
+
+* Control plane makes sure the the correct sidecards are injected with the needed settings
+* Data plane is consisted of intelligent Envoy proxies, deployed as sidecars
+
+---
+
+# RBAC in Kubernetes
+
+--
+
+* Every pod in Kubernetes gets a service account
+* Since the Kubernetes API is routable from every pod, without RBAC the cluster is completely vulnerable
+
+---
+
+# Defaults
+
+* `kubeadm` created a cluster where pods by default do not have access
+* The Kubernetes API is secured with HTTPS
+
+---
+
+# Creating RBAC roles and profiles
+
+---
+class: center
+
+# Managing available resources
+
+---
+class: center
+
+# Thanks!
+
+    </textarea>
+  <script src="https://remarkjs.com/downloads/remark-latest.min.js">
+  </script>
+  <script>
+    remark.macros.scale = function (percentage) {
+      var url = this;
+      return '<img src="' + url + '" style="width: ' + percentage + '" />';
+    };
+    var slideshow = remark.create({
+      highlightStyle: 'monokai',
+      highlightLines: true,
+      ratio: '16:9',
+    });
+    slideshow.on('afterShowSlide', function (slide) {
+      console.log(arguments);
+    });
+  </script>
+</body>
+
+</html>
