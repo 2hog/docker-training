@@ -3,212 +3,17 @@
 
 <head>
   <title>Intro to Docker and Containers</title>
+  <meta name="description" content="Get the slides for 2hog's training: Introduction to Docker and Containers." />
   <meta charset="utf-8">
-  <style>
-    @import url(https://fonts.googleapis.com/css?family=Droid+Serif);
-    @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
-    @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
-
-    body {
-      font-family: 'Droid Serif';
-      background: #272822;
-    }
-
-    h1,
-    h2,
-    h3 {
-      font-family: 'Yanone Kaffeesatz';
-      font-weight: 400;
-      margin-bottom: 0;
-      line-height: 120%;
-    }
-
-    .remark-slide-container {
-      background: #272822;
-    }
-
-    .remark-slide-scaler {
-      -webkit-box-shadow: none;
-      box-shadow: none;
-    }
-
-    .remark-slide-content h1 {
-      font-size: 3em;
-    }
-
-    .remark-slide-content h2 {
-      font-size: 2em;
-    }
-
-    .remark-slide-content h3 {
-      font-size: 1.6em;
-    }
-
-    .footnote {
-      position: absolute;
-      bottom: 3em;
-    }
-
-    li {
-      padding: 8px 0;
-    }
-
-    li p {
-      line-height: 1.25em;
-    }
-
-    .red {
-      color: #fa0000;
-    }
-
-    .large {
-      font-size: 2em;
-    }
-
-    a,
-    a>code {
-      color: #545dd0;
-      text-decoration: none;
-    }
-
-    code {
-      border: 1px solid #e7e8e2;
-      border-radius: 5px;
-      font-size: 0.9em;
-      padding: 0 4px;
-      margin: 0 4px;
-    }
-
-    h1 code {
-      padding: 0 8px;
-      margin: 0 8px;
-    }
-
-    .remark-code {
-      display: block;
-      padding: 8px 16px;
-    }
-
-    .remark-inline-code {
-      display: inline-block;
-    }
-
-    .remark-code,
-    .remark-inline-code {
-      font-family: 'Ubuntu Mono';
-    }
-
-    .remark-code-line-highlighted {
-      background-color: #373832;
-    }
-
-    .pull-left {
-      float: left;
-      width: 47%;
-    }
-
-    .pull-right {
-      float: right;
-      width: 47%;
-    }
-
-    .pull-right~p {
-      clear: both;
-    }
-
-    #slideshow .slide .content code {
-      font-size: 0.8em;
-    }
-
-    #slideshow .slide .content pre code {
-      font-size: 0.9em;
-      padding: 15px;
-    }
-
-    .inverse {
-      background: #272822;
-      color: #777872;
-    }
-
-    .inverse h1,
-    .inverse h2 {
-      color: #f3f3f3;
-    }
-
-    /* Slide-specific styling */
-
-    #slide-inverse .footnote {
-      bottom: 12px;
-      left: 20px;
-    }
-
-    #slide-how .slides {
-      font-size: 0.9em;
-      position: absolute;
-      top: 151px;
-      right: 140px;
-    }
-
-    #slide-how .slides h3 {
-      margin-top: 0.2em;
-    }
-
-    #slide-how .slides .first,
-    #slide-how .slides .second {
-      padding: 1px 20px;
-      height: 90px;
-      width: 120px;
-      -moz-box-shadow: 0 0 10px #777;
-      -webkit-box-shadow: 0 0 10px #777;
-      box-shadow: 0 0 10px #777;
-    }
-
-    #slide-how .slides .first {
-      background: #fff;
-      position: absolute;
-      top: 20%;
-      left: 20%;
-      z-index: 1;
-    }
-
-    #slide-how .slides .second {
-      position: relative;
-      background: #fff;
-      z-index: 0;
-    }
-
-    /* Two-column layout */
-
-    .left-column {
-      color: #777;
-      width: 20%;
-      height: 92%;
-      float: left;
-    }
-
-    .left-column h2:last-of-type,
-    .left-column h3:last-child {
-      color: #000;
-    }
-
-    .right-column {
-      width: 75%;
-      float: right;
-      padding-top: 1em;
-    }
-    
-    #source {
-      display: none;
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans|IBM+Plex+Sans+Condensed|IBM+Plex+Serif" rel="stylesheet">
+  <link href="/p-style.css" rel="stylesheet">
 </head>
 
 <body>
   <textarea id="source">
 
-name: inverse
 layout: true
-class: middle, inverse
+class: middle
 
 ---
 
@@ -257,7 +62,7 @@ class: center
 
 class: center
 
-# https://p.2hog.codes/intro-docker-containers/
+# [p.2hog.codes/intro-docker-containers](https://p.2hog.codes/intro-docker-containers/)
 
 ---
 
@@ -321,7 +126,7 @@ class: center
 
 ---
 
-class: center, middle
+class: center
 
 # What is a Container though?
 
@@ -438,13 +243,13 @@ Today we're going to interact with the first two layers only
 
 # Run your first container
 
-```
+```bash
 docker run -it alpine sh
 ```
 
 --
 
-```
+```bash
 / # whoami
 / # uname -a
 / # top
@@ -471,7 +276,7 @@ docker run -it alpine sh
 
 # Run your first container(s)
 
-```
+```bash
 # Next, run the following commands and compare the output
 
 docker run node:8-alpine node --version
@@ -500,14 +305,14 @@ https://docs.docker.com/engine/reference/commandline/run/
 # Let's try something a bit different
 
 --
-```
+```bash
 # First, run this command to create a sleeping container
 
 docker run -d alpine sleep 600
 ```
 
 --
-```
+```bash
 # Then, run this command to jump into the host's PID namespace and see all the processes
 
 docker run -it --pid=host alpine sh
@@ -526,7 +331,7 @@ docker run -it --pid=host alpine sh
 # How can I see all these containers?
 
 --
-```
+```bash
 # List running containers
 docker container ls
 
@@ -537,7 +342,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 ```
 
 --
-```
+```bash
 # List all containers, including dead ones
 ➜  ~ docker container ls --all
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                      PORTS               NAMES
@@ -603,7 +408,7 @@ Run the following command to build your Docker Image, based on the Dockerfile an
 
 ## Example
 
-```
+```bash
 docker build -t myjava .
 docker run myjava
 ```
@@ -663,19 +468,19 @@ https://docs.docker.com/engine/reference/commandline/build/
 
 # Let's see a demo
 
-```
+```bash
 # First, we need to create a network
 ➜  ~ docker network create demonet
 ```
 --
 
-```
+```bash
 # Then, we need to start an NGINX container
 ➜  ~ docker container run -d --network demonet --network-alias nginx nginx:alpine
 ```
 --
 
-```
+```bash
 # Last, let's try hitting it from another container
 ➜  ~ docker container run -it --network demonet alpine sh
 / # apk add -U curl bind-tools
@@ -708,13 +513,13 @@ https://docs.docker.com/engine/reference/commandline/build/
 
 # Let's see a demo
 
-```
+```bash
  # First, we need to create a volume
  ➜  ~ docker volume create demovol
 ```
 --
 
-```
+```bash
 # Then, we need to start a container, attaching this volume and adding some data
 ➜  ~ docker container run -v demovol:/mnt/data -it alpine sh
 / # cd /mnt/data/
@@ -723,7 +528,7 @@ https://docs.docker.com/engine/reference/commandline/build/
 ```
 --
 
-```
+```bash
 # Last, we can view this data from another container
 ➜  ~ docker container run -d -p 9090:80 -v demovol:/usr/share/nginx/html nginx:alpine
 ➜  ~ open localhost:9090/what-is-docker.txt
@@ -775,7 +580,7 @@ It manages complete stacks containing:
 https://git.io/vbasP
 --
 
-```
+```bash
 # After saving the docker-compose.yml file locally, run the following command
 docker-compose up
 ```
