@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1920px" height="1080px" viewBox="0 0 1920 1080" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <title>Recap</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Recap" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Components/12-factor" transform="translate(40.000000, 80.000000)">
+            <rect id="Rectangle-2" stroke="#979797" stroke-width="1" fill-opacity="0.5" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="319" height="179"></rect>
+            <text id="Le-factor" font-family="LucidaGrande, Lucida Grande" font-size="36" font-weight="normal" fill="#000000">
+                <tspan x="74.6582031" y="95">Codebase</tspan>
+            </text>
+        </g>
+        <g id="Components/12-factor" transform="translate(546.000000, 80.000000)">
+            <rect id="Rectangle-2" stroke="#979797" stroke-width="1" fill-opacity="0.5" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="319" height="179"></rect>
+            <text id="Le-factor" font-family="LucidaGrande, Lucida Grande" font-size="36" font-weight="normal" fill="#000000">
+                <tspan x="37.8056641" y="95">Dependencies</tspan>
+            </text>
+        </g>
+        <g id="Components/12-factor" transform="translate(1053.000000, 80.000000)">
+            <rect id="Rectangle-2" stroke="#979797" stroke-width="1" fill-opacity="0.5" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="319" height="179"></rect>
+            <text id="Le-factor" font-family="LucidaGrande, Lucida Grande" font-size="36" font-weight="normal" fill="#000000">
+                <tspan x="102.493164" y="95">Config</tspan>
+            </text>
+        </g>
+        <g id="Components/12-factor" transform="translate(1560.000000, 80.000000)">
+            <rect id="Rectangle-2" stroke="#979797" stroke-width="1" fill-opacity="0.5" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="319" height="179"></rect>
+            <text id="Le-factor" font-family="LucidaGrande, Lucida Grande" font-size="36" font-weight="normal" fill="#000000">
+                <tspan x="17.1601562" y="95">Backing services</tspan>
+            </text>
+        </g>
+        <g id="Components/12-factor" transform="translate(40.000000, 450.000000)">
+            <rect id="Rectangle-2" stroke="#979797" stroke-width="1" fill-opacity="0.5" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="319" height="179"></rect>
+            <text id="Le-factor" font-family="LucidaGrande, Lucida Grande" font-size="36" font-weight="normal" fill="#000000">
+                <tspan x="2.48242188" y="95">Build, release, run</tspan>
+            </text>
+        </g>
+        <g id="Components/12-factor" transform="translate(547.000000, 451.000000)">
+            <rect id="Rectangle-2" stroke="#979797" stroke-width="1" fill-opacity="0.5" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="319" height="179"></rect>
+            <text id="Le-factor" font-family="LucidaGrande, Lucida Grande" font-size="36" font-weight="normal" fill="#000000">
+                <tspan x="74.8251953" y="95">Processes</tspan>
+            </text>
+        </g>
+        <g id="Components/12-factor" transform="translate(1053.000000, 450.000000)">
+            <rect id="Rectangle-2" stroke="#979797" stroke-width="1" fill-opacity="0.5" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="319" height="179"></rect>
+            <text id="Le-factor" font-family="LucidaGrande, Lucida Grande" font-size="36" font-weight="normal" fill="#000000">
+                <tspan x="52.5712891" y="95">Port binding</tspan>
+            </text>
+        </g>
+        <g id="Components/12-factor" transform="translate(1560.000000, 450.000000)">
+            <rect id="Rectangle-2" stroke="#979797" stroke-width="1" fill-opacity="0.5" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="319" height="179"></rect>
+            <text id="Le-factor" font-family="LucidaGrande, Lucida Grande" font-size="36" font-weight="normal" fill="#000000">
+                <tspan x="50.3740234" y="95">Concurrency</tspan>
+            </text>
+        </g>
+        <g id="Components/12-factor" transform="translate(40.000000, 820.000000)">
+            <rect id="Rectangle-2" stroke="#979797" stroke-width="1" fill-opacity="0.5" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="319" height="179"></rect>
+            <text id="Le-factor" font-family="LucidaGrande, Lucida Grande" font-size="36" font-weight="normal" fill="#000000">
+                <tspan x="47.5615234" y="95">Disposability</tspan>
+            </text>
+        </g>
+        <g id="Components/12-factor" transform="translate(547.000000, 821.000000)">
+            <rect id="Rectangle-2" stroke="#979797" stroke-width="1" fill-opacity="0.5" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="319" height="179"></rect>
+            <text id="Le-factor" font-family="LucidaGrande, Lucida Grande" font-size="36" font-weight="normal" fill="#000000">
+                <tspan x="22.3632812" y="95">Dev/Prod parity</tspan>
+            </text>
+        </g>
+        <g id="Components/12-factor" transform="translate(1053.000000, 820.000000)">
+            <rect id="Rectangle-2" stroke="#979797" stroke-width="1" fill-opacity="0.5" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="319" height="179"></rect>
+            <text id="Le-factor" font-family="LucidaGrande, Lucida Grande" font-size="36" font-weight="normal" fill="#000000">
+                <tspan x="118.946289" y="95">Logs</tspan>
+            </text>
+        </g>
+        <g id="Components/12-factor" transform="translate(1560.000000, 820.000000)">
+            <rect id="Rectangle-2" stroke="#979797" stroke-width="1" fill-opacity="0.5" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="319" height="179"></rect>
+            <text id="Le-factor" font-family="LucidaGrande, Lucida Grande" font-size="36" font-weight="normal" fill="#000000">
+                <tspan x="10.8232422" y="95">Admin processes</tspan>
+            </text>
+        </g>
+    </g>
+</svg>
