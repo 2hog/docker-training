@@ -244,6 +244,8 @@ https://12factor.net/admin-processes
 
 # Topology
 
+class: center
+
 ![Topology](images/topology.svg)
 
 ---
@@ -278,6 +280,8 @@ https://12factor.net/admin-processes
 ---
 
 # 12-factor recap
+
+class: center
 
 ![Recap](images/recap.svg)
 
