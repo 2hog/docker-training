@@ -551,6 +551,33 @@ class: center
 * Services make sure that clients connecting to pods, will always land on the correct one
 
 ---
+
+# Build, Release, Run, in Kubernetes
+
+--
+
+* Build with Docker, producing a Docker image
+* Release by including this image in a Kubernetes Manifest (ie a deployment)
+* Create a new deployment version, by applying the combination of the two
+
+???
+
+* When the image changes, a new version is deployed
+* When configuration changes, a new version is deployed
+* Pofit
+
+---
+
+# Admin applications in Kubernetes
+
+--
+
+* Run one-off admin commands with jobs
+  * Migrations, or other things that should be orchestrated
+* Run more debug friendly things, by `exec`ing into pods
+  * Check that the DNS resolution works as expected, or directly debug a specific pod
+
+---
 class: center
 
 # Thanks!
