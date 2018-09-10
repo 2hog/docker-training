@@ -255,6 +255,15 @@ For implementing Sidecars.
 
 ---
 
+# Getting our hands dirty
+
+```bash
+ssh workshop@workshop-vm-XX-00.akalipetis.com
+git clone https://github.com/2hog/docker-training-samples
+```
+
+---
+
 # Let's create a pod
 
 --
@@ -306,6 +315,8 @@ EOF
 ```
 
 ---
+
+# And check it out
 
 ```bash
 kubectl exec nginx --container=sidecar -it sh
@@ -600,7 +611,7 @@ kubectl get po demo-replicaset-8ksqx --output=yaml | less
 --
 
 ```bash
-open http://localhost:`kubectl \
+curl localhost:`kubectl \
   get svc demo-replicaset \
   --output=json | jq '(.spec.ports)[0].nodePort'`
 ```
@@ -674,6 +685,17 @@ Except from the full DNS records, you can also search the following DNS names
 * There are times where applications do not respect search domains, be careful with that
 
 ---
+
+# Let's check out DNS resolution in Kubernetes
+
+```bash
+kubectl exec nginx --container=sidecar -it sh
+apk add -U bind-tools
+host demo-replicaset
+dig demo-replicaset.svc.default.cluster.local
+```
+
+---
 class: center
 
 # Deploying as a first class citizen
@@ -729,7 +751,7 @@ We will now take the previous Replica Set and include it in a deployment
 ```bash
 kubectl apply -f kube/deployment-demo.yml
 kubectl rollout status deployment demo-deployment
-open http://localhost:`kubectl get svc demo-deployment-svc --output=json | jq '(.spec.ports)[0].nodePort'`
+curl http://localhost:`kubectl get svc demo-deployment-svc --output=json | jq '(.spec.ports)[0].nodePort'`
 ```
 
 ---
@@ -742,7 +764,7 @@ open http://localhost:`kubectl get svc demo-deployment-svc --output=json | jq '(
 # Edit kube/deployment-demo.yml first
 kubectl apply -f kube/deployment-demo.yml
 kubectl rollout status deployment demo-deployment
-open http://localhost:`kubectl get svc demo-deployment-svc --output=json | jq '(.spec.ports)[0].nodePort'`
+curl http://localhost:`kubectl get svc demo-deployment-svc --output=json | jq '(.spec.ports)[0].nodePort'`
 ```
 
 --
