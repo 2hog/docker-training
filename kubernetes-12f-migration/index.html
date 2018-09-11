@@ -5,7 +5,8 @@
   <title>Migrating 12 factor applications to Kubernetes</title>
   <meta name="description" content="Get the slides for 2hog's workshop on Kubernetes basics." />
   <meta charset="utf-8">
-  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans|IBM+Plex+Sans+Condensed|IBM+Plex+Serif" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans|IBM+Plex+Sans+Condensed|IBM+Plex+Serif"
+    rel="stylesheet">
   <link href="/p-style.css" rel="stylesheet">
 </head>
 
@@ -73,29 +74,11 @@ class: center
 
 # Agenda
 
-1. The art of continuous integration with Docker
-1. Continuous delivery
-1. Quick intro to Drone CI
 1. Exercise: setting up a Ruby microservice with Sinatra
 1. Exercise: setting up a Python microservice with Flask, which needs static assets built with Node.js
 1. Exercise: setting up a Python microservice with Django, which connects to the other two services and needs migrations
+1. Exercise: setting up a custom microservice
 1. Bonus: exposing the Django microservice to the world with Ceryx
-1. Case study: from monoliths to a containerized infrastructure
-
----
-class: center
-
-# The art of continuous integration with Docker
-
----
-class: center
-
-# Continuous delivery
-
----
-class: center
-
-# Quick intro to Drone CI
 
 ---
 class: center
@@ -236,16 +219,10 @@ class: center
 ---
 class: center
 
-# Case study: from monoliths to a containerized infrastructure
-
----
-class: center
-
 # Thanks!
 
     </textarea>
-  <script src="https://remarkjs.com/downloads/remark-latest.min.js">
-  </script>
+  <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
   <script>
     remark.macros.scale = function (percentage) {
       var url = this;
