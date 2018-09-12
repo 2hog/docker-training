@@ -5,7 +5,8 @@
   <title>Kubernetes for Admins</title>
   <meta charset="utf-8">
   <link href="/p-style.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans|IBM+Plex+Sans+Condensed|IBM+Plex+Serif" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans|IBM+Plex+Sans+Condensed|IBM+Plex+Serif"
+    rel="stylesheet">
 </head>
 
 <body>
@@ -71,35 +72,19 @@ class: center
 # Agenda
 
 1. Kubernetes intro crash course
-1. Setting up a cluster with kubeadm
+1. Setting up a cluster with terraform and kubeadm
 1. Inspecting and managing the cluster
 1. Ingress and networking in Kubernetes
 1. Managing storage for Kubernetes workloads
 1. Security principles best practices
 1. Managing available resources
+1. Adding biases to the orchestrator
+1. A quick glimpse of Helm
 
 ---
 class: center
 
 # Kubernetes intro crash course
-
----
-
-# What is Kubernetes?
-
-Kubernetes is an open-source system for automating deployment, scaling, and management of containerized applications.
-
---
-
-What does that mean though?
-
---
-
-Kubernetes does the following tasks for you:
-
-* Abstracts low level resources, like containers, so that we don't have to pumper our cluster
-* Automates deployment, by applying our needs and wants to inside a cluster
-* Integrates with cloud providers, allowing easy access to compute and storage
 
 ---
 
@@ -111,10 +96,18 @@ Kubernetes does the following tasks for you:
 * Controllers
     * Kube controller manager
     * Cloud controller manager
+* Networking
+* Commonly used plugins
+
+???
+
+* Prometheus
+* Dashboard
+* (Core)DNS
 
 ---
 
-# Key concepts
+# Node types
 
 --
 
@@ -122,12 +115,6 @@ Kubernetes does the following tasks for you:
   * The server(s) responsible for meta data storage, API availability and decision making
 * Worker nodes
   * The server(s) that are used to run workloads, decided by the management plane
-* Pods
-  * A collection of one or more containers, the atom of Kubernetes workloads
-* Controllers
-  * Components responsible for creating or removing pods, based on certain criteria
-* Services
-  * Logical sets of Pods with an access policy, abstracting the mortallity of Pods
 
 ---
 
@@ -153,58 +140,9 @@ Kubernetes does the following tasks for you:
 * Same concept as selling bare metal machines through VMs
 
 ---
-
-# Declarative vs imperative infrastructure
-
---
-
-## Say what you want, not how to achieve this
-
----
-
-# A simple example
-
-* _Declarative:_ I want a coffee, sweet, without milk
---
-
-  * ...never drink sweet coffee, but ¯\\_(ツ)_/¯
---
-
-
-VS
-
---
-
-* _Imperative:_ I want you to take the beans, ground them, boil water and then mix them. Then, add some sugar and give it to me.
-
----
-
-# A bit more on declarative infrastructure
-
-* It's easier for the user, as long as the software is logical
-* All the state is saved within the cluster
-* The cluster continuously tries to make sure that the declared state and the current state of the cluster are a match
-
----
-
-# Where is everything stored?
-
---
-
-* Behind the scenes, Kubernetes is using a distributed KV store, based on RAFT - ETCD
-* RAFT is a consensus algorithm, also used in other distributed systems like Swarm or Consul
-* It needs at least N / 2 + 1 members to be able to operate
-  * Always create clusters with odd number of members
-
----
-exclude: true
-
-.center[<iframe src="https://raft.github.io/raftscope/index.html" style="border: 0; width: 800px; height: 580px; margin-bottom: 20px"></iframe>]
-
----
 class: center
 
-# Setting up a cluster with kubeadm
+# Setting up a cluster with terraform and kubeadm
 
 ---
 
@@ -293,6 +231,13 @@ kubectl rollout status daemonset weave-net -n kube-system
 # [workshop-vm-XX-01]
 sudo kubeadm join IP-HERE:6443 --token TTT --discovery-token-ca-cert-hash sha256:HHH
 ```
+
+---
+
+# What happened here?
+
+* `kubeadm` connected to the API server, used the token to authenticate and downloaded the information
+* Used the CA cert hash to validate that the information is originated from the correct CA
 
 ---
 
@@ -601,7 +546,43 @@ Indicative features:
 
 ---
 
-# Creating RBAC roles and profiles
+# RBAC roles in Kubernetes
+
+* Roles define permissions in a Kubernetes cluster
+* Permissions for roles are additive (ie whitelist)
+* There are two types of Roles in Kubernetes
+    * `Role` — defines roles, operating within one namespace
+    * `ClusterRole` — defines roles, operating cluster wide
+
+---
+
+# Binding roles to users and service accounts
+
+* `RoleBinding` binds `Role`s to users or service accounts
+* `ClusterRoleBinding` binds `ClusterRole`s to users or service accounts
+* `ClusterRole` can operate as a `Role` and bound with a `RoleBinding`
+
+---
+
+# Checking out the dashboard `Role` and `RoleBinding`
+
+* https://github.com/kubernetes/dashboard/blob/master/src/deploy/recommended/kubernetes-dashboard.yaml
+* https://gist.githubusercontent.com/akalipetis/968a29bd42b7944f788cb6332b480b62/
+
+---
+
+# How service accounts work
+
+* Service accounts create the needed files in `/var/run/secrets/kubernetes.io/serviceaccount/`
+* The files created contain the `namespace` and the `token`
+
+--
+
+```bash
+# [workshop-vm-XX-00]
+kubectl -n kube-system exec weave-net-c9kzt -c weave -it sh
+ls /var/run/secrets/kubernetes.io/serviceaccount/
+```
 
 ---
 class: center
@@ -609,13 +590,232 @@ class: center
 # Managing available resources
 
 ---
+
+# Kubernetes `requests` vs `limits`
+
+* `requests` — the "lego" size, that the Kubernetes API will use for packing nodes
+* `limits` — the actual limit, which will not be surpassed by the container
+
+---
+
+# How are resources measured
+
+* CPU — 1 (1 core), 0.1 (1/10 core) or 150m (150/1000 core)
+* RAM — 1024, 1K, or 1Ki are all the same (1 kilobyte)
+
+---
+
+# What if I don't add requests and limits?
+
+--
+
+* Hello `LimitRange`
+* Default requests and limits per container
+* Can be overriden inside the pod template
+
+---
+
+# `LimitRange` in action
+
+```bash
+cat << EOF | kubectl apply -f -
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: mem-limit-range
+spec:
+  limits:
+  - default:
+      memory: 512Mi
+    defaultRequest:
+      memory: 256Mi
+    type: Container
+EOF
+```
+
+---
+
+# Adding quotas to namespaces
+
+* Limit pods that can be created within a namespace
+* Limit load balancers and node ports
+* Or any other resource
+
+---
+class: center
+
+# Adding biases to the orchestrator
+
+---
+
+# Attracting pods to nodes
+
+* Use node affinity to make pods get scheduled to nodes
+* Choose between preferred and required based on how mandatory the scheduling decision is
+
+---
+
+# Adding affinity to nodes
+
+```yaml
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/e2e-az-name
+          operator: In
+          values:
+          - e2e-az1
+          - e2e-az2
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 1
+      preference:
+        matchExpressions:
+        - key: another-node-label-key
+          operator: In
+          values:
+          - another-node-label-value
+```
+
+----
+
+# Or to other nodes
+
+```yaml
+affinity:
+  podAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: security
+          operator: In
+          values:
+          - S1
+      topologyKey: failure-domain.beta.kubernetes.io/zone
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: security
+            operator: In
+            values:
+            - S2
+        topologyKey: kubernetes.io/hostname
+```
+
+---
+
+# Repelling pods from nodes
+
+* Taints add a mark on nodes, that make pods get away from them
+* They can be no-schedule, prefer no-schedule, or no-execute
+* Pods can counter attack taints with tolerations
+
+---
+
+# Example taint
+
+```bash
+kubectl taint nodes node1 key1=value1:NoSchedule
+kubectl taint nodes node1 key1=value1:NoExecute
+kubectl taint nodes node1 key2=value2:NoSchedule
+```
+
+--
+
+and toleration
+
+```yaml
+tolerations:
+- key: "key1"
+  operator: "Equal"
+  value: "value1"
+  effect: "NoSchedule"
+- key: "key1"
+  operator: "Equal"
+  value: "value1"
+  effect: "NoExecute"
+```
+
+---
+
+# Why `NoSchedule` and `NoExecute`?
+
+* More gradual removal of pods, they mostly get evicted during deployments
+* Dynamic tainting of nodes, through the system
+    * `node.kubernetes.io/memory-pressure`
+    * `node.kubernetes.io/disk-pressure`
+    * `node.kubernetes.io/out-of-disk`
+    * `node.kubernetes.io/unschedulable`
+
+---
+class: center
+
+# A quick glimpse of Helm
+
+---
+
+# What is Helm?
+
+* The package manager for Kubernetes
+* Easily parametrize your Kubernetes manifests
+
+---
+
+# Main Helm concepts
+
+* Chart — a package for Helm
+* Repository — the chart registry
+* Release — an instance of a Chart, running within a Kubernetes cluster
+
+---
+
+# Helm architecture
+
+* Tiller server — a rest API server, which processes and deploys charts
+* Helm client — simple CLI to interact with Tiller
+
+---
+
+# Installing Helm
+
+```bash
+# [workshop-vm-XX-00]
+kubectl apply -f https://gist.githubusercontent.com/akalipetis/968a29bd42b7944f788cb6332b480b62/raw/b00ef23c64575605139d8ba4ee1998c3aaa2f88e/tiller-rbac.yml
+helm init --service-account tiller
+```
+
+---
+
+# Let's deploy our first chart
+
+--
+
+```bash
+helm repo update
+helm install stable/postgresql
+```
+
+---
+
+# Configuring default values
+
+```bash
+helm inspect values stable/postgresql > values.yml
+vim values.yml
+helm upgrade -f=values.yml stable/postgresql
+```
+
+---
 class: center
 
 # Thanks!
 
     </textarea>
-  <script src="https://remarkjs.com/downloads/remark-latest.min.js">
-  </script>
+  <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
   <script>
     remark.macros.scale = function (percentage) {
       var url = this;
