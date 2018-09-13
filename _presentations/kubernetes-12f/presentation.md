@@ -1,17 +1,3 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-  <title>12 factor apps in Kubernetes</title>
-  <meta name="description" content="Get the slides for 2hog's workshop on Kubernetes basics." />
-  <meta charset="utf-8">
-  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans|IBM+Plex+Sans+Condensed|IBM+Plex+Serif" rel="stylesheet">
-  <link href="/p-style.css" rel="stylesheet">
-</head>
-
-<body>
-  <textarea id="source">
-
 layout: true
 class: middle
 
@@ -581,21 +567,3 @@ class: center
 class: center
 
 # Thanks!
-
-    </textarea>
-  <script src="https://remarkjs.com/downloads/remark-latest.min.js">
-  </script>
-  <script>
-    remark.macros.scale = function (percentage) {
-      var url = this;
-      return '<img src="' + url + '" style="width: ' + percentage + '" />';
-    };
-    var slideshow = remark.create({
-      highlightStyle: 'monokai',
-      highlightLines: true,
-      ratio: '16:9',
-    });
-  </script>
-</body>
-
-</html>

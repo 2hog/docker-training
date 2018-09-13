@@ -1,17 +1,3 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-  <title>Intro to Docker and Containers</title>
-  <meta name="description" content="Get the slides for 2hog's training: Introduction to Docker and Containers." />
-  <meta charset="utf-8">
-  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans|IBM+Plex+Sans+Condensed|IBM+Plex+Serif" rel="stylesheet">
-  <link href="/p-style.css" rel="stylesheet">
-</head>
-
-<body>
-  <textarea id="source">
-
 layout: true
 class: middle
 
@@ -592,21 +578,3 @@ class: center
 # That's all folks!
 
 ## Thank you
-
-
-    </textarea>
-  <script src="https://remarkjs.com/downloads/remark-latest.min.js">
-  </script>
-  <script>
-    var slideshow = remark.create({
-      highlightStyle: 'monokai',
-      highlightLines: true,
-      ratio: '16:9',
-    });
-    slideshow.on('afterShowSlide', function (slide) {
-      console.log(arguments);
-    });
-  </script>
-</body>
-
-</html>
