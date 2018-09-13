@@ -1,16 +1,3 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-  <title>Kubernetes for Admins</title>
-  <meta charset="utf-8">
-  <link href="/p-style.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans|IBM+Plex+Sans+Condensed|IBM+Plex+Serif"
-    rel="stylesheet">
-</head>
-
-<body>
-  <textarea id="source">
 
 layout: true
 class: middle
@@ -833,23 +820,3 @@ helm upgrade -f=values.yml stable/postgresql
 class: center
 
 # Thanks!
-
-    </textarea>
-  <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
-  <script>
-    remark.macros.scale = function (percentage) {
-      var url = this;
-      return '<img src="' + url + '" style="width: ' + percentage + '" />';
-    };
-    var slideshow = remark.create({
-      highlightStyle: 'monokai',
-      highlightLines: true,
-      ratio: '16:9',
-    });
-    slideshow.on('afterShowSlide', function (slide) {
-      console.log(arguments);
-    });
-  </script>
-</body>
-
-</html>
