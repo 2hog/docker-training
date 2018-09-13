@@ -21,3 +21,6 @@ defaults:
     values:
       layout: "presentation"
       permalink: "/:collection/:title/"
+
+gems:
+  - jekyll-redirect-from
