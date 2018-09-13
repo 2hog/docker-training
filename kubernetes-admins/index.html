@@ -167,6 +167,8 @@ Kubeadm is a tool built to provide `kubeadm init` and `kubeadm join` as best-pra
 
 # Bootstrapping the cluster
 
+https://github.com/2hog/workshop-infra
+
 --
 
 ```bash
@@ -678,7 +680,7 @@ affinity:
           - another-node-label-value
 ```
 
-----
+---
 
 # Or to other nodes
 
@@ -777,6 +779,24 @@ class: center
 
 * Tiller server — a rest API server, which processes and deploys charts
 * Helm client — simple CLI to interact with Tiller
+
+---
+
+# Helm templates
+
+* Go template language
+* Extensive collection of available functions
+* Top level objects
+
+???
+
+Top level objects:
+* Release
+* Values
+* Chart
+* Files
+* Capabilities
+* Template
 
 ---
 
