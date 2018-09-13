@@ -1,4 +1,4 @@
 ---
-title: "Docker Swarm: from theory to practice"
+title: "Docker Swarm: From theory to practice"
 slug: "docker-swarm-from-theory-to-practice"
 ---
