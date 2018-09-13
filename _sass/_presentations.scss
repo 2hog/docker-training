@@ -185,4 +185,9 @@ body.layout-presentation {
   #source {
     display: none;
   }
+
+  .remark-slide-content img {
+    max-width: 100%;
+    max-height: 50vh;
+  }
 }
