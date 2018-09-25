@@ -20,7 +20,7 @@ defaults:
       type: "presentations"
     values:
       layout: "presentation"
-      permalink: "/:collection/:title/"
+      permalink: "/:title/"
 
 gems:
   - jekyll-redirect-from
