@@ -1,0 +1,18 @@
+---
+layout: default
+extra_head: presentation-head.html
+---
+
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>
+  remark.macros.scale = function (percentage) {
+    var url = this;
+    return `<img src="${url}" style="width: ${percentage}" />`;
+  };
+  var slideshow = remark.create({
+    highlightStyle: 'monokai',
+    highlightLines: true,
+    ratio: '16:9',
+    sourceUrl: '/presentations/{{page.slug}}/presentation.md'
+  });
+</script>
