@@ -2,8 +2,9 @@ version: '3.4'
 
 services:
   web:
-    image: nginx:alpine
+    command: jekyll serve
+    build: ./
     ports:
-      - 8088:80
+      - 8088:4000
     volumes:
-      - ./:/usr/share/nginx/html
+      - ./:/srv/jekyll
