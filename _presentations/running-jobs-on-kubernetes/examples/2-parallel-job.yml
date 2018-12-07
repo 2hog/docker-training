@@ -1,0 +1,14 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: parallel-job
+spec:
+  parallelism: 3
+  completions: 5
+  template:
+    spec:
+      containers:
+        - name: parallel-job
+          image: "ubuntu:18.04"
+          command: ["echo",  "Hi, I am a long running process doing parallel stuff."]
+      restartPolicy: Never
