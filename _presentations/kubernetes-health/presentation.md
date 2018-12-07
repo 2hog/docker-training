@@ -212,6 +212,8 @@ The container was terminated in both cases, the exit code determined the status
 * An exited container, does not necessarily mark a pod as failed
 * In case of multi-container pods, the status only changes if all containers exit
 
+---
+
 # Will I ever care about Container state and Pod status?
 
 --
@@ -473,7 +475,7 @@ class: center
 
 # Limiting memory
 
-* Memory is limited by the OS, being killed if the container exceeds it
+* Memory is limited by the OS, which kills the container if it exceeds it
 * Memory is measured in bytes
 
 ---
@@ -526,6 +528,31 @@ kubectl apply -f limits.yml
 
 1. Try to create a ReplicaSet and scale it up and down
 2. Include init containers and more than one app container
+
+---
+
+# Is it possible to manage resources other than RAM and CPU?
+
+--
+
+* Device plugins can advertise third party resources
+* The plugin advertises the available resources per node
+* The scheduler then kicks in and makes source pods are scheduled with sufficient resources
+
+---
+
+# Quality of service
+
+* Pods can be given a QoS class
+* This depends on the different requests and limits of their containers
+
+---
+
+# Quality of service classes
+
+* `Guaranteed` — all containers have requests and limits, which are the same
+* `Burstable` — at least one container has requests or limits and the pod's class is not `Guaranteed`
+* `BestEffort` — the pod's class is neither `Guaranteed`, not `Burstable`
 
 ---
 class: center
