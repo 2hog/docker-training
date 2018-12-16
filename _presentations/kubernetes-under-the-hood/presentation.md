@@ -283,6 +283,16 @@ The `cloud-controller-manager` binary runs Controllers that interact with the un
 
 ---
 
+# Let's get our hands dirty
+
+```
+$ ssh workshop@workshop-vm-xx-yy.akalipetis.com
+$ ps aux | grep "etcd"
+$ ps aux | grep "kube-"
+```
+
+---
+
 # Node components
 
 Node components run on every node, maintaining running pods and providing the Kubernetes runtime environment.
@@ -325,6 +335,17 @@ This is achieved by:
 The container runtime is the software that is responsible for running containers.
 
 Kubernetes supports several runtimes: Docker, rkt, runc and any [OCI runtime-spec implementation](https://github.com/opencontainers/runtime-spec).
+
+---
+
+# Let's get our hands dirty
+
+```
+$ ssh workshop@workshop-vm-xx-yy.akalipetis.com
+$ ps aux | grep kube-proxy
+$ ps aux | grep dockerd
+$ docker ps | grep kube
+```
 
 ---
 
