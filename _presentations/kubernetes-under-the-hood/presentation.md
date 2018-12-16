@@ -360,6 +360,20 @@ All Kubernetes hosts should be accessible from each other in the same network.
 
 ---
 
+# Kubernetes Master and Node combination
+
+A Kubernetes Master can also be a Node and run workloads.
+
+This should be avoided in production clusters though!
+
+---
+
+# Multiple Kubernetes Masters
+
+High-Availability Kubernetes Masters are an **alpha feature**.
+
+---
+
 # Multiple Kubernetes Masters
 
 In most cases a Kubernetes cluster will run with a single Kubernetes Master.
@@ -368,7 +382,7 @@ In a Kubernetes cluster with multiple Kubernetes Masters, each master replica wi
 
 - `etcd`: All instances will be clustered together using consensus.
 - `kube-apiserver`: Each server will talk to local `etcd` - all API servers in the cluster will be available.
-- Controllers and scheduler: Will use lease mechanism - only one instance of each of them will be active in the cluster.
+- Controllers and `kube-scheduler`: Will use lease mechanism - only one instance of each of them will be active in the cluster.
 - `kube-addon-manager`: Each manager will work independently trying to keep add-ons in sync.
 
 ---
