@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="2185px" height="1217px" viewBox="0 0 2185 1217" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+    <title>2hog/illustrations/kubernetes-cluster</title>
+    <desc>Created with Sketch.</desc>
+    <g id="2hog/illustrations/kubernetes-cluster" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Kubernetes/Master" transform="translate(0.000000, -27.000000)">
+            <g id="Components" stroke-width="1" fill-rule="evenodd" transform="translate(0.000000, 69.000000)">
+                <g id="Shapes/Rectangles/RounderCornersBold" fill-rule="nonzero" stroke="#000000" stroke-width="8">
+                    <rect id="Rectangle" x="4" y="4" width="620" height="212" rx="4"></rect>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(20.000000, 18.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="122.9" y="33">etcd</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(20.000000, 84.500000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="68.9" y="33">kube-apiserver</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(20.000000, 151.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="68.9" y="33">kube-scheduler</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(320.000000, 18.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="20.3" y="33">kube-controller-manager</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(320.000000, 85.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="14.9" y="33">cloud-controller-manager</tspan>
+                    </text>
+                </g>
+            </g>
+            <text id="Kubernetes-Master" font-family="SourceCodePro-Semibold, Source Code Pro" font-size="24" font-weight="500" fill="#000000">
+                <tspan x="0" y="44">Kubernetes Master</tspan>
+            </text>
+        </g>
+        <g id="Kubernetes/Master" transform="translate(0.000000, 293.000000)">
+            <g id="Components" stroke-width="1" fill-rule="evenodd" transform="translate(0.000000, 69.000000)">
+                <g id="Shapes/Rectangles/RounderCornersBold" fill-rule="nonzero" stroke="#000000" stroke-width="8">
+                    <rect id="Rectangle" x="4" y="4" width="620" height="212" rx="4"></rect>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(20.000000, 18.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="122.9" y="33">etcd</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(20.000000, 84.500000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="68.9" y="33">kube-apiserver</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(20.000000, 151.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="68.9" y="33">kube-scheduler</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(320.000000, 18.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="20.3" y="33">kube-controller-manager</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(320.000000, 85.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="14.9" y="33">cloud-controller-manager</tspan>
+                    </text>
+                </g>
+            </g>
+            <text id="Kubernetes-Master" font-family="SourceCodePro-Semibold, Source Code Pro" font-size="24" font-weight="500" fill="#000000">
+                <tspan x="0" y="44">Kubernetes Master</tspan>
+            </text>
+        </g>
+        <g id="Kubernetes/Master" transform="translate(0.000000, 633.000000)">
+            <g id="Components" stroke-width="1" fill-rule="evenodd" transform="translate(0.000000, 69.000000)">
+                <g id="Shapes/Rectangles/RounderCornersBold" fill-rule="nonzero" stroke="#000000" stroke-width="8">
+                    <rect id="Rectangle" x="4" y="4" width="620" height="212" rx="4"></rect>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(20.000000, 18.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="122.9" y="33">etcd</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(20.000000, 84.500000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="68.9" y="33">kube-apiserver</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(20.000000, 151.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="68.9" y="33">kube-scheduler</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(320.000000, 18.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="20.3" y="33">kube-controller-manager</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(320.000000, 85.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="14.9" y="33">cloud-controller-manager</tspan>
+                    </text>
+                </g>
+            </g>
+            <text id="Kubernetes-Master" font-family="SourceCodePro-Semibold, Source Code Pro" font-size="24" font-weight="500" fill="#000000">
+                <tspan x="0" y="44">Kubernetes Master</tspan>
+            </text>
+        </g>
+        <g id="Network" transform="translate(781.000000, 362.000000)">
+            <g id="Shapes/Rectangles/RounderCornersBold" fill-rule="nonzero" stroke="#000000" stroke-width="8">
+                <rect id="Rectangle" x="4" y="4" width="620" height="212" rx="4"></rect>
+            </g>
+            <text font-family="SourceCodePro-Semibold, Source Code Pro" font-size="48" font-weight="500" fill="#000000">
+                <tspan x="213" y="122">Network</tspan>
+            </text>
+        </g>
+        <path id="Line" d="M657.105109,184.739925 L758.366109,324.056529 L772.926349,313.473552 L781,362 L737.334651,339.343052 L751.894891,328.760075 L650.633891,189.443471 L636.073651,200.026448 L628,151.5 L671.665349,174.156948 L657.105109,184.739925 Z" fill="#000000" fill-rule="nonzero"></path>
+        <path id="Line" d="M1537.63712,157.212452 L1435.20672,326.430239 L1450.60535,335.751294 L1409,362 L1412.96425,312.966494 L1428.36288,322.287548 L1530.79328,153.069761 L1515.39465,143.748706 L1557,117.5 L1553.03575,166.533506 L1537.63712,157.212452 Z" fill="#000000" fill-rule="nonzero"></path>
+        <path id="Line" d="M1513,366 L1453,366 L1453,384 L1409,362 L1453,340 L1453,358 L1513,358 L1513,340 L1557,362 L1513,384 L1513,366 Z" fill="#000000" fill-rule="nonzero"></path>
+        <path id="Line" d="M1525.08661,603.526138 L1436.05887,507.925886 L1422.8862,520.19294 L1409,473 L1455.08607,490.206808 L1441.91339,502.473862 L1530.94113,598.074114 L1544.1138,585.80706 L1558,633 L1511.91393,615.793192 L1525.08661,603.526138 Z" fill="#000000" fill-rule="nonzero"></path>
+        <path id="Line" d="M1533.74489,840.434058 L1425.09969,623.143651 L1409,631.193496 L1409,582 L1448.3548,611.516097 L1432.25511,619.565942 L1540.90031,836.856349 L1557,828.806504 L1557,878 L1517.6452,848.483903 L1533.74489,840.434058 Z" fill="#000000" fill-rule="nonzero"></path>
+        <path id="Line" d="M1541.6471,1087.57189 L1416.63057,625.517519 L1399.25532,630.218682 L1409,582 L1441.72814,618.726951 L1424.3529,623.428113 L1549.36943,1085.48248 L1566.74468,1080.78132 L1557,1129 L1524.27186,1092.27305 L1541.6471,1087.57189 Z" fill="#000000" fill-rule="nonzero"></path>
+        <path id="Line" d="M648.537873,777.882283 L752.744799,616.772892 L737.630811,606.997036 L780,582 L774.576115,630.893573 L759.462127,621.117717 L655.255201,782.227108 L670.369189,792.002964 L628,817 L633.423885,768.106427 L648.537873,777.882283 Z" fill="#000000" fill-rule="nonzero"></path>
+        <path id="Line" d="M672,469 L736,469 L736,451 L780,473 L736,495 L736,477 L672,477 L672,495 L628,473 L672,451 L672,469 Z" fill="#000000" fill-rule="nonzero"></path>
+        <g id="Kubernetes/Node" transform="translate(1557.000000, -27.000000)">
+            <g id="Components" stroke-width="1" fill-rule="evenodd" transform="translate(0.000000, 69.000000)">
+                <g id="Shapes/Rectangles/RounderCornersBold" fill-rule="nonzero" stroke="#000000" stroke-width="8">
+                    <rect id="Rectangle" x="4" y="4" width="620" height="151" rx="4"></rect>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(20.000000, 18.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="106.7" y="33">kubelet</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(20.000000, 84.500000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="90.5" y="33">kube-proxy</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(320.000000, 18.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="112.1" y="33">Docker</tspan>
+                    </text>
+                </g>
+            </g>
+            <text id="Kubernetes-Node" font-family="SourceCodePro-Semibold, Source Code Pro" font-size="24" font-weight="500" fill="#000000">
+                <tspan x="0" y="44">Kubernetes Node</tspan>
+            </text>
+        </g>
+        <g id="Kubernetes/Node" transform="translate(1557.000000, 227.000000)">
+            <g id="Components" stroke-width="1" fill-rule="evenodd" transform="translate(0.000000, 69.000000)">
+                <g id="Shapes/Rectangles/RounderCornersBold" fill-rule="nonzero" stroke="#000000" stroke-width="8">
+                    <rect id="Rectangle" x="4" y="4" width="620" height="151" rx="4"></rect>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(20.000000, 18.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="106.7" y="33">kubelet</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(20.000000, 84.500000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="90.5" y="33">kube-proxy</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(320.000000, 18.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="112.1" y="33">Docker</tspan>
+                    </text>
+                </g>
+            </g>
+            <text id="Kubernetes-Node" font-family="SourceCodePro-Semibold, Source Code Pro" font-size="24" font-weight="500" fill="#000000">
+                <tspan x="0" y="44">Kubernetes Node</tspan>
+            </text>
+        </g>
+        <g id="Kubernetes/Node" transform="translate(1557.000000, 481.000000)">
+            <g id="Components" stroke-width="1" fill-rule="evenodd" transform="translate(0.000000, 69.000000)">
+                <g id="Shapes/Rectangles/RounderCornersBold" fill-rule="nonzero" stroke="#000000" stroke-width="8">
+                    <rect id="Rectangle" x="4" y="4" width="620" height="151" rx="4"></rect>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(20.000000, 18.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="106.7" y="33">kubelet</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(20.000000, 84.500000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="90.5" y="33">kube-proxy</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(320.000000, 18.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="112.1" y="33">Docker</tspan>
+                    </text>
+                </g>
+            </g>
+            <text id="Kubernetes-Node" font-family="SourceCodePro-Semibold, Source Code Pro" font-size="24" font-weight="500" fill="#000000">
+                <tspan x="0" y="44">Kubernetes Node</tspan>
+            </text>
+        </g>
+        <g id="Kubernetes/Node" transform="translate(1557.000000, 735.000000)">
+            <g id="Components" stroke-width="1" fill-rule="evenodd" transform="translate(0.000000, 69.000000)">
+                <g id="Shapes/Rectangles/RounderCornersBold" fill-rule="nonzero" stroke="#000000" stroke-width="8">
+                    <rect id="Rectangle" x="4" y="4" width="620" height="151" rx="4"></rect>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(20.000000, 18.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="106.7" y="33">kubelet</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(20.000000, 84.500000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="90.5" y="33">kube-proxy</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(320.000000, 18.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="112.1" y="33">Docker</tspan>
+                    </text>
+                </g>
+            </g>
+            <text id="Kubernetes-Node" font-family="SourceCodePro-Semibold, Source Code Pro" font-size="24" font-weight="500" fill="#000000">
+                <tspan x="0" y="44">Kubernetes Node</tspan>
+            </text>
+        </g>
+        <g id="Kubernetes/Node" transform="translate(1557.000000, 989.000000)">
+            <g id="Components" stroke-width="1" fill-rule="evenodd" transform="translate(0.000000, 69.000000)">
+                <g id="Shapes/Rectangles/RounderCornersBold" fill-rule="nonzero" stroke="#000000" stroke-width="8">
+                    <rect id="Rectangle" x="4" y="4" width="620" height="151" rx="4"></rect>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(20.000000, 18.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="106.7" y="33">kubelet</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(20.000000, 84.500000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="90.5" y="33">kube-proxy</tspan>
+                    </text>
+                </g>
+                <g id="Kubernetes/Component" transform="translate(320.000000, 18.000000)">
+                    <rect id="Rectangle" stroke="#979797" stroke-width="1" fill="#D8D8D8" fill-rule="nonzero" x="0.5" y="0.5" width="288" height="52"></rect>
+                    <text id="cloud-controller-man" font-family="SourceCodePro-Regular, Source Code Pro" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="112.1" y="33">Docker</tspan>
+                    </text>
+                </g>
+            </g>
+            <text id="Kubernetes-Node" font-family="SourceCodePro-Semibold, Source Code Pro" font-size="24" font-weight="500" fill="#000000">
+                <tspan x="0" y="44">Kubernetes Node</tspan>
+            </text>
+        </g>
+    </g>
+</svg>
