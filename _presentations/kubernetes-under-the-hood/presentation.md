@@ -416,7 +416,7 @@ In a Kubernetes cluster with multiple Kubernetes Masters, each master replica wi
 
 ---
 
-![Kubernetes Cluster](/presentations/kubernetes-under-the-hood/images/kubernetes-cluster.svg)
+![Kubernetes Cluster](/presentations/kubernetes-under-the-hood/images/kubernetes-cluster.png)
 
 ---
 
