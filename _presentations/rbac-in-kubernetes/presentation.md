@@ -85,6 +85,14 @@ To enable RBAC, start the apiserver with `--authorization-mode=RBAC`.
 
 ---
 
+# Use Cases
+
+1. Kubernetes Dashboard
+2. CI/CD via Jenkins running in a `Pod`
+3. Operators (high-level managers for distiributed software; Prometheus, Vault etc.)
+
+---
+
 # Hacking time
 
 ---
