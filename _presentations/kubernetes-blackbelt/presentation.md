@@ -354,17 +354,17 @@ class: center
 
 ---
 
-# Using node selectors on Pods
-
-* Node selectors target specific node labels
-* Node labels can be easily changed using `kubectl`
-
----
-
 # Adding biases to the orchestrator
 
 * By default, Kubernetes would schedule all Pods to any Node with enough RAM/CPU
 * There are cases, where Pods need to either be directly scheduled to a specific group of Nodes, or away from them
+
+---
+
+# Using node selectors on Pods
+
+* Node selectors target specific node labels
+* Node labels can be easily changed using `kubectl`
 
 ---
 
