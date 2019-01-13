@@ -90,6 +90,12 @@ In Service Oriented Architecture services are provided to other components, thro
 
 ---
 
+# Microservices
+
+In Microservices architecture, services are fine-grained and the protocols are lightweight.
+
+---
+
 # Microservices principles
 
 ---
@@ -97,8 +103,55 @@ In Service Oriented Architecture services are provided to other components, thro
 # Microservices principles
 
 1. Microservices are processes communicating over a network using technology-agnostic protocols (e.g. HTTP, gRPC).
-2. Services in a microservice architecture are independently deployable.
-3. Services are organized around fine-grained business capabilities. 🙌 This is key in differentiating Microservices from SOA.
+2. Microservices are independently deployable.
+3. Microservices are organized around fine-grained business capabilities.
+    > ☝️ This is key in differentiating Microservices from SOA.
+
+---
+
+# Quiz time!
+
+---
+
+# Is it OK for two Microservices to depend both on each other?
+
+---
+
+# Is it OK for two Microservices to depend both on each other?
+
+**No**.
+
+---
+
+# Is it OK for two Microservices to depend both on each other?
+
+**No**.
+
+This would go against the Service Oriented Architecture nature of Microservices:
+
+> In Service Oriented Architecture applications are structured as collections of loosely coupled services.
+
+> The components of a loosely coupled system make use of little or no knowledge of the definitions of other components.
+
+---
+
+# Is it OK for two Microservices to need concurrent or sequencial deployments?
+
+---
+
+# Is it OK for two Microservices to need concurrent or sequencial deployments?
+
+**No**.
+
+---
+
+# Is it OK for two Microservices to need concurrent or sequencial deployments?
+
+**No**.
+
+This would go against the 2nd Microservice principle:
+
+> Services in a Microservices architecture are independently deployable.
 
 ---
 
@@ -150,7 +203,7 @@ Below are a few practices that you **should** avoid when developing microservice
 
 ---
 
-# Let's take a few quizes!
+# Quiz time!
 
 ---
 
@@ -194,11 +247,180 @@ Microservices embrace the Unix philosophy of "Do one thing and do it well" over 
 
 ---
 
-# Microservice architecture in Kubernetes
+# Microservices architecture in Kubernetes
 
 ---
 
-# Microservice development with Docker
+# Microservices architecture in Kubernetes
+
+Now that we know what Microservices are, let's see how to implement them in Kubernetes.
+
+---
+
+# Microservices
+
+Technically, Microservices are **processes** communicating over lightweight **network** protocols.
+
+---
+
+# Implementing Microservices in Kubernetes
+
+We need three Kubernetes objects to implement Microservices in Kubernetes.
+
+---
+
+# Pods
+
+---
+
+# Pods
+
+A Pod is a group of one or more containers, with shared network and a specification for how to run the containers.
+
+Microservices processes will be materialized as Kubernetes Pods.
+
+---
+
+# Services
+
+---
+
+# Services
+
+A Service is an abstraction defining a logical set of Pods and a policy to access them over the network.
+
+Microservices processes will be made accessible via the Kubernetes' network using Services.
+
+---
+
+# ConfigMaps and Secrets
+
+---
+
+# ConfigMaps and Secrets
+
+ConfigMaps and Secrets bind configuration to your Pods' containers at runtime.
+
+ConfigMaps and Secrets will help Microservices know how to reach each other.
+
+---
+
+# A Microservices application on Kubernetes
+
+---
+
+# High-level overview
+
+![Microservices app](/presentations/microservice-architecture-and-development-with-docker/images/microservices-app.png)
+
+---
+
+# Django application
+
+https://github.com/2hog/docker-training-samples-micro-django
+
+Implements a single endpoint (`GET /`) which:
+
+1. Requires session authentication
+2. Requests a greeting via a `POST` request from the greeting service
+3. Requests an HTML fragment for the received greeting via a `GET` request from the content service
+4. Returns an HTML document to the user, including the received HTML fragment
+
+---
+
+# Sinatra application
+
+https://github.com/2hog/docker-training-samples-micro-sinatra
+
+Implements a single endpoint (`POST /`) which:
+
+1. Requires basic authentication
+2. Returns a JSON response with a greeting
+
+---
+
+# Flask application
+
+https://github.com/2hog/docker-training-samples-micro-flask
+
+Implements a single endpoint (GET /) which:
+
+1. Requires basic authentication
+2. Returns an HTML page fragment, based on the given greeting URL parameter
+
+---
+
+# High-level overview
+
+![Microservices app](/presentations/microservice-architecture-and-development-with-docker/images/microservices-app.png)
+
+---
+
+# Let's get our hands dirty!
+
+---
+
+# Microservices development with Docker
+
+---
+
+# Microservices development with Docker
+
+We have seen what Microservices architecture is and how to implement it in Kubernetes.
+
+But, _how are we going to get there?_
+
+---
+
+# Development vs Production
+
+In development we have a few needs that do not exist in production, staging, qa etc. environments:
+
+1. Docker image building
+2. Running app without rebuilding Docker image
+3. Access running app locally — outside of container runtime's network
+
+---
+
+# Required tools
+
+1. Editor
+2. Docker
+3. Docker Compose
+
+---
+
+# Development patterns
+
+1. Develop each app in isolation
+2. Develop all apps concurrently
+
+---
+
+# Develop each app in isolation
+
+1. Each app will run its dependencies as Docker images
+2. Each app and its dependencies will live in the app's own private network
+
+---
+
+# Let's get our hands dirty!
+
+---
+
+# Develop all apps concurrently
+
+1. All apps will be launched with direct access to the source code
+2. Dependencies will be assumed to be already running
+3. All apps will live in a shared network
+
+---
+
+# Develop all Microservices together
+
+---
+
+# Let's get our hands dirty!
 
 ---
 
