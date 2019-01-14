@@ -54,18 +54,28 @@ class: center
 # Agenda
 
 * Kubernetes networking topology
-* Network plugins in Kubernetes
 * Services
-* Service meshes and Istio
+* Service meshes
+
+---
+
+# Let's get the code
+
+```bash
+git clone https://github.com/2hog/kubernetes-networking
+cd kubernetes-networking
+```
 
 ---
 class: center
 
 # Kubernetes networking topology
 
+![](/images/kubernetes-networking/networking.jpg)
+
 ---
 
-# What problems does Kubernetes networking trying to solve
+# What problems is Kubernetes networking trying to solve
 
 * Highly-coupled container-to-container communications
 * Pod-to-Pod communications
@@ -161,7 +171,7 @@ docker ps | grep nginx
 # inspect the pause container
 docker inspect c73aa1644001
 # inspect the nginx container and search for NetworkMode
-docker inspect 35a40f6dbdb3 | less
+docker inspect 35a40f6dbdb3
 ```
 
 ???
@@ -278,24 +288,6 @@ kubectl apply -f service.yml
 
 ---
 
-# Discovering services
-
-* Service information is exposed to the environment
-  ```bash
-  kubectl exec web-selected printenv | grep SERVICE
-  ```
-* Service IP can be easily queried from a known DNS record
-  ```bash
-  kubectl exec web-selected -it bash
-  apt update && apt install -y dnsutils
-  dig my-service.default.svc.cluster.local
-  ```
-
-
-In order for the DNS records to work, CoreDNS should be configured
-
----
-
 # Service types
 
 * `ClusterIP` — the default one, only exposing an internal IP
@@ -335,6 +327,38 @@ In order for the DNS records to work, CoreDNS should be configured
 
 ---
 
+# Discovering services
+
+* Service information is exposed to the environment
+  ```bash
+  kubectl exec web-selected printenv | grep SERVICE
+  ```
+* Service IP can be easily queried from a known DNS record
+  ```bash
+  kubectl exec web-selected -it bash
+  apt update && apt install -y dnsutils
+  dig my-service.default.svc.cluster.local
+  ```
+
+
+In order for the DNS records to work, CoreDNS should be configured
+
+---
+
+# Service DNS records in Kubernetes
+
+* Each service gets a `my-svc.my-namespace.svc.cluster.local` A record
+* And a `_my-port-name._my-port-protocol.my-svc.my-namespace.svc.cluster.local` SRV record
+
+---
+
+# Special cases in services DNS records
+
+* Headless services return multiple answers for their A record, one for each Pod
+* StatefulSets also include the following A records `my-statefulset-{0..N-1}.my-svc.my-namespace.svc.cluster.local`
+
+---
+
 # A bit deeper on service routing
 
 * userspace proxy-mode — opens a random port on each node and traffic flows through that port
@@ -351,6 +375,76 @@ IPVS algorithms
 * sh: source hashing
 * sed: shortest expected delay
 * nq: never queue
+
+---
+
+# Making connections more sticky
+
+* Services also support `sessionAffinity`, making connections sticky
+* Session affinity can be either based on client IP, or a cookie
+
+---
+
+# Things to keep in mind when using services
+
+* usermode proxying does not scale very well in large clusters
+* source IP information might be lost if a request passes through a service (ie in usermode, or in iptables when coming from the outside)
+* Using services without proper readiness/liveness probes loses a lot of the good things
+
+---
+
+# Adding policy to network connections
+
+* Kubernetes supports network policies
+* The implementation of those policies though, is left to the network plugin
+
+---
+
+# How does a network policy work
+
+* Selects pods using label selectors
+* Adds a list of ingress/egress policy rules
+
+--
+
+```yaml
+  ...
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          user: alice
+    - podSelector:
+        matchLabels:
+          role: client
+  ...
+```
+
+---
+
+# Let's see this in action
+
+```bash
+kubectl exec nginx-selected -it sh
+apk add -U curl
+curl -I www.google.com
+exit
+
+kubectl apply -f policy.yml
+kubectl exec nginx-selected -it sh
+curl -I https://13.91.101.219 -k
+```
+
+---
+
+# How does Weave implement network policies
+
+* Weave is using iptables on the host machine to implement the network policies
+* This is great, but it's not ideal since there's no security on the pod level and there are many iptable rules needed
+
+???
+
+A better alternative could be to implement those policies on the Pod level, using something like Istio
 
 ---
 class: center
