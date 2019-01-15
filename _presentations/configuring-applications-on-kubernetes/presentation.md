@@ -477,7 +477,7 @@ spec:
 
 # Let's see ConfigMaps in practice!
 
-https://git.io/fpMYN
+https://git.io/fhcQj
 
 ---
 
@@ -717,7 +717,7 @@ This should be used only as part of a transition path in legacy apps.
 
 # Let's see Secrets in practice!
 
-https://git.io/fpMYN
+https://git.io/fhc7q
 
 ---
 
