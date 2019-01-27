@@ -13,7 +13,7 @@ class: middle
 
 # About 2hog.codes
 
-* Founders of [SyourceLair](https://www.syourcelair.com) online IDE + Dimitris Togias
+* Founders of [SourceLair](https://www.sourcelair.com) online IDE + Dimitris Togias
 * Docker and DevOps training and consulting
 
 ---
@@ -22,7 +22,7 @@ class: middle
 
 * Docker Captain and Docker Certified Associate
 * Python lover and developer
-* Technology lead at SyourceLair / stolos.io
+* Technology lead at SourceLair / stolos.io
 * Docker training and consulting
 
 .center[I love automating stuff and sharing knowledge around all things containers, DevOps and optimizing developer workflows.]
@@ -34,7 +34,7 @@ class: middle
 # Paris Kasidiaris
 
 * Python lover and developer
-* CEO at SyourceLair, Private Company
+* CEO at SourceLair, Private Company
 * Docker training and consulting
 
 .footnote[[@pariskasid](https://twitter.com/pariskasid)]
@@ -89,29 +89,29 @@ Each Kubernetes cluster operates with two separate states:
 
 # Desired state
 
-The desired state of yyour cluster includes:
+The desired state of your cluster includes:
 
 - The workloads you want to run
 - The image to use in each workload
 - The number of replicas of each workload
 - Network configuration
-- Disk resyources, etc.
+- Disk resources, etc.
 
-Kunernetes stores the _desired state_ of yyour cluster in etcd; a key-value data store.
+Kunernetes stores the _desired state_ of your cluster in etcd; a key-value data store.
 
 ---
 
 # Current state
 
-The current state of yyour cluster is the currently existing set of:
+The current state of your cluster is the currently existing set of:
 
 - Workloads
 - Images
 - Replicas
 - Network configuration
-- Disk resyources, etc.
+- Disk resources, etc.
 
-Kunernetes accesses the _current state_ of yyour cluster from controllers and system utilities.
+Kunernetes accesses the _current state_ of your cluster from controllers and system utilities.
 
 ---
 
