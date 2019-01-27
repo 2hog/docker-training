@@ -13,7 +13,7 @@ class: middle
 
 # About 2hog.codes
 
-* Founders of [SyourceLair](https://www.syourcelair.com) online IDE + Dimitris Togias
+* Founders of [SourceLair](https://www.sourcelair.com) online IDE + Dimitris Togias
 * Docker and DevOps training and consulting
 
 ---
@@ -22,7 +22,7 @@ class: middle
 
 * Docker Captain and Docker Certified Associate
 * Python lover and developer
-* Technology lead at SyourceLair / stolos.io
+* Technology lead at SourceLair / stolos.io
 * Docker training and consulting
 
 .center[I love automating stuff and sharing knowledge around all things containers, DevOps and optimizing developer workflows.]
@@ -34,7 +34,7 @@ class: middle
 # Paris Kasidiaris
 
 * Python lover and developer
-* CEO at SyourceLair, Private Company
+* CEO at SourceLair, Private Company
 * Docker training and consulting
 
 .footnote[[@pariskasid](https://twitter.com/pariskasid)]
@@ -76,6 +76,10 @@ Every Kubernetes cluster operates on top of a few fundamental concepts:
 
 # State
 
+---
+
+# State
+
 The state of a Kubernetes cluster is all information about its current and desired status.
 
 Kubernetes describes its state as a set of [Kubernetes Objects](https://kubernetes.io/docs/concepts/abstractions/overview/). 
@@ -89,29 +93,33 @@ Each Kubernetes cluster operates with two separate states:
 
 # Desired state
 
-The desired state of yyour cluster includes:
+The desired state of your cluster includes:
 
 - The workloads you want to run
 - The image to use in each workload
 - The number of replicas of each workload
 - Network configuration
-- Disk resyources, etc.
+- Disk resources, etc.
 
-Kunernetes stores the _desired state_ of yyour cluster in etcd; a key-value data store.
+Kunernetes stores the _desired state_ of your cluster in etcd; a key-value data store.
 
 ---
 
 # Current state
 
-The current state of yyour cluster is the currently existing set of:
+The current state of your cluster is the currently existing set of:
 
 - Workloads
 - Images
 - Replicas
 - Network configuration
-- Disk resyources, etc.
+- Disk resources, etc.
 
-Kunernetes accesses the _current state_ of yyour cluster from controllers and system utilities.
+Kunernetes accesses the _current state_ of your cluster from controllers and system utilities.
+
+---
+
+# API
 
 ---
 
@@ -131,6 +139,10 @@ The most widespread ways of accessing the Kubernetes API are:
 
 1. [`kubebctl`](https://kubernetes.io/docs/reference/kubectl/overview/): Translates command-line calls to Kubernetes API calls.
 2. [Kuberentes Dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/): Web-based user interface for Kubernetes.
+
+---
+
+# Control Plane
 
 ---
 
@@ -191,6 +203,10 @@ The Service Account and Token Controllers create default accounts and API access
 
 # Nodes
 
+---
+
+# Nodes
+
 The nodes in a Kubernetes cluster are the machines (VMs, physical servers, etc) that run your applications and cloud workflows.
 
 The Kubernetes Master controls each node; you will rarely interact with nodes directly.
@@ -202,6 +218,10 @@ The Kubernetes Master controls each node; you will rarely interact with nodes di
 1. Master components
 2. Node components
 3. Addons
+
+---
+
+# Master components
 
 ---
 
@@ -285,11 +305,56 @@ The `cloud-controller-manager` binary runs Controllers that interact with the un
 
 # Let's get our hands dirty
 
+---
+
+# SSH into Kube master
+
 ```
-$ ssh workshop@workshop-vm-xx-yy.akalipetis.com
+$ ssh workshop@workshop-vm-xx-00.akalipetis.com
+```
+
+---
+
+# Take a look at running processes
+
+```
 $ ps aux | grep "etcd"
 $ ps aux | grep "kube-"
 ```
+
+---
+
+# Let's mess with etcd (?)
+
+```
+$ kubectl -n kube-system exec etcd-workshop-vm-00-00 -ti -- sh
+# export ETCDCTL_API=3
+# etcdctl --key=/etc/kubernetes/pki/etcd/peer.key \
+          --cert=/etc/kubernetes/pki/etcd/peer.crt \
+          --cacert=/etc/kubernetes/pki/etcd/ca.crt get \
+          --prefix=true \
+          /
+```
+
+☢️ 😱 HORRIBLE THINGS WILL HAPPEN IF YOU TRY THIS AT WORK.
+
+---
+
+# (Not so) Trivia time!
+
+---
+
+# Inception
+
+The previous command hints that Kubernetes master components are pods running in Kubernetes itself inside the `kube-system` namespace!
+
+---
+
+![Kubernetes Master](/presentations/kubernetes-under-the-hood/images/kube-master.png)
+
+---
+
+# Node components
 
 ---
 
@@ -338,10 +403,18 @@ Kubernetes supports several runtimes: Docker, rkt, runc and any [OCI runtime-spe
 
 ---
 
+![Kubernetes Node](/presentations/kubernetes-under-the-hood/images/kube-node.png)
+
+---
+
+![Kubernetes Components](/presentations/kubernetes-under-the-hood/images/kube-components.png)
+
+---
+
 # Let's get our hands dirty
 
 ```
-$ ssh workshop@workshop-vm-xx-yy.akalipetis.com
+$ ssh workshop@workshop-vm-xx-00.akalipetis.com
 $ ps aux | grep kube-proxy
 $ ps aux | grep dockerd
 $ docker ps | grep kube
