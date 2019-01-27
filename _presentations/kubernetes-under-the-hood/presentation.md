@@ -407,10 +407,6 @@ Kubernetes supports several runtimes: Docker, rkt, runc and any [OCI runtime-spe
 
 ---
 
-![Kubernetes Components](/presentations/kubernetes-under-the-hood/images/kube-components.png)
-
----
-
 # Let's get our hands dirty
 
 ```
@@ -419,6 +415,10 @@ $ ps aux | grep kube-proxy
 $ ps aux | grep dockerd
 $ docker ps | grep kube
 ```
+
+---
+
+![Kubernetes Components](/presentations/kubernetes-under-the-hood/images/kube-components.png)
 
 ---
 
