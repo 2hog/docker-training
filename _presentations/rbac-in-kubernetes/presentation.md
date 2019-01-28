@@ -304,19 +304,11 @@ $ kubectl describe clusterrolebinding/system:coredns
 
 ---
 
-# Examples
+# Let's set up the Kubernetes Dashboard with RBAC!
 
----
+--
 
-# Kubernetes Dashboard
-
-https://github.com/kubernetes/dashboard/blob/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
-
----
-
-# Kubernetes Dashboard with RBAC
-
-https://gist.github.com/parisk/375d409cf00b88e8022417a4e863ce06
+https://gist.github.com/parisk/375d409cf00b88e8022417a4e863ce06/edit
 
 ---
 
