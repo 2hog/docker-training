@@ -350,7 +350,7 @@ The previous command hints that Kubernetes master components are pods running in
 
 ---
 
-![Kubernetes Master](/presentations/kubernetes-under-the-hood/images/kube-master.png)
+.center[![Kubernetes Master](/presentations/kubernetes-under-the-hood/images/kube-master.png)]
 
 ---
 
@@ -403,7 +403,7 @@ Kubernetes supports several runtimes: Docker, rkt, runc and any [OCI runtime-spe
 
 ---
 
-![Kubernetes Node](/presentations/kubernetes-under-the-hood/images/kube-node.png)
+.center[![Kubernetes Node](/presentations/kubernetes-under-the-hood/images/kube-node.png)]
 
 ---
 
@@ -418,7 +418,7 @@ $ docker ps | grep kube
 
 ---
 
-![Kubernetes Components](/presentations/kubernetes-under-the-hood/images/kube-components.png)
+.center[![Kubernetes Components](/presentations/kubernetes-under-the-hood/images/kube-components.png)]
 
 ---
 
@@ -489,7 +489,7 @@ In a Kubernetes cluster with multiple Kubernetes Masters, each master replica wi
 
 ---
 
-![Kubernetes Cluster](/presentations/kubernetes-under-the-hood/images/kube-cluster.png)
+.center[![Kubernetes Cluster](/presentations/kubernetes-under-the-hood/images/kube-cluster.png)]
 
 ---
 

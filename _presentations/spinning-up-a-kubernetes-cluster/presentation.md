@@ -59,7 +59,8 @@ class: center
 # Agenda
 
 1. Kubernetes crash course
-2. ...
+2. Spin up cluster
+3. Inspect cluster
 
 ---
 class: center
@@ -68,9 +69,19 @@ class: center
 
 ---
 
-# Kubernetes components
+# Kubernetes crash course
 
---
+1. Components
+2. Nodes
+3. Topology
+
+---
+
+# Components
+
+---
+
+# Components
 
 - Master Components
 - Node (Worker) Components
@@ -104,6 +115,10 @@ class: center
 
 ---
 
+# Nodes
+
+---
+
 # Node types
 
 - Master nodes
@@ -115,35 +130,31 @@ class: center
 
 ---
 
-# Kubernetes Topology
-
-.center[![:scale 50%](/presentations/spinning-up-a-kubernetes-cluster/images/kube-architecture.png)]
+# Topology
 
 ---
 
-# Kubernetes Topology — a more common example
-
-.center[![:scale 50%](/presentations/spinning-up-a-kubernetes-cluster/images/kube-architecture-combined.png)]
+.center[![A Kubernetes cluster](/presentations/spinning-up-a-kubernetes-cluster/images/kube-cluster.png)]
 
 ---
 
-# Kubernetes Topology — a more "cloudy" example
-
-.center[![:scale 50%](/presentations/spinning-up-a-kubernetes-cluster/images/kube-architecture-cloud.png)]
-
-???
-
-* Story about infrastructure providers to start selling infrastructure in a different way
-* Same concept as selling bare metal machines through VMs
+# Spin up cluster
 
 ---
-class: center
 
-# Setting up a cluster with Terraform and `kubeadm`
+# Our cluster
+
+---
+
+.center[![Our Kubernetes cluster](/presentations/spinning-up-a-kubernetes-cluster/images/our-kube-cluster.png)]
 
 ---
 
 # `kubeadm` — making Kubernetes cluster bootstrap easy
+
+---
+
+# `kubeadm`
 
 --
 
@@ -222,13 +233,15 @@ kubectl rollout status daemonset weave-net -n kube-system
 
 ---
 
-# Joining more nodes to the cluster
+# Scaling the cluster
 
---
+---
+
+# Joining more nodes to the cluster
 
 ```bash
 # [workshop-vm-XX-01]
-sudo kubeadm join IP-HERE:6443 --token TTT --discovery-token-ca-cert-hash sha256:HHH
+sudo kubeadm join $KUBERNETES_MASTER_IP:6443 --token TTT --discovery-token-ca-cert-hash sha256:HHH
 ```
 
 ---
@@ -276,7 +289,7 @@ Open http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernet
 ---
 class: center
 
-# Inspecting and managing the cluster
+# Inspecting the cluster
 
 ---
 
