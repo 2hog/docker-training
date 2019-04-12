@@ -2,17 +2,21 @@ layout: true
 class: middle
 
 ---
-
 class: center
 
 # Intro to Docker and Containers
 
 ---
 
-# About 2hog.codes
+# .center[2hog]
 
-* Founders of [SourceLair](https://www.sourcelair.com) online IDE + Dimitris Togias
-* Docker and DevOps training and consulting
+.center[We teach the lessons we have learnt the hard way in production.]
+
+.footnote[https://2hog.codes]
+
+--
+
+.center[Consulting, training and contracting services on containers, APIs and infrastructure]
 
 ---
 
@@ -48,59 +52,31 @@ class: center
 
 class: center
 
-# [p.2hog.codes/intro-docker-containers](https://p.2hog.codes/intro-docker-containers/)
+# [p.2hog.codes/intro-to-docker-containers](https://p.2hog.codes/intro-to-docker-containers/)
 
 ---
 
 # Agenda
 
-1. What is a container
-2. What is Docker
+1. Why should I care about containers
+2. What is a container
 3. Docker Containers
 4. Docker Images
-5. Volumes and networks
+5. Managing data
 6. Docker Compose
 
 ---
-
 class: center
 
-# Why Docker?
+# Why should I care about containers?
 
 ---
 
-# An outdated software delivery pipeline
+# Why should I care about containers?
 
-1. A developer implements a new software feature
-2. The developer commits the new feature in Source Control (e.g. Git, SVN etc.)
-3. The developer requests from an "operations person" to deploy the new feature
-4. The "operations person" prepares the host machine (updates libraries etc.)
-5. The "operations person" pulls and runs the new version of the software, replacing the old
-
----
-
-# Issues
-
-1. Man hours are wasted on chores
-2. High risk of mistakes due to human factor
-3. High infrastructure costs
-4. Clear productivity bottleneck
-
----
-
-# An old-school software delivery pipeline
-
-1. A developer implements a new software feature
-2. The developer commits the new feature in Source Control (e.g. Git, SVN etc.)
-3. A Virtual Machine with the new software gets deployed on the cloud
-
----
-
-# Issues
-
-1. Super complex setup procedure
-2. Long lasting deployments
-3. High infrastructure costs
+* A way to package and distribute applications
+* A way to manage compute resources
+* A way to ship software
 
 ---
 
@@ -108,19 +84,49 @@ class: center
 
 1. A developer implements a new software feature
 2. The developer commits the new feature in Source Control (e.g. Git, SVN etc.)
-3. A new Docker Container gets deployed, replacing the old one automatically
+3. A Docker image is built
+4. A new Docker Container gets deployed somewhere
 
 ---
 
-class: center
+# What is Docker
 
-# What is a Container though?
-
-Containers are a set of **kernel tools and features** that **jail** and **limit** a process based on our needs.
+Docker is an operating system for your data center.
 
 ---
 
-# Virtuals Machines vs. Containers?
+# Docker core features
+
+* Copy on Write file system
+* Software Defined Networking
+* Storage management
+* Built-in Orchestration
+
+???
+
+* Custom OS, lightning fast
+* Join multi-host SDNs
+* Take your data with your
+* Stop managing and caring about machines
+
+---
+
+# The Docker platform building blocks
+* runc - the runtime
+* containerd - the container manager
+* Docker Swarm - the orchestrator
+
+???
+
+* Makes sure your applications run in a container
+* Managed containers for your, in a single machine
+* Orchestrates the distribution of containers in multiple nodes
+
+Today we're going to interact with the first two layers only
+
+---
+
+# Virtual Machines vs. Containers?
 
 They should co-exist. We should run N Containers in M Virtual Machines (N > M).
 
@@ -140,6 +146,14 @@ VS
 * You can turn up the heat whenever you want
 * Comes at a cost
 * Fixing infrastructure issues is more time and money consuming
+
+---
+
+class: center
+
+# What is a Container though?
+
+Containers are a set of **kernel tools and features** that **jail** and **limit** a process based on our needs.
 
 ---
 
@@ -185,45 +199,19 @@ VS
 * network*
 
 .footnote[*network is not a real cgroup, it’s used though for metering]
----
-
-# What is Docker
-
-Docker is an operating system for your data center.
 
 ---
 
-# Docker core features
+# Let's play a bit with our host machine
 
-* Copy on Write file system
-* Software Defined Networking
-* Volume management
-* Built-in Orchestration
+```bash
+ssh workshop@workshop-vm-XX-1
 
-???
-
-* Custom OS, lightning fast
-* Join multi-host SDNs
-* Take your data with your
-* Stop managing and caring about machines
-
----
-
-# The Docker platform building blocks
-
---
-
-* runc - the runtime
-* containerd - the container manager
-* Docker Swarm - the orchestrator
-
-???
-
-* Makes sure your applications run in a container
-* Managed containers for your, in a single machine
-* Orchestrates the distribution of containers in multiple nodes
-
-Today we're going to interact with the first two layers only
+whoami
+uname -a
+top
+cat /etc/os-release
+```
 
 ---
 
@@ -239,6 +227,7 @@ docker run -it alpine sh
 whoami
 uname -a
 top
+cat /etc/os-release
 exit
 ```
 
@@ -246,17 +235,18 @@ exit
 
 # What did just happen?
 
---
 * The Alpine image was pulled
-
---
 * A new container (aka a process) was started using that image
-
---
 * The process was isolated is its own namespace
-
---
 * A TTY was opened for us, so we could run commands
+
+---
+
+# Let's see the differences
+
+* A container can have a different operating system than the host machine
+* A container **cannot have** a different kernel than the host machine
+  * They share the same kernel after all!
 
 ---
 
@@ -290,7 +280,6 @@ https://docs.docker.com/engine/reference/commandline/run/
 
 # Let's try something a bit different
 
---
 ```bash
 # First, run this command to create a sleeping container
 
@@ -316,26 +305,15 @@ exit
 
 # How can I see all these containers?
 
---
 ```bash
 # List running containers
 docker container ls
-
-➜  ~ docker container ls
-CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                  NAMES
-2ccff4c6edbf        alpine              "sleep 600"              4 minutes ago       Up 4 minutes
-
 ```
 
 --
 ```bash
 # List all containers, including dead ones
-➜  ~ docker container ls --all
-CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                      PORTS               NAMES
-fc72afff0e78        alpine              "sh"                12 minutes ago      Exited (0) 12 minutes ago                       happy_minsky
-2ccff4c6edbf        alpine              "sleep 600"         12 minutes ago      Up 12 minutes                                   thirsty_allen
-95a5a31b4ad7        node:8-alpine       "node --version"    17 minutes ago      Exited (0) 17 minutes ago                       reverent_shannon
-5306c8b25632        node:6-alpine       "node --version"    17 minutes ago      Exited (0) 17 minutes ago                       admiring_lamport
+docker container ls --all
 ```
 
 ???
@@ -344,6 +322,85 @@ fc72afff0e78        alpine              "sh"                12 minutes ago      
 * runc is on the process level, we don't interact directly with it
 
 ---
+
+# Let's kill a container
+
+```bash
+# First, find and inspect the container to get the host PID
+docker container ls
+docker container inspect 36
+# Then use the PID to kill the system process
+sudo kill -9 11834
+```
+--
+```bash
+# Let's check the container again
+docker container ls
+docker container inspect 36 | less
+```
+
+---
+
+# Memory cgroup in action
+
+```bash
+# Let's stress a bit our system
+docker run -it progrium/stress --vm 2 --vm-bytes 128M --timeout 5s -q
+
+# Let's put some limits on the stress
+docker run --memory=200m -it progrium/stress --vm 2 --vm-bytes 128M --timeout 5s -q
+docker container ls -n 1 -q | xargs docker inspect | less
+docker run --memory=260m -it progrium/stress --vm 2 --vm-bytes 128M --timeout 5s -q
+```
+
+---
+
+# How does memory cgroup work
+
+* Does not allow a container (aka a process) to get more than the assigned memory
+* If they try to, they are killed by the system (Out of memory)
+* This is all handled inside the kernel
+
+---
+
+# CPU cgroup in action
+
+```bash
+# New terminal
+htop
+
+# Let's stress the system without limits
+docker run --rm -it progrium/stress --cpu 2 --timeout 10s -q
+
+# Let's put a CPU limit
+docker run --cpus 1 --rm -it progrium/stress --cpu 2 --timeout 10s -q
+
+# Let's add specific CPU core pinning
+docker run --cpuset-cpus 1 --rm -it progrium/stress --cpu 2 --timeout 10s -q
+```
+
+---
+
+# How does CPU cgroup work
+
+* Meters the CPU usage of a container (aka a process) during a time period
+* Does not allow a container (aka a process) to get more CPU cycles than (cycles per second) * (period in seconds) * limit
+* Uses the Completely Fair Scheduler (CFS) of the kernel
+
+--
+
+Alternatively:
+
+* Only allows a container to use a specific CPU core
+* Uses weight scheduling (aka each container gets a percentage off **all** CPU, depending on the weights of the containers asking for CPU)
+
+---
+class: center
+
+# Docker Images
+
+---
+
 # Docker Images
 
 The basis of Docker Containers
@@ -355,9 +412,15 @@ The basis of Docker Containers
 
 ---
 
-# Create your first image
+# Finding images
 
---
+* Docker Hub is the Github of Docker images
+* There are official, certified and user contributed images
+* Search for images at Docker Hub: https://hub.docker.com
+
+---
+
+# Create your first image
 
 In order to create a Docker image, we need each recipe - the Dockerfile
 
@@ -412,6 +475,15 @@ https://docs.docker.com/engine/reference/commandline/build/
 
 ---
 
+# The magic of CoW file systems
+
+* Image layers can be reused, reducing disk space and download time
+* Every Dockerfile command creates a new layer
+* Layers can be cached, reducing build times if the files have not changed
+* Containers can start blazing fast, because they just create a writable layer and don't need to copy files
+
+---
+
 # Dockerfile, image and container
 
 * Dockerfile -> Source code - the recipe to build an image
@@ -419,75 +491,17 @@ https://docs.docker.com/engine/reference/commandline/build/
 * Container -> Object - the thing that runs
 
 ---
+class: center
 
-# The container best-practice list
-
---
-
-1. Containers should be considered ephemeral
-2. The container should be single-purposed program (e.g. avoid using `supervisord`)
-3. The image should be lightweight and slim
-4. Configuration should be made by the environment, with sane defaults
-5. Orchestration should be carried out by an external tool
-
-???
-
-* Following these principles and good practices, allows for better management and utilization of the underlying infrastructure
-* This also imposes some issues
+# Managing data in ephemeral containers
 
 ---
 
-# Networks and service discovery
---
-
-* Every container gets an IP inside the SDNs that it participates
-* Service discovery is made using the embedded DNS server
-* There are different plugins for the networking implementation
-
-???
-
-* There are different implementations for networking plugins, sporting differet sets of features
-* There are two major container networking standards, CNM (Docker) and CNI (Kubernetes)
-* They are probably going to be merged into one some time in the future
-
----
-
-# Let's see a demo
-
-```bash
-# First, we need to create a network
-docker network create demonet
-```
---
-
-```bash
-# Then, we need to start an NGINX container
-docker container run -d --network demonet --network-alias nginx nginx:alpine
-```
---
-
-```bash
-# Last, let's try hitting it from another container
-docker container run -it --network demonet alpine sh
-apk add -U curl bind-tools
-dig nginx
-curl nginx
-```
-
-???
-
-* The container got an IP inside this network
-* The internal DNS server, resolved the nginx domain to that IP
-* We could easily hit the container from another container, as long as they are in the same network
-
----
-
-# Managing data
---
+# Managing data in ephemeral containers
 
 * Containers cannot always be stateless, they need to store state
 * Since containers are ephemeral, we need a persistent way to store data between runs
-* Volume plugins abstract the source of the data and mount a directory inside a container
+* Volumes are data stores (think of them as simple as directories) that persist between container runs
 
 ???
 
@@ -517,7 +531,7 @@ echo 'Docker is awesome' > what-is-docker.txt
 ```bash
 # Last, we can view this data from another container
 docker container run -d -p 9090:80 -v demovol:/usr/share/nginx/html nginx:alpine
-open localhost:9090/what-is-docker.txt
+curl localhost:9090/what-is-docker.txt
 ```
 
 ???
@@ -527,7 +541,6 @@ open localhost:9090/what-is-docker.txt
 * Other plugins might be able to transfer volumes between hosts, so that the data follows the container
 
 ---
-
 class: center
 
 # Docker Compose
@@ -543,6 +556,7 @@ It manages complete stacks containing:
 - Containers
 - Networks
 - Volumes
+- And other resources
 
 [https://docs.docker.com/compose/](https://docs.docker.com/compose/)
 
@@ -555,24 +569,95 @@ It manages complete stacks containing:
 
 ???
 
-* No need to run or rember complex Docker commands
+* No need to run or remember complex Docker commands
 * Always make sure that an application is deployed in the same way
 * Mastering it allows for powerful development/deployment workflows
+
+---
+
+# A simple Docker Compose file
+
+Declare a version
+
+```yaml
+version: '3.7'
+```
+
+--
+
+Create a volume
+
+```yaml
+volumes:
+  my-data:
+```
+
+--
+
+Run a container attaching the volume
+
+```yaml
+services:
+  my-container:
+    image: alpine
+    command: sleep 600
+    volumes:
+      -  my-data:/mnt/data
+```
+
+---
+
+# A simple Docker Compose file
+
+```yaml
+version: '3.7'
+services:
+  my-container:
+    image: alpine
+    command: sleep 600
+    volumes:
+      - my-data:/mnt/data
+volumes:
+  my-data:
+```
+
+--
+
+Run the container
+
+```bash
+docker-compose up -d
+docker-compose exec my-container sh
+```
 
 ---
 
 # Let's see an example
 
 https://git.io/vbasP
---
 
 ```bash
 # After saving the docker-compose.yml file locally, run the following command
 docker-compose up
+# Open http://workshop-vm-XX-1.akalipetis.com
 ```
 
 ---
 
+# The container best-practice list
+
+1. Containers should be considered ephemeral
+2. The container should be single-purposed program (e.g. avoid using `supervisord`)
+3. The image should be lightweight and slim
+4. Configuration should be made by the environment, with sane defaults
+5. Orchestration should be carried out by an external tool
+
+???
+
+* Following these principles and good practices, allows for better management and utilization of the underlying infrastructure
+* This also imposes some issues
+
+---
 class: center
 
 # That's all folks!
