@@ -5,17 +5,17 @@ class: middle
 
 # Docker Swarm: from theory to practice
 
---
-
-[p.2hog.codes/swarm-theory-practice](https://p.2hog.codes/swarm-theory-practice)
-
 ---
 
+# .center[2hog]
 
-# About 2hog.codes
+.center[We teach the lessons we have learnt the hard way in production.]
 
-* Founders of [SourceLair](https://www.sourcelair.com) online IDE + Dimitris Togias
-* Docker and DevOps training and consulting
+.footnote[https://2hog.codes]
+
+--
+
+.center[Consulting, training and contracting services on containers, APIs and infrastructure]
 
 ---
 
@@ -51,7 +51,7 @@ class: middle
 
 class: center
 
-# [p.2hog.codes/swarm-theory-practice](https://p.2hog.codes/swarm-theory-practice)
+# [p.2hog.codes/docker-swarm-from-theory-to-practice](https://p.2hog.codes/docker-swarm-from-theory-to-practice)
 
 ---
 
@@ -74,7 +74,7 @@ class: center
 
 # What is a Container?
 
-Containers are a set of **kernel tools and features** that **jail** and **limit** a process based on our needs.
+Containers are a set of **kernel tools and features** that **jail** and **limit** a **process** based on our needs.
 
 ---
 
@@ -159,7 +159,8 @@ A **namespace** wraps a global system resource in an abstraction that makes it a
 * Each time, I can add a transparent layer on top and draw my changes to the painting
 * The initial painting and the layer have all the information
 * The footprint of the new painting is just the layer
---
+
+---
 
 ## Imagine the following pieces, as different image layers
 
@@ -186,28 +187,11 @@ All images start from `scratch` and build on top of it
 
 ---
 
-# What if my image needs a lot of stuff to create a smaller artifact?
-
-* Multi-stage builds to the rescue
-* Start from a thin image
-* Add all needed dependencies to build your artifact
-* Start again, from a smaller image
-* Copy your artifact
-* Produce a thinner final image
-
----
-
-# Common examples
-
-* Build a JAR and deploy it to Tomcat
-* Build a binary and do not include the source in the image
-
----
-
 # Managing state
 
 * Containers are ephemeral
 * Restarting a container, does not persist its state
+
 --
 
 ## Managing state with volumes
@@ -223,6 +207,7 @@ All images start from `scratch` and build on top of it
 * Each container gets its own virtual ethernet
 * Container cannot talk with each other, or the host, using localhost
 * We need a way to network containers
+
 --
 
 ## Mutli-container networks
@@ -251,8 +236,6 @@ class: center
 
 # Key concepts
 
---
-
 * Nodes
   * The servers in your cluster, either managers or workers
 * Services
@@ -264,7 +247,7 @@ class: center
 
 # Topology Docker Engine
 
-.center[![:scale 50%](images/docker-engine-topology.png)]
+.center[![:scale 50%](/images/docker-swarm-from-theory-to-practice/docker-engine-topology.png)]
 
 ---
 
@@ -312,15 +295,13 @@ class: center
 
 ---
 
-# Topology Docker Swarm
+# Topology of Docker Swarm
 
-.center[![:scale 80%](images/swarm-topology.png)]
+.center[![:scale 80%](/images/docker-swarm-from-theory-to-practice/swarm-topology.png)]
 
 ---
 
 # Declarative vs imperative infrastructure
-
---
 
 ## Say what you want, not how to achieve this
 
@@ -351,25 +332,7 @@ VS
 
 ---
 
-# Where is everything stored?
-
---
-
-* Behind the scenes, Docker Swarm is using a distributed KV store, based on RAFT
-* RAFT is a consensus algorithm, also used in other distributed systems like ETCD
-* It needs at least N / 2 + 1 members to be able to operate
-  * Always create clusters with odd number of members
-
----
-exclude: true
-
-.center[<iframe src="https://raft.github.io/raftscope/index.html" style="border: 0; width: 800px; height: 580px; margin-bottom: 20px"></iframe>]
-
----
-
 # Docker Swarm has security in its DNA
-
---
 
 * Least privilege architecture, using the push model
 * Every node within the cluster has a cryptographic identity
@@ -392,18 +355,14 @@ class: center
 
 # Creating a new Swarm
 
---
-
 ```bash
-[workshop-node-1]
-$ docker swarm init --advertise-addr=eth0
+[workshop-vm-XX-1]
+docker swarm init --advertise-addr=eth0
 ```
 
 ---
 
 # What just happened?
-
---
 
 * a keypair is created for the root CA of our Swarm
 * a keypair is created for the first node
@@ -420,14 +379,14 @@ $ docker swarm init --advertise-addr=eth0
 # Inspecting the cluster
 
 ```bash
-[workshop-node-1]
-$ docker node ls
+[workshop-vm-XX-1]
+docker node ls
 ```
 
 --
 ```bash
 ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS      ENGINE VERSION
-8z8uqavgsyupbs0t3ormc84ya *   workshop-node-00    Ready               Active              Leader              18.03.0-ce
+8z8uqavgsyupbs0t3ormc84ya *   workshop-vm-XX-1    Ready               Active              Leader              18.03.0-ce
 ```
 
 ???
@@ -439,8 +398,8 @@ Currently, there's just one node in the cluster, which is a manager and a leader
 # Join another node in the Swarm as worker
 
 ```bash
-[workshop-node-2]
-$ docker swarm join --token SWMTKN-1-WWW 10.0.74.3:2377
+[workshop-vm-XX-2]
+docker swarm join --token SWMTKN-1-WWW 10.0.74.3:2377
 ```
 
 ---
@@ -448,13 +407,13 @@ $ docker swarm join --token SWMTKN-1-WWW 10.0.74.3:2377
 # Join another node in the Swarm as manager
 
 ```bash
-[workshop-node-2]
-$ docker swarm join-token manager
+[workshop-vm-XX-2]
+docker swarm join-token manager
 ```
 --
 ```bash
-[workshop-node-1]
-$ docker swarm join-token manager
+[workshop-vm-XX-1]
+docker swarm join-token manager
 ```
 
 ???
@@ -465,8 +424,8 @@ $ docker swarm join-token manager
 --
 
 ```bash
-[workshop-node-3]
-$ docker swarm join --token SWMTKN-1-MMM  10.0.74.3:2377
+[workshop-vm-XX-3]
+docker swarm join --token SWMTKN-1-MMM  10.0.74.3:2377
 ```
 
 ---
@@ -474,17 +433,17 @@ $ docker swarm join --token SWMTKN-1-MMM  10.0.74.3:2377
 # List the nodes in your cluster
 
 ```bash
-[workshop-node-3]
-$ docker node ls
+[workshop-vm-XX-3]
+docker node ls
 ```
 
 --
 
 ```bash
 ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS      ENGINE VERSION
-8z8uqavgsyupbs0t3ormc84ya *   workshop-node-00    Ready               Active              Leader              18.03.0-ce
-2wowq8ms2lqkixzz9mzzjx0je     workshop-node-01    Ready               Active                                  18.03.0-ce
-v20fuo5g8lnfy96sr19315166     workshop-node-02    Ready               Active              Reachable           18.03.0-ce
+8z8uqavgsyupbs0t3ormc84ya *   workshop-vm-XX-1    Ready               Active              Leader              18.03.0-ce
+2wowq8ms2lqkixzz9mzzjx0je     workshop-vm-XX-2    Ready               Active                                  18.03.0-ce
+v20fuo5g8lnfy96sr19315166     workshop-vm-XX-3    Ready               Active              Reachable           18.03.0-ce
 ```
 
 ---
@@ -492,15 +451,15 @@ v20fuo5g8lnfy96sr19315166     workshop-node-02    Ready               Active    
 # Checking the different information
 
 ```bash
-[workshop-node-1]
-$ docker info
+[workshop-vm-XX-1]
+docker info
 ```
 
 --
 
 ```bash
-[workshop-node-2]
-$ docker info
+[workshop-vm-XX-2]
+docker info
 ```
 
 ---
@@ -508,14 +467,14 @@ $ docker info
 # Let's play a game, kill the daemon in one node
 
 ```bash
-[workshop-node-3]
-$ sudo systemctl stop docker
+[workshop-vm-XX-3]
+sudo systemctl stop docker
 ```
 --
 
 ```bash
-[workshop-node-1]
-$ docker node ls
+[workshop-vm-XX-1]
+docker node ls
 ```
 
 --
@@ -533,44 +492,38 @@ Error response from daemon: rpc error: code = Unknown desc = The swarm does not 
 
 # Let's restore the node
 
---
-
 ```bash
-[workshop-node-3]
-$ sudo systemctl start docker
+[workshop-vm-XX-3]
+sudo systemctl start docker
 ```
 
 ---
 
-# Let's promote workshop-node-2 to manager
-
---
+# Let's promote workshop-vm-XX-2 to manager
 
 ```bash
-[workshop-node-3]
-$ docker node promote workshop-node-1
+[workshop-vm-XX-3]
+docker node promote workshop-vm-XX-1
 ```
 
 --
 
 ```bash
-[workshop-node-3]
-$ docker node ls
+[workshop-vm-XX-3]
+docker node ls
 ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS
-vz22xh8zj1xjouflm9rlnfhxu     workshop-node-1               Ready               Active              Leader
-ec0eypoz0o6btv77uyjqux1l9     workshop-node-2               Ready               Active              Reachable
-hguvzetdq838qseegng6n58ow *   workshop-node-3               Ready               Active              Reachable
+vz22xh8zj1xjouflm9rlnfhxu     workshop-vm-XX-1               Ready               Active              Leader
+ec0eypoz0o6btv77uyjqux1l9     workshop-vm-XX-2               Ready               Active              Reachable
+hguvzetdq838qseegng6n58ow *   workshop-vm-XX-3               Ready               Active              Reachable
 ```
 
 ---
 
 # Let's destroy everything, again
 
---
-
 ```bash
-[workshop-node-3]
-$ sudo systemctl stop docker
+[workshop-vm-XX-3]
+sudo systemctl stop docker
 ```
 
 --
@@ -580,18 +533,42 @@ $ sudo systemctl stop docker
 --
 
 ```bash
-[workshop-node-1]
-$ docker node ls
+[workshop-vm-XX-1]
+docker node ls
 ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS
-vz22xh8zj1xjouflm9rlnfhxu *   workshop-node-1               Ready               Active              Leader
-ec0eypoz0o6btv77uyjqux1l9     workshop-node-2               Ready               Active              Reachable
-hguvzetdq838qseegng6n58ow     workshop-node-3               Ready               Active              Unreachable
+vz22xh8zj1xjouflm9rlnfhxu *   workshop-vm-XX-1               Ready               Active              Leader
+ec0eypoz0o6btv77uyjqux1l9     workshop-vm-XX-2               Ready               Active              Reachable
+hguvzetdq838qseegng6n58ow     workshop-vm-XX-3               Ready               Active              Unreachable
 ```
 
 ???
 
 * Now even though we have 2 managers, even if one goes down the cluster is unmanageable
 * We need at least 3 to make sure we have HA
+
+---
+
+# Distributed systems need consensus
+
+* Consensus involves multiple servers agreeing on values
+* Typical consensus algorithms make progress when any majority of their servers is available
+  * this means that at least N/2+1 members should be available for the cluster to be operational
+  * for example, a cluster of 5 servers can continue to operate even if 2 servers fail
+
+---
+
+# Why should I care?
+
+--
+
+* Behind the scenes, Docker Swarm is using a distributed KV store, based on RAFT
+* RAFT is a consensus algorithm, also used in other distributed systems like ETCD
+* Docker Swarm clusters should always have an odd number of managers
+
+---
+exclude: true
+
+.center[<iframe src="https://raft.github.io/raftscope/index.html" style="border: 0; width: 800px; height: 580px; margin-bottom: 20px"></iframe>]
 
 ---
 
@@ -606,10 +583,8 @@ hguvzetdq838qseegng6n58ow     workshop-node-3               Ready               
 
 # Enabling auto-lock
 
---
-
 ```bash
-[workshop-node-1]
+[workshop-vm-XX-1]
 docker swarm update --autolock=true
 ```
 
@@ -636,10 +611,8 @@ will not be able to restart the manager.
 
 # Let's lock a node
 
---
-
 ```bash
-[workshop-node-1]
+[workshop-vm-XX-1]
 # Lock the node, just by stopping the daemon
 sudo systemctl stop docker
 ```
@@ -664,7 +637,7 @@ Error response from daemon: Swarm is encrypted and needs to be unlocked before i
 # ... and unlock it
 
 ```bash
-[workshop-node-1]
+[workshop-vm-XX-1]
 docker swarm unlock
 ```
 
@@ -704,11 +677,9 @@ class: center
 --
 
 ```bash
-[workshop-node-1]
-$ docker service create --publish=8080:80 --name=nginx nginx:latest
+[workshop-vm-XX-1]
+docker service create --publish=8080:80 --name=nginx nginx:latest
 ```
-
---
 
 ## Let's check this out
 
@@ -720,7 +691,7 @@ $ docker service create --publish=8080:80 --name=nginx nginx:latest
 --
 
 ```bash
-[workshop-node-1]
+[workshop-vm-XX-1]
 curl localhost:8080
 ```
 
@@ -731,16 +702,29 @@ You can also open the external IP, port of a node
 --
 
 ```bash
-[workshop-node-1]
-$ docker ps
-CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+[workshop-vm-XX-1]
+docker ps
 ```
 
 ---
 
-# Docker load-balancing
+# Where are my containers?
 
---
+* When a service gets created, we instruct Swarm to always have at least N number of containers running
+* Swarm has a scheduler built-in, which decides where that container is going to run
+* We can help the orchestrator decide where to place each container, if we have constraints though
+
+---
+
+# What's a scheduler
+
+* A tetris player
+* Always running a for loop
+* Trying to reach our _declared_ state
+
+---
+
+# Docker load-balancing
 
 * Each service in the Swarm gets a virtual IP
   * The Swarm makes sure connections to this internal IP are routed to the correct container, in any host in the Swarm
@@ -758,11 +742,9 @@ Benefits:
 
 # Updating the service
 
---
-
 ```bash
-[workshop-node-1]
-$ docker service update --image=nginx:does-not-exists nginx
+[workshop-vm-XX-1]
+docker service update --image=nginx:does-not-exists nginx
 ```
 
 --
@@ -782,20 +764,18 @@ service update paused: update paused due to failure or early termination of task
 --
 
 ```bash
-[workshop-node-1]
-$ docker service ps nginx
+[workshop-vm-XX-1]
+docker service ps nginx
 ID                  NAME                IMAGE                   NODE                DESIRED STATE       CURRENT STATE             ERROR                           PORTS
-z38051h4kf4t        nginx.1             nginx:does-not-exists   workshop-node-2               Ready               Rejected 4 seconds ago    "No such image: nginx:does-not…"
-yadhc69tuauz         \_ nginx.1         nginx:does-not-exists   workshop-node-1               Shutdown            Rejected 9 seconds ago    "No such image: nginx:does-not…"
-xwxtx6fc5hmp         \_ nginx.1         nginx:does-not-exists   workshop-node-1               Shutdown            Rejected 13 seconds ago   "No such image: nginx:does-not…"
-ov5i7c5y71zc         \_ nginx.1         nginx:latest            workshop-node-1               Shutdown            Shutdown 9 seconds ago
+z38051h4kf4t        nginx.1             nginx:does-not-exists   workshop-vm-XX-2               Ready               Rejected 4 seconds ago    "No such image: nginx:does-not…"
+yadhc69tuauz         \_ nginx.1         nginx:does-not-exists   workshop-vm-XX-1               Shutdown            Rejected 9 seconds ago    "No such image: nginx:does-not…"
+xwxtx6fc5hmp         \_ nginx.1         nginx:does-not-exists   workshop-vm-XX-1               Shutdown            Rejected 13 seconds ago   "No such image: nginx:does-not…"
+ov5i7c5y71zc         \_ nginx.1         nginx:latest            workshop-vm-XX-1               Shutdown            Shutdown 9 seconds ago
 ```
 
 ---
 
 # How to get to a previous state
-
---
 
 * Swarm keeps the state in RAFT
 * For each service, it also keeps the previously deployed state
@@ -805,31 +785,28 @@ ov5i7c5y71zc         \_ nginx.1         nginx:latest            workshop-node-1 
 
 # Rolling back
 
---
-
 ```bash
-[workshop-node-1]
-$ docker service rollback nginx
+[workshop-vm-XX-1]
+docker service rollback nginx
 ```
 
 --
 
 ```bash
-[workshop-node-1]$ docker service ps nginx
+[workshop-vm-XX-1]
+docker service ps nginx
 ID                  NAME                IMAGE                   NODE                DESIRED STATE       CURRENT STATE                 ERROR                              PORTS
-hak9ijaaubgi        nginx.1             nginx:latest            workshop-node-1               Running             Running 11 seconds ago
-yylxs4ktx0ab         \_ nginx.1         nginx:does-not-exists   workshop-node-2               Shutdown            Rejected 49 seconds ago       "No such image: nginx:does-not…"
-yy1z6lb6rqsm         \_ nginx.1         nginx:does-not-exists   workshop-node-1               Shutdown            Rejected about a minute ago   "No such image: nginx:does-not…"
-z38051h4kf4t         \_ nginx.1         nginx:does-not-exists   workshop-node-2               Shutdown            Rejected about a minute ago   "No such image: nginx:does-not…"
-yadhc69tuauz         \_ nginx.1         nginx:does-not-exists   workshop-node-1               Shutdown            Rejected about a minute ago   "No such image: nginx:does-not…"
-[workshop-node-1]
+hak9ijaaubgi        nginx.1             nginx:latest            workshop-vm-XX-1               Running             Running 11 seconds ago
+yylxs4ktx0ab         \_ nginx.1         nginx:does-not-exists   workshop-vm-XX-2               Shutdown            Rejected 49 seconds ago       "No such image: nginx:does-not…"
+yy1z6lb6rqsm         \_ nginx.1         nginx:does-not-exists   workshop-vm-XX-1               Shutdown            Rejected about a minute ago   "No such image: nginx:does-not…"
+z38051h4kf4t         \_ nginx.1         nginx:does-not-exists   workshop-vm-XX-2               Shutdown            Rejected about a minute ago   "No such image: nginx:does-not…"
+yadhc69tuauz         \_ nginx.1         nginx:does-not-exists   workshop-vm-XX-1               Shutdown            Rejected about a minute ago   "No such image: nginx:does-not…"
+[workshop-vm-XX-1]
 ```
 
 ---
 
 # Securely storing secrets
-
---
 
 * Manage sensitive data within containers
 * Database passwords, SSH keys, TLS certificates
@@ -853,11 +830,9 @@ yadhc69tuauz         \_ nginx.1         nginx:does-not-exists   workshop-node-1 
 
 # Let's see this in an example
 
---
-
 ```bash
-[workshop-node-1]
-$ docker secret create some-sec -
+[workshop-vm-XX-1]
+docker secret create some-sec -
 ```
 
 ???
@@ -867,8 +842,8 @@ $ docker secret create some-sec -
 --
 
 ```bash
-[workshop-node-1]
-$ docker service create \
+[workshop-vm-XX-1]
+docker service create \
   --secret=some-sec \
   --workdir=/run/secrets \
   --publish=8888:8000 \
@@ -883,8 +858,8 @@ $ docker service create \
 --
 
 ```bash
-[workshop-node-1]
-$ curl localhost:8888/some-sec
+[workshop-vm-XX-1]
+curl localhost:8888/some-sec
 Don't tell this to anyone
 ```
 
@@ -901,8 +876,8 @@ Don't tell this to anyone
 
 
 ```bash
-[workshop-node-1]
-$ cat << EOF > index.html
+[workshop-vm-XX-1]
+cat << EOF > index.html
 <html>
   <head><title>Hello Docker</title></head>
   <body>
@@ -915,15 +890,15 @@ EOF
 --
 
 ```bash
-[workshop-node-1]
-$ docker config create homepage index.html
+[workshop-vm-XX-1]
+docker config create homepage index.html
 ```
 
 --
 
 ```bash
-[workshop-node-1]
-$ docker service create \
+[workshop-vm-XX-1]
+docker service create \
   --config=source=homepage,target=/usr/share/nginx/html/index.html \
   --publish=9999:80 \
   nginx
@@ -938,15 +913,11 @@ class: center
 
 # From services to stacks
 
---
-
 Stacks are logical collections of services, which define complete applications
 
 ---
 
 # Stacks in Docker Swarm
-
---
 
 * They are compose files
 * They are just a client abstraction, using labels, not a server resource
@@ -956,12 +927,10 @@ Stacks are logical collections of services, which define complete applications
 
 # Deploying stacks
 
---
-
 ```bash
-[workshop-node-1]
+[workshop-vm-XX-1]
 # First, let's create a compose file
-$ cat << EOF > stack.yml
+cat << EOF > stack.yml
 version: '3.5'
 services:
   nginx:
@@ -975,19 +944,17 @@ EOF
 
 ```bash
 # ...and now, let's deploy it
-$ docker stack deploy -c stack.yml my-stack
+docker stack deploy -c stack.yml my-stack
 ```
 
 ---
 
 # Let's do something more interesting
 
---
-
 ```bash
-[workshop-node-1]
+[workshop-vm-XX-1]
 # Update the compose file, to have a different image
-$ cat << EOF > stack.yml
+cat << EOF > stack.yml
 version: '3.5'
 services:
   nginx:
@@ -998,7 +965,7 @@ services:
     ports:
       - 9090:5000
 EOF
-$ docker stack deploy -c stack.yml my-stack
+docker stack deploy -c stack.yml my-stack
 ```
 
 ---
@@ -1010,21 +977,21 @@ Scaling a service
 --
 
 ```bash
-[workshop-node-1]
-$ docker service scale my-stack_nginx=10
+[workshop-vm-XX-1]
+docker service scale my-stack_nginx=10
 ```
 
 --
 
 ```bash
 # Does it really work?
-$ for i in $(seq 1 20); do curl localhost:9090; echo; done
+for i in $(seq 1 20); do curl localhost:9090; echo; done
 ```
 
 --
 
 ```bash
-$ docker ps -f label=com.docker.swarm.service.name=my-stack_nginx
+docker ps -f label=com.docker.swarm.service.name=my-stack_nginx
 ```
 
 ???
@@ -1035,8 +1002,6 @@ $ docker ps -f label=com.docker.swarm.service.name=my-stack_nginx
 ---
 
 # Separating a cluster in groups
-
---
 
 There are times that not every payload should be deployed to every node
 
@@ -1049,28 +1014,24 @@ There are times that not every payload should be deployed to every node
 
 # Let's first start by labeling our nodes
 
---
-
 ```bash
-[workshop-node-1]
+[workshop-vm-XX-1]
 # Add PCI label to nodes 1 and 2
-$ docker node update --label-add=com.example.pci=true workshop-node-1
-$ docker node update --label-add=com.example.pci=true workshop-node-2
+docker node update --label-add=com.example.pci=true workshop-vm-XX-1
+docker node update --label-add=com.example.pci=true workshop-vm-XX-2
 # Add node 1 to AZ A and nodes 2 and 3 to AZ B
-$ docker node update --label-add=com.example.az=a workshop-node-1
-$ docker node update --label-add=com.example.az=b workshop-node-2
-$ docker node update --label-add=com.example.az=b workshop-node-3
+docker node update --label-add=com.example.az=a workshop-vm-XX-1
+docker node update --label-add=com.example.az=b workshop-vm-XX-2
+docker node update --label-add=com.example.az=b workshop-vm-XX-3
 ```
 
 ---
 
 # Let's deploy a constrained service
 
---
-
 ```bash
-[workshop-node-1]
-$ docker service create \
+[workshop-vm-XX-1]
+docker service create \
   --constraint=node.labels.com.example.pci==true \
   --replicas=6 \
   --name=constrained \
@@ -1080,20 +1041,18 @@ $ docker service create \
 --
 
 ```bash
-[workshop-node-1]
+[workshop-vm-XX-1]
 # Check what we did
-$ docker service ps constrained
+docker service ps constrained
 ```
 
 ---
 
 # We can't satisfy everyone
 
---
-
 ```bash
-[workshop-node-1]
-$ docker service create \
+[workshop-vm-XX-1]
+docker service create \
   --constraint=node.labels.com.example.unsatisfied==true \
   --name=unsatisfied \
   nginx
@@ -1102,9 +1061,9 @@ $ docker service create \
 --
 
 ```bash
-[workshop-node-3]
+[workshop-vm-XX-3]
 # Let's fix This
-docker node update --label-add=com.example.unsatisfied=true workshop-node-3
+docker node update --label-add=com.example.unsatisfied=true workshop-vm-XX-3
 ```
 
 ---
@@ -1126,7 +1085,7 @@ docker node update --label-add=com.example.unsatisfied=true workshop-node-3
 # Let's see what happens when we set memory reservation
 
 ```bash
-[workshop-node-1]
+[workshop-vm-XX-1]
 docker service create \
   --reserve-memory=4G \
   --name=mem-hungry \
@@ -1141,7 +1100,7 @@ Everything is good, but what happens after we scale this?
 
 ```bash
 # Let's scale this a bit
-[workshop-node-1]
+[workshop-vm-XX-1]
 docker service scale mem-hungry=7
 ```
 
@@ -1156,11 +1115,9 @@ docker service scale mem-hungry=7
 
 # Let's spread things around availability zones
 
---
-
 ```bash
-[workshop-node-1]
-$ docker service create \
+[workshop-vm-XX-1]
+docker service create \
   --placement-pref=spread=node.labels.com.example.az \
   --replicas=6 \
   --name=spread \
@@ -1170,20 +1127,18 @@ $ docker service create \
 --
 
 ```bash
-[workshop-node-1]
-$ docker service ps spread
+[workshop-vm-XX-1]
+docker service ps spread
 ```
 
 ???
 
 * The service was evenly distributed between different availability zones
-* Since workshop-node-1 was the only one in its zone, it got half the services
+* Since workshop-vm-XX-1 was the only one in its zone, it got half the services
 
 ---
 
 # Let's spread things around availability zones
-
---
 
 * Services can be spread among the nodes with different values
 * A common pitfall here, is that missing labels are considered as a null value
@@ -1216,24 +1171,22 @@ class: center
 
 # Debugging service failures
 
---
-
 Reading logs is usually the first thing to do
 
 --
 
 ```bash
-[workshop-node-1]
+[workshop-vm-XX-1]
 # Read the logs of all tasks of service
-$ docker service logs my-stack_nginx
+docker service logs my-stack_nginx
 ```
 
 --
 
 ```bash
-[workshop-node-1]
+[workshop-vm-XX-1]
 # ...or just a single tasks
-$ docker service logs kxqxntzly0bn
+docker service logs kxqxntzly0bn
 ```
 
 ???
@@ -1246,20 +1199,18 @@ $ docker service logs kxqxntzly0bn
 
 # Checking DNS and connectivity
 
---
-
 ```bash
-[workshop-node-1]
+[workshop-vm-XX-1]
 # Jump into a container
-$ docker exec -it \
+docker exec -it \
   $(docker ps -q -f label=com.docker.swarm.service.name=my-stack_nginx | head -n 1) \
   sh
 # Check the DNS records for the service and the tasks
-$ dig nginx
-$ dig tasks.nginx
+dig nginx
+dig tasks.nginx
 # For multiple networks, use the network namespaced DNS
-$ dig nginx.my-stack_default
-$ dig tasks.nginx.my-stack_default
+dig nginx.my-stack_default
+dig tasks.nginx.my-stack_default
 ```
 
 ---
@@ -1271,26 +1222,24 @@ Using the IPs previously acquired
 --
 
 ```bash
-$ apk add -U curl
-$ curl 10.0.0.12:5000
+apk add -U curl
+curl 10.0.0.12:5000
 ```
 
 ---
 
 # Recovering from failed RAFT state
 
---
-
 ```bash
-[workshop-node-1]
+[workshop-vm-XX-1]
 # Stop the Docker daemon
-$ sudo systemctl stop docker
+sudo systemctl stop docker
 # Back up the Swarm directory
-$ sudo cp -r /var/lib/docker/swarm /swarm.back
+sudo cp -r /var/lib/docker/swarm /swarm.back
 # Restart the Docker daemon
-$ sudo systemctl start docker
+sudo systemctl start docker
 # Force re-initialize the cluster
-$ docker swarm init --force-new-cluster
+docker swarm init --force-new-cluster
 ```
 
 --
@@ -1300,8 +1249,6 @@ Then we need to rejoin nodes and remove the old, not obsolete ones
 ---
 
 # Monitoring our cluster
-
---
 
 * Prometheus is the hottest monitoring solution
   * it has native support for Docker Swarm services
