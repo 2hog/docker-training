@@ -52,7 +52,7 @@ class: center
 
 class: center
 
-# [p.2hog.codes/intro-to-docker-containers](https://p.2hog.codes/intro-to-docker-containers/)
+# [dojo.2hog.codes](https://dojo.2hog.codes)
 
 ---
 
@@ -326,17 +326,18 @@ docker container ls --all
 # Let's kill a container
 
 ```bash
-# First, find and inspect the container to get the host PID
+# First, find the container
 docker container ls
-docker container inspect 36
-# Then use the PID to kill the system process
-sudo kill -9 11834
+# Then use the ID to kill the process
+docker kill 94
+# Check that the process is gone
+top
 ```
 --
 ```bash
 # Let's check the container again
 docker container ls
-docker container inspect 36 | less
+docker container inspect 94 | less
 ```
 
 ---
@@ -366,17 +367,17 @@ docker run --memory=260m -it progrium/stress --vm 2 --vm-bytes 128M --timeout 5s
 # CPU cgroup in action
 
 ```bash
-# New terminal
+# Let's stress the system without limits
+docker run --rm -d progrium/stress --cpu 2 --timeout 10s -q
+
+# See the current status of the machine
 htop
 
-# Let's stress the system without limits
-docker run --rm -it progrium/stress --cpu 2 --timeout 10s -q
-
 # Let's put a CPU limit
-docker run --cpus 1 --rm -it progrium/stress --cpu 2 --timeout 10s -q
+docker run --cpus 1 --rm -d -it progrium/stress --cpu 2 --timeout 10s -q
 
 # Let's add specific CPU core pinning
-docker run --cpuset-cpus 1 --rm -it progrium/stress --cpu 2 --timeout 10s -q
+docker run --cpuset-cpus 1 --rm -d -it progrium/stress --cpu 2 --timeout 10s -q
 ```
 
 ---
@@ -458,6 +459,8 @@ Run the following command to build your Docker Image, based on the Dockerfile an
 ## Example
 
 ```bash
+mkdir -p /root/myjava
+cd /root/myjava
 docker build -t myjava .
 docker run myjava
 ```
@@ -532,6 +535,8 @@ echo 'Docker is awesome' > what-is-docker.txt
 # Last, we can view this data from another container
 docker container run -d -p 9090:80 -v demovol:/usr/share/nginx/html nginx:alpine
 curl localhost:9090/what-is-docker.txt
+
+# Alternatively, click on "Containers" and open the container URL
 ```
 
 ???
