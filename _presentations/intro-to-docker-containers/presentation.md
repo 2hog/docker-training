@@ -40,6 +40,8 @@ class: center
 
 # [dojo.2hog.codes](https://dojo.2hog.codes)
 
+# [p.2hog.codes/intro-docker-containers]https://p.2hog.codes/intro-docker-containers)
+
 ---
 
 # Agenda
