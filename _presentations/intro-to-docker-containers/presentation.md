@@ -11,12 +11,9 @@ class: center
 # .center[2hog]
 
 .center[We teach the lessons we have learnt the hard way in production.]
+.center[Consulting, training and contracting services on containers, APIs and infrastructure]
 
 .footnote[https://2hog.codes]
-
---
-
-.center[Consulting, training and contracting services on containers, APIs and infrastructure]
 
 ---
 
@@ -39,17 +36,6 @@ class: center
 .footnote[[@pariskasid](https://twitter.com/pariskasid)]
 
 ---
-
-# Dimitris Togias
-
-* Self-luminous, minimalist engineer
-* Co-founder of Warply and Niobium Labs
-* Previously, Mobile Engineer and Craftsman at Skroutz
-
-.footnote[[@demo9](https://twitter.com/demo9)]
-
----
-
 class: center
 
 # [dojo.2hog.codes](https://dojo.2hog.codes)
@@ -76,54 +62,7 @@ class: center
 
 * A way to package and distribute applications
 * A way to manage compute resources
-* A way to ship software
-
----
-
-# A fresh software delivery pipeline
-
-1. A developer implements a new software feature
-2. The developer commits the new feature in Source Control (e.g. Git, SVN etc.)
-3. A Docker image is built
-4. A new Docker Container gets deployed somewhere
-
----
-
-# What is Docker
-
-Docker is an operating system for your data center.
-
----
-
-# Docker core features
-
-* Copy on Write file system
-* Software Defined Networking
-* Storage management
-* Built-in Orchestration
-
-???
-
-* Custom OS, lightning fast
-* Join multi-host SDNs
-* Take your data with your
-* Stop managing and caring about machines
-
----
-
-# The Docker platform building blocks
-* runc - the runtime
-* containerd - the container manager
-* Docker Swarm - the orchestrator
-
-???
-
-* Makes sure your applications run in a container
-* Managed containers for your, in a single machine
-* Orchestrates the distribution of containers in multiple nodes
-
-Today we're going to interact with the first two layers only
-
+* A way to describe your application stack
 ---
 
 # Virtual Machines vs. Containers?
@@ -163,49 +102,42 @@ Containers are a set of **kernel tools and features** that **jail** and **limit*
 * Isolated in it’s own world, using **namespaces**
 * With limited resources, using **cgroups**
 
----
-
-# Namespaces
-
-.center[A **namespace** wraps a global system resource in an abstraction that makes it appear to the processes within the namespace that **they have their own isolated instance of the global resource**. Changes to the global resource are visible to other processes that are members of the namespace, but are invisible to other processes. One use of namespaces is to **implement containers**.]
-
-.footnote[The Linux man-pages project:<br />http://man7.org/linux/man-pages/man7/namespaces.7.html]
 
 ---
 
-# Popular Namespaces
+# Why Docker then?
 
-* net
-* mnt
-* user
-* pid
+* The image format, a way to package applications
+* Copy on Write file system for blazing fast boot times
+* Easy and simple to use developer experience for the masses
+
+---
+# What is Docker
+
+Docker is an operating system for your data center.
 
 ---
 
-# cgroups
+# The Docker platform building blocks
+* runc - the runtime
+* containerd - the container manager
+* Docker Swarm - the orchestrator
 
-.center[**cgroups** (abbreviated from control groups) is a Linux kernel feature that **limits, accounts for, and isolates** the resource **usage** (CPU, memory, disk I/O, network, etc.) of a collection of processes.]
+???
 
-.footnote[Wikipedia:<br />https://en.wikipedia.org/wiki/Cgroups]
+* Makes sure your applications run in a container
+* Managed containers for your, in a single machine
+* Orchestrates the distribution of containers in multiple nodes
 
----
+Today we're going to interact with the first two layers only
 
-# Popular cgroups
-
-* memory
-* cpu/cpuset
-* devices
-* blkio
-* network*
-
-.footnote[*network is not a real cgroup, it’s used though for metering]
 
 ---
 
 # Let's play a bit with our host machine
 
 ```bash
-ssh workshop@workshop-vm-XX-1
+# Go to Dojo
 
 whoami
 uname -a
@@ -255,9 +187,9 @@ exit
 ```bash
 # Next, run the following commands and compare the output
 
-docker run node:8-alpine node --version
+docker run node:13-alpine node --version
 
-docker run node:6-alpine node --version
+docker run node:12-alpine node --version
 ```
 
 ???
@@ -271,14 +203,31 @@ docker run node:6-alpine node --version
 
 - `docker`: Invokes the Docker Engine client
 - `run`: Instructs `docker` to run a container
-- `node:8-alpine`: The image to use as root file system
+- `node:13-alpine`: The image to use as root file system
 - `node --version`: The command that should be run as a container
 
 https://docs.docker.com/engine/reference/commandline/run/
 
 ---
 
-# Let's try something a bit different
+# Namespaces
+
+.center[A **namespace** wraps a global system resource in an abstraction that makes it appear to the processes within the namespace that **they have their own isolated instance of the global resource**. Changes to the global resource are visible to other processes that are members of the namespace, but are invisible to other processes. One use of namespaces is to **implement containers**.]
+
+.footnote[The Linux man-pages project:<br />http://man7.org/linux/man-pages/man7/namespaces.7.html]
+
+---
+
+# Popular Namespaces
+
+* net
+* mnt
+* user
+* pid
+
+---
+
+# Let's try something
 
 ```bash
 # First, run this command to create a sleeping container
@@ -300,6 +249,82 @@ exit
 
 * If we jump out of our namespace, we can see everything that is running in the host
 * Containers are processes, so we can see the previous container
+
+---
+
+
+# cgroups
+
+.center[**cgroups** (abbreviated from control groups) is a Linux kernel feature that **limits, accounts for, and isolates** the resource **usage** (CPU, memory, disk I/O, network, etc.) of a collection of processes.]
+
+.footnote[Wikipedia:<br />https://en.wikipedia.org/wiki/Cgroups]
+
+---
+
+# Popular cgroups
+
+* memory
+* cpu/cpuset
+* devices
+* blkio
+* network*
+
+.footnote[*network is not a real cgroup, it’s used though for metering]
+
+---
+
+# Memory cgroup in action
+
+```bash
+# Let's stress a bit our system
+docker run -it progrium/stress --vm 2 --vm-bytes 128M --timeout 5s -q
+
+# Let's put some limits on the stress
+docker run --memory=200m -it progrium/stress --vm 2 --vm-bytes 128M --timeout 5s -q
+docker container ls -n 1 -q | xargs docker inspect | less
+docker run --memory=260m -it progrium/stress --vm 2 --vm-bytes 128M --timeout 5s -q
+```
+
+---
+
+# How does memory cgroup work
+
+* Does not allow a container (aka a process) to get more than the assigned memory
+* If they try to, they are killed by the system (Out of memory)
+* This is all handled inside the kernel
+
+---
+
+# CPU cgroup in action
+
+```bash
+# Let's stress the system without limits
+docker run --rm -d progrium/stress --cpu 2 --timeout 10s -q
+
+# See the current status of the machine
+htop
+
+# Let's put a CPU limit
+docker run --cpus 0.5 --rm -d -it progrium/stress --cpu 2 --timeout 10s -q
+
+# Let's add specific CPU core pinning
+docker run --cpuset-cpus 0 --rm -d -it progrium/stress --cpu 2 --timeout 10s -q
+```
+
+---
+
+# How does CPU cgroup work
+
+* Meters the CPU usage of a container (aka a process) during a time period
+* Does not allow a container (aka a process) to get more CPU cycles than (cycles per second) * (period in seconds) * limit
+* Uses the Completely Fair Scheduler (CFS) of the kernel
+
+--
+
+Alternatively:
+
+* Only allows a container to use a specific CPU core
+* Uses weight scheduling (aka each container gets a percentage off **all** CPU, depending on the weights of the containers asking for CPU)
 
 ---
 
@@ -339,61 +364,6 @@ top
 docker container ls
 docker container inspect 94 | less
 ```
-
----
-
-# Memory cgroup in action
-
-```bash
-# Let's stress a bit our system
-docker run -it progrium/stress --vm 2 --vm-bytes 128M --timeout 5s -q
-
-# Let's put some limits on the stress
-docker run --memory=200m -it progrium/stress --vm 2 --vm-bytes 128M --timeout 5s -q
-docker container ls -n 1 -q | xargs docker inspect | less
-docker run --memory=260m -it progrium/stress --vm 2 --vm-bytes 128M --timeout 5s -q
-```
-
----
-
-# How does memory cgroup work
-
-* Does not allow a container (aka a process) to get more than the assigned memory
-* If they try to, they are killed by the system (Out of memory)
-* This is all handled inside the kernel
-
----
-
-# CPU cgroup in action
-
-```bash
-# Let's stress the system without limits
-docker run --rm -d progrium/stress --cpu 2 --timeout 10s -q
-
-# See the current status of the machine
-htop
-
-# Let's put a CPU limit
-docker run --cpus 1 --rm -d -it progrium/stress --cpu 2 --timeout 10s -q
-
-# Let's add specific CPU core pinning
-docker run --cpuset-cpus 1 --rm -d -it progrium/stress --cpu 2 --timeout 10s -q
-```
-
----
-
-# How does CPU cgroup work
-
-* Meters the CPU usage of a container (aka a process) during a time period
-* Does not allow a container (aka a process) to get more CPU cycles than (cycles per second) * (period in seconds) * limit
-* Uses the Completely Fair Scheduler (CFS) of the kernel
-
---
-
-Alternatively:
-
-* Only allows a container to use a specific CPU core
-* Uses weight scheduling (aka each container gets a percentage off **all** CPU, depending on the weights of the containers asking for CPU)
 
 ---
 class: center
@@ -546,6 +516,60 @@ curl localhost:9090/what-is-docker.txt
 * Other plugins might be able to transfer volumes between hosts, so that the data follows the container
 
 ---
+
+# What other types of volumes are there?
+
+* Block storage devices
+* Shared or network filesystems
+* Object storage
+* Other storage types
+
+---
+class: center
+
+# Networks
+
+---
+
+# Networks
+
+* Communication between containers
+* Service discovery
+* Partitioning between container groups for security
+
+---
+
+# How do container networks work
+
+* Overlay networks, usually with packet encapsulation
+* Docker DNS server for service discovery
+* Different networks for different projects/needs
+
+---
+
+# Let's see an example
+
+```bash
+docker network create demo
+docker run -d --network=demo nginx:alpine
+docker ps -q -n 1 | xargs docker inspect | grep IPAddress
+docker run -it --network=demo alpine sh
+apk add -U curl
+# curl the IP
+```
+
+---
+
+# Let's see now the DNS in action
+
+```bash
+docker run -d --network=demo --network-alias=web-server nginx:alpine
+docker run -it --network=demo alpine sh
+apk add -U curl
+curl web-server
+```
+
+---
 class: center
 
 # Docker Compose
@@ -571,6 +595,7 @@ It manages complete stacks containing:
 
 * Declarative format, simple YAML syntax
 * Can be used for development, testing and production
+* A spec compatible with differnt platforms - https://www.compose-spec.io/
 
 ???
 
@@ -644,7 +669,7 @@ https://git.io/vbasP
 ```bash
 # After saving the docker-compose.yml file locally, run the following command
 docker-compose up
-# Open http://workshop-vm-XX-1.akalipetis.com
+# Open containers tab and select port 80
 ```
 
 ---
