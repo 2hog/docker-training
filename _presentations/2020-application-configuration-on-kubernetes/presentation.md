@@ -8,6 +8,7 @@ class: middle
 --
 
 [p.2hog.codes/2020-application-configuration-on-kubernetes/](https://p.2hog.codes/2020-application-configuration-on-kubernetes/)
+
 [dojo.2hog.codes/classes/4/decks/3/](https://dojo.2hog.codes/classes/4/decks/3/)
 
 ---
