@@ -75,8 +75,6 @@ class: center
 
 # Why have the same environment everywhere?
 
----
-
 * Avoid works-on-my-machine excuses — it should work everywhere in the same way
 * Easily test new features, as the whole stack can run from your local computer, to your CI
 * Speed up project onboarding time
