@@ -5,17 +5,14 @@ class: middle
 
 # Kubernetes — get to know the basics
 
---
-
-[p.2hog.codes/kubernetes-basics](https://p.2hog.codes/kubernetes-basics)
-
 ---
 
+# .center[2hog]
 
-# About 2hog.codes
+.center[We teach the lessons we have learnt the hard way in production.]
+.center[Consulting, training and contracting services on containers, APIs and infrastructure]
 
-* Founders of [SourceLair](https://www.sourcelair.com) online IDE + Dimitris Togias
-* Docker and DevOps training and consulting
+.footnote[https://2hog.codes]
 
 ---
 
@@ -38,18 +35,9 @@ class: middle
 .footnote[[@pariskasid](https://twitter.com/pariskasid)]
 
 ---
-
-# Dimitris Togias
-
-* Self-luminous, minimalist engineer
-* Co-founder of Warply and Niobium Labs
-* Previously, Mobile Engineer and Craftsman at Skroutz
-
-.footnote[[@demo9](https://twitter.com/demo9)]
-
----
-
 class: center
+
+# [dojo.2hog.codes](https://dojo.2hog.codes)
 
 # [p.2hog.codes/kubernetes-basics](https://p.2hog.codes/kubernetes-basics)
 
@@ -63,6 +51,8 @@ class: center
 1. Kubernetes controllers — abstracting pods
 1. Exposing applications to the world
 1. Deploying as a first class citizen
+1. Security principles best practices
+1. Checking application health
 
 ---
 class: center
@@ -98,8 +88,6 @@ Kubernetes does the following tasks for you:
 
 # Core Kubernetes components
 
---
-
 * Kubernetes API server
 * Controllers
     * Kube controller manager
@@ -108,8 +96,6 @@ Kubernetes does the following tasks for you:
 ---
 
 # Key concepts
-
---
 
 * Master node(s)
   * The server(s) responsible for meta data storage, API availability and decision making
@@ -126,13 +112,13 @@ Kubernetes does the following tasks for you:
 
 # Kubernetes Topology
 
-.center[![:scale 50%](images/kube-architecture.png)]
+.center[![:scale 50%](/images/kubernetes-basics/kube-architecture.png)]
 
 ---
 
 # Kubernetes Topology — a more common example
 
-.center[![:scale 50%](images/kube-architecture-combined.png)]
+.center[![:scale 50%](/images/kubernetes-basics/kube-architecture-combined.png)]
 
 ---
 
@@ -171,15 +157,12 @@ VS
 
 # Where is everything stored?
 
---
-
 * Behind the scenes, Kubernetes is using a distributed KV store, based on RAFT - ETCD
 * RAFT is a consensus algorithm, also used in other distributed systems like Swarm or Consul
 * It needs at least N / 2 + 1 members to be able to operate
   * Always create clusters with odd number of members
 
 ---
-exclude: true
 
 .center[<iframe src="https://raft.github.io/raftscope/index.html" style="border: 0; width: 800px; height: 580px; margin-bottom: 20px"></iframe>]
 
@@ -208,27 +191,19 @@ class: center
 
 # When **not** to use pods
 
-???
-
-* The co-location and shared resources of pods, might be trick someone into merging similar containers
-* This has bad consequences
-
---
 
 * It's thought to be _easier_ to colocate two containers
 * Two or more containers need to share some resources
 * Your code is not configurable to find another container somewhere other than localhost
 
+???
+
+* The co-location and shared resources of pods, might be trick someone into merging similar containers
+* This has bad consequences
+
 ---
 
 # When to use pods
-
-???
-
-* There are though use-cases for multi-container pods
-* Sidecars
-* Sidecars are containers that provide an abstraction 
-* File-system refresh containers
 
 --
 
@@ -239,20 +214,24 @@ For implementing Sidecars.
 * Abstraction over the network — see Istio and co
 * Abstraction over the file system
 
+???
+
+* There are though use-cases for multi-container pods
+* Sidecars
+* Sidecars are containers that provide an abstraction 
+* File-system refresh containers
+
 ---
 
 # Getting our hands dirty
 
 ```bash
-ssh workshop@workshop-vm-XX-00.akalipetis.com
 git clone https://github.com/2hog/docker-training-samples
 ```
 
 ---
 
 # Let's create a pod
-
---
 
 ```bash
 # Let's create the pause container, the one holding all the shared resources
@@ -280,8 +259,6 @@ cat /usr/share/nginx/html/index.html
 
 # Let's do it the Kubernetes way now
 
---
-
 ```bash
 cat << EOF | kubectl create -f -
 apiVersion: v1
@@ -305,9 +282,10 @@ EOF
 # And check it out
 
 ```bash
-kubectl exec nginx --container=sidecar -it sh
+kubectl exec nginx --container=sidecar -it -- sh
 apk add -U curl
-curl localhost
+curl localhost:80
+cat /usr/share/nginx/html/index.html
 ```
 
 ---
@@ -376,6 +354,14 @@ kubectl get po
 
 Where all those containers running?
 
+--
+
+```bash
+kubectl get po
+ssh workshop@workshop-vm-XX-Y.akalipetis.com #pass 2hog-docker
+docker ps --filter=label=io.kubernetes.pod.namespace=default
+```
+
 ---
 
 # Enter Kubernetes namespaces
@@ -389,7 +375,7 @@ Where all those containers running?
 ```bash
 kubectl get ns
 kubectl get po --all-namespaces
-kubectl get po --namespace=docker
+kubectl get po --namespace=kube-system
 ```
 
 ---
@@ -423,8 +409,8 @@ kubectl get services --all-namespaces --watch
 
 * Imperatively
   ```bash
-  kubectl run nginx --image nginx --generator=run-pod/v1
-  kubectl set image pod/nginx nginx=nginx:latest
+  kubectl run nginx-2 --image nginx --generator=run-pod/v1
+  kubectl set image pod/nginx-2 nginx-2=nginx:latest
   ```
 --
 * Declaratively
@@ -433,10 +419,10 @@ kubectl get services --all-namespaces --watch
     apiVersion: v1
     kind: Pod
     metadata:
-      name: nginx
+      name: nginx-2
     spec:
       containers:
-      - name: nginx
+      - name: nginx-2
         image: nginx:alpine
     EOF
   ```
@@ -463,8 +449,6 @@ Of course not!
 
 # Kubernetes controllers
 
-
---
 
 Controllers are management components of Kubernetes, which abstracts the way workloads are deployed
 
@@ -499,7 +483,7 @@ kubectl apply -f kube/replicaset-demo.yml
 # Get all the running pods
 kubectl get po
 # Kill one of them
-kubectl delete po dummy-replicaset-ft4p4
+kubectl delete po demo-replicaset-ft4p4
 # Get them again
 kubectl get po
 ```
@@ -521,8 +505,6 @@ kubectl get po
 
 # Let's create our job
 
---
-
 ```bash
 kubectl apply -f kube/job-demo.yml
 ```
@@ -532,7 +514,7 @@ kubectl apply -f kube/job-demo.yml
 # Now, let's check it out
 
 ```bash
-# Wait for the job (brew install gnu-sed first)
+# Wait for the job
 bash kube/wait-for.sh job job-demo
 # Alternatively, on Kube 1.11 you can use kubectl wait
 # Get the logs
@@ -548,14 +530,12 @@ class: center
 
 # Let's see our replica set demo containers
 
---
-
 * Kubernetes is using services, in order to abstract the access to a set of pods
 * We don't need to be aware of the IPs and status of pods at each point it time
 
 ---
 
-# Let's create our first replica set
+# Let's expose our first replica set
 
 ```bash
 kubectl expose replicaset demo-replicaset --type=NodePort
@@ -589,28 +569,22 @@ kubectl get po demo-replicaset-8ksqx --output=yaml | less
 
 ## Let's check this out
 
-???
-
-* No matter which node you are in, the port opens
-* This is because Kubernetes has ingress load balancing
-
---
-
 ```bash
-curl localhost:`kubectl \
-  get svc demo-replicaset \
-  --output=json | jq '(.spec.ports)[0].nodePort'`
+kubectl get svc demo-replicaset
+curl -I workshop-vm-XX-1.akalipetis.com:PORT
+curl -I workshop-vm-XX-2.akalipetis.com:PORT
+curl -I workshop-vm-XX-3.akalipetis.com:PORT
 ```
 
 ???
 
-You can also open the external IP, port of a node
+* No matter which node you are in, the port opens
+* This is because Kubernetes has ingress load balancing
+* You can also open the external IP, port of a node
 
 ---
 
 # Kubernetes load-balancing
-
---
 
 * Each service in the Kubernetes gets a virtual IP
   * Kubernetes services make sure connections to this internal IP are routed to the correct container, in any host in the cluster
@@ -627,8 +601,6 @@ Benefits:
 ---
 
 # The Kubernetes networking model
-
---
 
 * Kubernetes supports everything implementing the CNI
 * All pods and nodes in the cluster are routable within a flat network
@@ -675,10 +647,10 @@ Except from the full DNS records, you can also search the following DNS names
 # Let's check out DNS resolution in Kubernetes
 
 ```bash
-kubectl exec nginx --container=sidecar -it sh
+kubectl exec nginx --container=sidecar -it -- sh
 apk add -U bind-tools
 host demo-replicaset
-dig demo-replicaset.svc.default.cluster.local
+dig demo-replicaset.default.svc.cluster.local
 ```
 
 ---
@@ -700,8 +672,6 @@ _Simple enough?_
 
 # What are deployments after all?
 
---
-
 Deployments describe a desired state and the Deployment controller changes the _actual state_ to the _desired state_ at a **controlled rate**.
 
 --
@@ -716,11 +686,9 @@ You can think of the abstractions like this:
 
 # What can I do with deployments?
 
---
-
 * Rolling updates
 * Rollbacks
-* Scale ups (and downs)
+* Scale outs (and ins)
 * Check out deployment status
 * Keep revisions of deployments
 
@@ -728,29 +696,27 @@ You can think of the abstractions like this:
 
 # Let's see it in action
 
-???
-
-We will now take the previous Replica Set and include it in a deployment
-
---
 
 ```bash
 kubectl apply -f kube/deployment-demo.yml
 kubectl rollout status deployment demo-deployment
-curl http://localhost:`kubectl get svc demo-deployment-svc --output=json | jq '(.spec.ports)[0].nodePort'`
+kubectl get svc demo-deployment-svc
+curl http://workshop-vm-XX-Y.akalipetis.com:PORT
 ```
+
+???
+
+We will now take the previous Replica Set and include it in a deployment
 
 ---
 
 # Updating the deployment
 
---
-
 ```bash
 # Edit kube/deployment-demo.yml first
 kubectl apply -f kube/deployment-demo.yml
 kubectl rollout status deployment demo-deployment
-curl http://localhost:`kubectl get svc demo-deployment-svc --output=json | jq '(.spec.ports)[0].nodePort'`
+curl http://workshop-vm-XX-Y.akalipetis.com:PORT
 ```
 
 --
@@ -762,7 +728,7 @@ _Cool tip_: naming ports allows deployments to use different ports, without an i
 # Breaking things
 
 ```bash
-kubectl set image deployment demo-deployment web=nginx:alpine
+kubectl set image deployment demo-deployment web=akalipetis/headers
 kubectl rollout status deployment demo-deployment
 ```
 
@@ -770,16 +736,12 @@ kubectl rollout status deployment demo-deployment
 
 # How to get to a previous state
 
---
-
 * Kubernetes deployments keep the history of each deployment
 * Let's head to the previous version!
 
 ---
 
 # Rolling back
-
---
 
 To fix things...
 
@@ -791,6 +753,156 @@ kubectl rollout status deployment demo-deployment
 kubectl rollout history deployment demo-deployment
 kubectl apply -f kube/deployment-demo.yml --record
 ```
+
+---
+class: center
+
+# Security principles best practices
+
+---
+
+# Securing pods
+
+* Run pods as non-root users
+* Make the pod filesystem readonly
+* Do not add capabilities that are not needed to pods
+
+---
+
+# Securing services within the cluster
+
+* Services and pods within a cluster are accessible from any pod
+* If untrusted pods are run, or if user-facing services exist with lesser access control, services should be secured even if they are internal
+
+---
+
+# Securing services within the cluster
+
+* Adding TLS connection support
+* Using API keys and other credential types
+* Using tools like Istio to control and secure connections between applications
+
+---
+
+# RBAC in Kubernetes
+
+* Every pod in Kubernetes gets a service account
+* Since the Kubernetes API is routable from every pod, without RBAC the cluster is completely vulnerable
+
+---
+
+# Defaults
+
+* `kubeadm` created a cluster where pods by default do not have access
+* The Kubernetes API is secured with HTTPS
+
+---
+
+# RBAC roles in Kubernetes
+
+* Roles define permissions in a Kubernetes cluster
+* Permissions for roles are additive (ie whitelist)
+* There are two types of Roles in Kubernetes
+    * `Role` — defines roles, operating within one namespace
+    * `ClusterRole` — defines roles, operating cluster wide
+
+---
+
+# Binding roles to users and service accounts
+
+* `RoleBinding` binds `Role`s to users or service accounts
+* `ClusterRoleBinding` binds `ClusterRole`s to users or service accounts
+* `ClusterRole` can operate as a `Role` and bound with a `RoleBinding`
+
+---
+
+# How service accounts work
+
+* Service accounts create the needed files in `/var/run/secrets/kubernetes.io/serviceaccount/`
+* The files created contain the `namespace` and the `token`
+
+```bash
+kubectl -n kube-system exec weave-net-c9kzt -c weave -it sh
+ls /var/run/secrets/kubernetes.io/serviceaccount/
+```
+
+---
+class: center
+
+# Checking application health in Kubernetes
+
+---
+
+# What if the process is running, but my application does not respond?
+
+* A running process does not indicate a responsive application
+* There are many reasons why an application might be running, but not responding
+
+???
+
+* An application might be simply stuck
+* An application might be working, but some backing services or connections might be broken
+
+---
+
+# Enter health probes
+
+Earth to Mars, are you alive?
+
+.center[![](/images/intro-docker-kubernetes/mars-rover.png)]
+
+---
+
+# Earth to Mars, are you alive?
+
+* Health probes define a custom way for Kubernetes to understand if a container is healthy
+* They are quite flexible and should match any logic
+* When health probes fail, containers get restarted
+
+???
+
+This allows us to make sure our application is responding correctly
+
+---
+
+# Command probe
+
+* Run an arbitrary command
+* Check if the exit code is 0 or not
+
+---
+
+# HTTP GET probe
+
+* Do an HTTP GET request, with the given parameters
+* 2XX and 3XX codes are considered success
+* 4XX and 5XX codes are considered failure
+
+---
+
+# TCP probe
+
+
+* The are times where we just want to test a TCP connection
+* Using an exec probe is not an option, since we don't want to use a client, or a client is not available
+
+
+Enter the TCP probe, which just checks if a TCP connection can be made
+
+---
+
+# Ready VS healthy
+
+* What if we have different tolerance when an application starts?
+* What if we want to make a more complex check before we consider an application ready
+
+---
+
+# Readiness probes
+
+* Same as the liveness probes
+* Should be successful before an application is considered ready
+* The probe syntax is identical
 
 ---
 class: center

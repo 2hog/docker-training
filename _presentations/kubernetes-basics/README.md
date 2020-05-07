@@ -6,7 +6,7 @@ Docker and containers have drastically changed the way we develop and deploy app
 
 ## Duration
 
-The duration of this training is 4 hours (half-day).
+The duration of this training is 6 hours (3/4 day).
 
 ## Topics covered
 
@@ -19,6 +19,8 @@ After the end of the training, participants should be able to understand:
 * Pod design principles
 * Labels, selectors and deployments
 * Simple services
+* Security principles best practices
+* Checking application health
 
 ## Agenda
 
