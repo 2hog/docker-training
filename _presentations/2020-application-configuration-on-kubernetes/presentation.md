@@ -7,7 +7,8 @@ class: middle
 
 --
 
-[p.2hog.codes/configuring-applications-on-kubernetes](https://p.2hog.codes/configuring-applications-on-kubernetes)
+[p.2hog.codes/2020-application-configuration-on-kubernetes/](https://p.2hog.codes/2020-application-configuration-on-kubernetes/)
+[dojo.2hog.codes/classes/4/decks/3/](https://dojo.2hog.codes/classes/4/decks/3/)
 
 ---
 
@@ -122,12 +123,12 @@ data:
   environment: training
 kind: ConfigMap
 metadata:
-  creationTimestamp: 2018-12-06T06:59:14Z
+  creationTimestamp: "2020-05-07T21:46:25Z"
   name: greeter-config
   namespace: default
-  resourceVersion: "241140"
+  resourceVersion: "411"
   selfLink: /api/v1/namespaces/default/configmaps/greeter-config
-  uid: 70e6b091-f924-11e8-a189-025000000001
+  uid: 33507e2b-90ac-11ea-bd52-02428f875c88
 ```
 
 ---
@@ -357,12 +358,12 @@ data:
   secret_key: bXlzdGlrb3VsaQ==
 kind: Secret
 metadata:
-  creationTimestamp: 2018-12-06T07:44:35Z
+  creationTimestamp: "2020-05-07T21:50:28Z"
   name: greeter-secret
   namespace: default
-  resourceVersion: "244134"
+  resourceVersion: "725"
   selfLink: /api/v1/namespaces/default/secrets/greeter-secret
-  uid: c697a841-f92a-11e8-a189-025000000001
+  uid: c3ef222a-90ac-11ea-bd52-02428f875c88
 type: Opaque
 ```
 
