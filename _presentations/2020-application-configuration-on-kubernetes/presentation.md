@@ -3,13 +3,13 @@ class: middle
 
 ---
 
-# Application configuration on Kubernetes
+# Application Configuration on Kubernetes
 
 --
 
 [p.2hog.codes/2020-application-configuration-on-kubernetes/](https://p.2hog.codes/2020-application-configuration-on-kubernetes/)
 
-[dojo.2hog.codes/classes/4/decks/3/](https://dojo.2hog.codes/classes/4/decks/3/)
+[dojo.2hog.codes](https://dojo.2hog.codes/)
 
 ---
 
@@ -44,17 +44,165 @@ class: middle
 
 # Agenda
 
-1. Configuration in Kubernetes
-2. ConfigMaps
-3. Examples with ConfigMaps
-4. Secrets
-5. Examples with Secrets
+1. Software configuration
+2. Configuration in Kubernetes
+3. ConfigMaps
+4. Examples with ConfigMaps
+5. Secrets
+6. Examples with Secrets
 
 ---
 
 class: center
 
-# Application configuration on Kubernetes
+# Application Configuration on Kubernetes
+
+---
+
+# Software Configuration
+
+---
+
+# What is Software Configuration?
+
+---
+
+# Source Code, Configuration and Applications
+
+**Applications** are entities executables by the machine.
+
+**Applications** the result of **Source Code** and **Configuration** processing.
+
+---
+
+# Source Code, Configuration and Applications
+
+![Configuration in Applications](/presentations/configuring-applications-on-kubernetes/images/config-vs-code.svg)
+
+---
+
+# Configuration vs. Source Code
+
+- Configuration is controlled by System Administrators
+- Source Code is controlled by Developers
+
+---
+
+# Configuration Options
+
+We have a few options to choose on how to configure our applications.
+
+We will focus on the 3 most prominent ones.
+
+---
+
+# Option 1: Environment Variables
+
+Environment variables are **dynamic-named values** that can affect the way running processes behave on a computer.
+
+Environment variables provide **granular, fully orthogonal** configuration for applications.
+
+---
+
+# Restrictions of Environment Variables
+
+1. Their names consist solely of uppercase characters, digits and the underscore ([source](https://stackoverflow.com/a/2821183/577598))
+2. Updating the environment for a process tree is cumbersome ([source](https://support.cloud.engineyard.com/hc/en-us/articles/205407508-Environment-Variables-and-Why-You-Shouldn-t-Use-Them))
+
+---
+
+# Worst Practices for Environment Variables
+
+1. Storing secrets in production in environment variables
+2. Storing structured configuration like YAML in a single environment variable
+
+---
+
+# Case Studies
+
+1. Linux and Unix programs depending on `$HOME`, `$PATH` etc.
+2. The Python interpreter can get configured via `$PYTHON*` environment variables ([source](https://docs.python.org/3/using/cmdline.html#environment-variables))
+3. **Flask** can get configured via `$FLASK_*` environment variables ([source](http://flask.pocoo.org/docs/1.0/config/#environment-and-debug-features))
+
+---
+
+# Option 2: Files
+
+Files let us retrieve data from a path.
+
+Files provide more freedom and options compared to environment variables.
+
+Files don't have to be necessarily stored on disk 🤯.
+
+---
+
+# Restrictions of Files
+
+1. Configuration files can be accidentally checked into version control
+2. The contents and structure of each configuration file are unpredictable
+---
+
+# Worst Practices for Files
+
+1. Not using well-adopted structures in configuration files (e.g. YAML or JSON)
+2. Storing code in configuration files (e.g. `settings_local.py`)
+
+---
+
+# Case Studies
+
+1. **NGINX** gets configured by a file tree ([source](http://nginx.org/en/docs/beginners_guide.html#conf_structure)) <small><a href="https://github.com/sourcelair/ceryx" >or does it?</a></small>
+2. **Rails** applications by `.rb` (👎) and `.yml` files ([source](https://guides.rubyonrails.org/configuring.html))
+3. **PostgreSQL** gets configured by `postgresql.conf` ([source](https://www.postgresql.org/docs/9.6/config-setting.html#CONFIG-SETTING-CONFIGURATION-FILE))
+
+---
+
+# Option 3: External Data Stores
+
+External data stores deticated for storing configuration are great for distributed applications.
+
+An external data store is a better choice for storing secrets.
+
+Great external data stores for configuration are Redis, Etcd, Consul, Riak and Vault.
+
+---
+
+# Restrictions of External Data Stores
+
+1. Applications depending on them need additional libraries
+2. They introduce complexity to the system (as they have to be HA)
+3. They consume additional resources
+
+---
+
+# Worst Practices for External Data Stores
+
+1. Storing secrets in data stores not crafted for storing secrets
+2. Using external data stores for small, non-distributed apps
+
+---
+
+# Case Studies
+
+1. **Kubernetes** uses etcd to extend its API
+2. **Wordpress** stores almost the entirety of its configuration in MySQL (😢)
+3. **Adobe** uses Vault to store secrets ([source](https://www.hashicorp.com/resources/adobe-100-trillion-transactions-hashicorp-vault))
+
+---
+
+# Mixing Configuration Options
+
+Mixing different configuration options should be avoided.
+
+We can mix different configuration options depending on limitations.
+
+---
+
+# Legit Examples of Mixing Configuration Options
+
+1. Non-secret configuration in the environment and secrets in memory mapped files
+2. Non-secret configuration in the environment and secrets in Vault
+3. Using an environment variable to determine the location of a configuration file
 
 ---
 
@@ -70,7 +218,7 @@ Kubernetes provides fundamental configuration management capabilities.
 
 ---
 
-# Configuration objects in Kubernetes
+# Configuration Objects in Kubernetes
 
 - **ConfigMaps** for non-secret configuration data
 - **Secrets** for secret configuration data
@@ -91,7 +239,7 @@ ConfigMaps should be used to store non-secret data.
 
 ---
 
-# Use cases for ConfigMaps
+# Use Cases for ConfigMaps
 
 ConfigMaps are great for holding information such as
 
@@ -104,8 +252,16 @@ ConfigMaps are great for holding information such as
 # Creating your first ConfigMap
 
 ```console
-paris at ~ ⠕ kubectl create configmap greeter-config --from-literal=environment=training
-configmap "greeter-config" created
+kubectl create configmap my-first-config --from-literal=environment=training
+```
+
+---
+
+# Creating your first ConfigMap
+
+```console
+paris at ~ ⠕ kubectl create configmap my-first-config --from-literal=environment=training
+configmap/my-first-config created
 ```
 
 <small>
@@ -113,23 +269,42 @@ configmap "greeter-config" created
     <code>kubectl create configmap</code> docs
   </a>
 </small>
+
 ---
 
-# Your first ConfigMap
+# Your First ConfigMap
 
 ```console
-paris at ~ ⠕ kubectl get configmap greeter-config -o yaml
+kubectl get configmap my-first-config -o yaml
+```
+
+---
+
+# Your First ConfigMap
+
+```console
+paris at ~ ⠕ kubectl get configmap my-first-config -o yaml
 apiVersion: v1
 data:
   environment: training
 kind: ConfigMap
 metadata:
-  creationTimestamp: "2020-05-07T21:46:25Z"
-  name: greeter-config
+  creationTimestamp: "2020-05-08T07:38:04Z"
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:data:
+        .: {}
+        f:environment: {}
+    manager: kubectl
+    operation: Update
+    time: "2020-05-08T07:38:04Z"
+  name: my-first-config
   namespace: default
-  resourceVersion: "411"
-  selfLink: /api/v1/namespaces/default/configmaps/greeter-config
-  uid: 33507e2b-90ac-11ea-bd52-02428f875c88
+  resourceVersion: "99491"
+  selfLink: /api/v1/namespaces/default/configmaps/my-first-config
+  uid: 909cd03d-b38e-41d3-875e-d784d42d9701
 ```
 
 ---
@@ -143,19 +318,18 @@ Based on the previous example we should state that ConfigMaps:
 
 ---
 
-# ConfigMap structure
+# ConfigMap Structure
 
 As first-class Kubernetes objects, ConfigMaps have a strict structure:
 
 - `apiVersion`: value should be `v1`
 - `kind`: value should be `ConfigMap`
-- `binaryData`: key-value pairs outside the UTF-8 range
 - `data`: key-value pairs inside the UTF-8 range
-- `metadata`: [`ObjectMeta` type](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.13/#objectmeta-v1-meta)
+- `metadata`: [`ObjectMeta` type](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#objectmeta-v1-meta)
 
 ---
 
-# A richer ConfigMap example
+# A Richer ConfigMap Example
 
 ```yaml
 apiVersion: v1
@@ -165,8 +339,8 @@ metadata:
   labels:
     app: docker-training-samples-redis
 data:
-  REDIS_DB: 0
-  REDIS_HOST: redis
+  REDIS_DB: "0"
+  REDIS_HOST: "redis"
 ```
 
 ---
@@ -180,13 +354,13 @@ There are 2 options for consuming ConfigMap data inside a Pod:
 
 ---
 
-# ConfigMap data as environment variables
+# ConfigMap Data as Environment Variables
 
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: docker-training-samples-micro-flask
+  name: configmap-pod-example-1
 spec:
   containers:
     - name: docker-training-samples-micro-flask
@@ -195,7 +369,7 @@ spec:
         - name: ENVIRONMENT  # Name of environment variable in container
           valueFrom:
             configMapKeyRef:
-              name: greeter-config  # Name of ConfigMap
+              name: my-first-config  # Name of ConfigMap
               key: environment # Key inside the `data` section of ConfigMap
 ```
 
@@ -203,33 +377,33 @@ The developer is in charge of the configuration baseline.
 
 ---
 
-# All ConfigMap data as environment
+# All ConfigMap Data as Environment
 
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: docker-training-samples-micro-flask
+  name: configmap-pod-example-2
 spec:
   containers:
     - name: docker-training-samples-micro-flask
       image: 2hog/docker-training-samples-micro-flask
       envFrom:
         - configMapRef:
-            name: greeter-config  # Name of ConfigMap
+            name: my-first-config  # Name of ConfigMap
 ```
 
 The system administrator is in charge of the configuration baseline.
 
 ---
 
-# ConfigMap as volume
+# ConfigMap as Volume
 
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: docker-training-samples-micro-flask
+  name: configmap-pod-example-3
 spec:
   containers:
     - name: docker-training-samples-micro-flask
@@ -240,19 +414,19 @@ spec:
   volumes:
     - name: config-volume
       configMap:
-        name: greeter-config  # Name of ConfigMap
+        name: my-first-config  # Name of ConfigMap
 ```
 
 ---
 
-# ConfigMap data as files in custom path
+# ConfigMap Data as Files in Custom Path
 
 
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: docker-training-samples-micro-flask
+  name: configmap-pod-example-4
 spec:
   containers:
     - name: docker-training-samples-micro-flask
@@ -263,15 +437,17 @@ spec:
   volumes:
     - name: config-volume
       configMap:
-        name: greeter-config  # Name of ConfigMap
+        name: my-first-config  # Name of ConfigMap
         items:
+          - key: environment  # Key in ConfigMap
+            path: environment # Path in containers of Pod
           - key: environment
-            path: vars
+            path: environment_again # Path in containers of Pod
 ```
 
 ---
 
-# ConfigMaps restrictions
+# ConfigMaps Restrictions
 
 1. You must create a `ConfigMap` before referencing it in a `Pod` specification.
 2. If you use `envFrom` to define environment variables from `ConfigMaps`, invalid keys will be skipped.
@@ -279,9 +455,10 @@ spec:
 
 ---
 
-# ConfigMaps worst practices
+# ConfigMaps Worst Practices
 
 1. Using `ConfigMaps` to store secret data (e.g. database passwords)
+2. **NOT** using ConfigMaps for the rest of your configuration! 😂
 
 ---
 
@@ -305,7 +482,7 @@ Secrets are intended to hold sensitive information.
 
 ---
 
-# Use cases for Secrets
+# Use Cases for Secrets
 
 Secrets are great for holding information such as
 
@@ -315,7 +492,7 @@ Secrets are great for holding information such as
 
 ---
 
-# Secret types
+# Secret Types
 
 Kubernetes supports three distinct secret types:
 
@@ -325,7 +502,7 @@ Kubernetes supports three distinct secret types:
 
 ---
 
-# Generic secrets
+# Generic Secrets
 
 We will only examine generic secrets here.
 
@@ -337,9 +514,17 @@ Docker Registry and TLS secrets are not intended to be used as application confi
 
 # Creating your first Secret
 
-```shell
-paris at ~ ⠕ kubectl create secret generic greeter-secret --from-literal=secret_key=mystikouli
-secret "greeter-secret" created
+```console
+kubectl create secret generic my-first-secret --from-literal=my_secret=combination
+```
+
+---
+
+# Creating your first Secret
+
+```console
+paris at ~ ⠕ kubectl create secret generic my-first-secret --from-literal=my_secret=combination
+secret/my-first-secret created
 ```
 
 <small>
@@ -350,35 +535,61 @@ secret "greeter-secret" created
 
 ---
 
-# Your first Secret
+# Your First Secret
 
-```shell
-paris at ~ ⠕ kubectl get secret greeter-secret -o yaml
+```console
+kubectl get secret my-first-secret -o yaml
+```
+
+---
+
+# Your First Secret
+
+```console
+paris at ~ ⠕ kubectl get secret my-first-secret -o yaml
 apiVersion: v1
 data:
-  secret_key: bXlzdGlrb3VsaQ==
+  my_secret: Y29tYmluYXRpb24=
 kind: Secret
 metadata:
-  creationTimestamp: "2020-05-07T21:50:28Z"
-  name: greeter-secret
+  creationTimestamp: "2020-05-08T07:35:29Z"
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:data:
+        .: {}
+        f:my_secret: {}
+      f:type: {}
+    manager: kubectl
+    operation: Update
+    time: "2020-05-08T07:35:29Z"
+  name: my-first-secret
   namespace: default
-  resourceVersion: "725"
-  selfLink: /api/v1/namespaces/default/secrets/greeter-secret
-  uid: c3ef222a-90ac-11ea-bd52-02428f875c88
+  resourceVersion: "99121"
+  selfLink: /api/v1/namespaces/default/secrets/my-first-secret
+  uid: 7279f991-db1c-42f5-8929-1c6bed853ba2
 type: Opaque
 ```
 
 ---
 
-# Secret structure
+# Secret Structure
 
 As first-class Kubernetes objects, Secrets have a strict structure:
 
 - `apiVersion`: value should be `v1`
 - `kind`: value should be `Secret`
 - `data`: key-value pairs inside the UTF-8 range
-- `stringData`: non-binary secret data in string form
-- `metadata`: [`ObjectMeta` type](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.13/#objectmeta-v1-meta)
+- `metadata`: [`ObjectMeta` type](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#objectmeta-v1-meta)
+
+---
+
+# A Richer Secret
+
+```console
+kubectl create secret generic richer-secret --from-literal=auth_user=velti --from-literal=auth_password=training
+```
 
 ---
 
@@ -391,13 +602,13 @@ There are 2 options for consuming Secret data inside a Pod:
 
 ---
 
-# Secret data as environment variables
+# Secret Data as Environment Variables
 
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: docker-training-samples-micro-flask
+  name: secret-in-pod-example-1
 spec:
   containers:
     - name: docker-training-samples-micro-flask
@@ -406,81 +617,57 @@ spec:
         - name: AUTH_USER  # Name of environment variable in container
           valueFrom:
             secretKeyRef:
-              name: greeter-secret  # Name of Secret
+              name: richer-secret  # Name of Secret
               key: auth_user # Key inside the `data` section of Secret
         - name: AUTH_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: greeter-secret
+              name: richer-secret
               key: auth_password
 ```
 
 ---
 
-# Secret data as volume
+# Secret Data as Volume
 
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: docker-training-samples-micro-flask
+  name: secret-in-pod-example-2
 spec:
   containers:
     - name: docker-training-samples-micro-flask
       image: 2hog/docker-training-samples-micro-flask
       volumeMounts:
       - name: secret-volume
-        mountPath: /run/secrets
+        mountPath: /etc/secrets
   volumes:
     - name: secret-volume
       secret:
-        secretName: greeter-secret  # Name of Secret
+        secretName: richer-secret
 ```
 
 ---
 
-# Secret data with read-only permissions
+# Secret Data in Custom Path
 
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: docker-training-samples-micro-flask
+  name: secret-in-pod-example-3
 spec:
   containers:
     - name: docker-training-samples-micro-flask
       image: 2hog/docker-training-samples-micro-flask
       volumeMounts:
       - name: secret-volume
-        mountPath: /run/secrets
-        readOnly: true
+        mountPath: /etc/secrets
   volumes:
     - name: secret-volume
       secret:
-        secretName: greeter-secret  # Name of Secret
-```
-
----
-
-# Secret data in custom path
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: docker-training-samples-micro-flask
-spec:
-  containers:
-    - name: docker-training-samples-micro-flask
-      image: 2hog/docker-training-samples-micro-flask
-      volumeMounts:
-      - name: secret-volume
-        mountPath: /run/secrets
-        readOnly: true
-  volumes:
-    - name: secret-volume
-      secret:
-        secretName: greeter-secret  # Name of Secret
+        secretName: richer-secret
         items:
           - key: auth_user
             path: credentials/user
@@ -490,13 +677,13 @@ spec:
 
 ---
 
-# Prepared configuration file as seret
+# Prepared Configuration File as Secret
 
 ```yaml
 apiVersion: v1
 kind: Secret
 metadata:
-  name: mysecret
+  name: secret-with-prepared-data
 type: Opaque
 stringData:
   settings.yml: |-
@@ -511,7 +698,7 @@ This should be used only as part of a transition path in legacy apps.
 
 ---
 
-# Secrets restrictions
+# Secrets Restrictions
 
 1. You must create a `Secret` before referencing it in a `Pod` specification.
 2. Individual secrets are limited to 1MB in size.
@@ -522,6 +709,7 @@ This should be used only as part of a transition path in legacy apps.
 # Secrets worst practices
 
 1. Using Secrets to store whole configuration files
+2. **NOT** using Secrets for configuration with sensitive data 😂!
 
 ---
 
@@ -531,7 +719,7 @@ https://bit.ly/2QOUtL4
 
 ---
 
-# The big win of ConfigMaps and Secrets
+# The Big Win of ConfigMaps and Secrets
 
 ConfigMaps and Secrets provide a clean contract between developers and system administrators.
 
@@ -539,7 +727,7 @@ System administrators control ConfigMaps and Secrets regardless of how they are 
 
 ---
 
-# Ask your most weird questions!
+# Try me. Ask your weirdest questions!
 
 ---
 
