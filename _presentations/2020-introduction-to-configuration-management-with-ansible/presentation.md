@@ -447,7 +447,7 @@ Playbooks are YAML files with ordered lists of tasks, so you can run them in tha
 
 ---
 
-# Your First Playbook (`playbooks.yml`)
+# Your First Playbook (`playbook.yml`)
 
 ```yaml
 - name: My first Playbook
