@@ -7,7 +7,7 @@ class: middle
 
 --
 
-[p.2hog.codes/2020-ansible-playbooks](https://p.2hog.codes/2020-2020-ansible-playbooks)
+[p.2hog.codes/2020-ansible-playbooks](https://p.2hog.codes/2020-ansible-playbooks)
 
 [dojo.2hog.codes](https://dojo.2hog.codes)
 
