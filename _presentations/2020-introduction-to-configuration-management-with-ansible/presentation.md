@@ -345,7 +345,7 @@ all:
 # Your First Command
 
 ```console
-ansible -i inventory.yml all -m shell -a 'echo "Hello from $(hostname)!"'
+ansible -i inventory.yml all -m shell -a 'echo "Hello from $(whoami) at $(hostname)!"'
 ```
 
 ---
@@ -353,9 +353,9 @@ ansible -i inventory.yml all -m shell -a 'echo "Hello from $(hostname)!"'
 # Your First Command
 
 ```console
-$ ansible -i inventory.yml all -m shell -a 'echo "Hello from $(hostname)!"'
+$ ansible -i inventory.yml all -m shell -a 'echo "Hello from $(whoami) at $(hostname)!"'
 managed-node-01 | CHANGED | rc=0 >>
-Hello from ubuntu-s-1vcpu-1gb-fra1-01!
+Hello from root at ubuntu-s-1vcpu-1gb-fra1-01!
 ```
 
 ---
@@ -393,7 +393,7 @@ Modules are the units of code Ansible executes on Managed Nodes.
 # Your First Command
 
 ```console
-ansible -i inventory.yml all -m shell -a 'echo "Hello from $(hostname)!"'
+ansible -i inventory.yml all -m shell -a 'echo "Hello from $(whoami) at $(hostname)!"'
 ```
 
 ---
@@ -409,7 +409,7 @@ ansible [...] -m shell [...]
 # Your First Command
 
 ```console
-ansible [...] -m shell -a 'echo "Hello from $(hostname)!"'
+ansible [...] -m shell -a 'echo "Hello from $(whoami) at $(hostname)!"'
 ```
 
 ---
@@ -419,7 +419,7 @@ ansible [...] -m shell -a 'echo "Hello from $(hostname)!"'
 We instructed Ansible to
 
 - **Run** the `shell` module via the `-m` flag
-- **Pass** `'echo "Hello from $(hostname)!"'` as module argument via the `-a` flag
+- **Pass** `'echo "Hello from $(whoami) at $(hostname)!"'` as module argument via the `-a` flag
 
 ---
 
@@ -463,7 +463,7 @@ Playbooks are YAML files with ordered lists of tasks, so you can run them in tha
 # Execute your first Playbook
 
 ```console
-ansible-playbook -i inventory.yml playbooks.yml
+ansible-playbook -i inventory.yml playbook.yml
 ```
 
 ---
@@ -471,7 +471,7 @@ ansible-playbook -i inventory.yml playbooks.yml
 # Execute your first Playbook
 
 ```console
-$ ansible-playbook -i inventory.yml playbooks.yml
+$ ansible-playbook -i inventory.yml playbook.yml
 
 PLAY [My first Playbook] **********************************************************************************************************
 
