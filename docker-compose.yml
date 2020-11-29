@@ -3,8 +3,10 @@ version: '3.4'
 services:
   web:
     command: jekyll serve
-    build: ./
+    build:
+      context: ./
+      target: dev
     ports:
-      - 8088:4000
+      - 4000:4000
     volumes:
       - ./:/srv/jekyll
