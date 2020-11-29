@@ -131,6 +131,8 @@ In Kubernetes Jobs are controller objects corresponding to Pods running to compl
 
 # Your first job
 
+`steve-job.yml`:
+
 ```yml
 apiVersion: batch/v1
 kind: Job
@@ -139,9 +141,10 @@ metadata:
 spec:
   template:
     spec:
+      restartPolicy: OnFailure
       containers:
       - name: steve
-        image: ubuntu:18.04
+        image: ubuntu:20.04
         command: ["echo",  "Hi, I am a long running process computing stuff."]
 ```
 
@@ -149,43 +152,46 @@ spec:
 
 # Creating your first job
 
-```shell
-$  kubectl create -f https://p.2hog.codes/presentations/running-jobs-on-kubernetes/examples/1-steve-job.yml
-job.batch "steve" created
+```console
+$ kubectl apply -f steve-job.yml
+job.batch/steve created
 ```
 
 ---
 
-# Check the status of your job
+# Inspecting your first job
 
-```shell
-$  kubectl describe jobs/steveName:           steve
-Namespace:      default
-Selector:       controller-uid=e605a646-f962-11e8-ba9e-025000000001
-Labels:         controller-uid=e605a646-f962-11e8-ba9e-025000000001
-                job-name=steve
-Annotations:    <none>
-Parallelism:    1
-Completions:    1
-Start Time:     Thu, 06 Dec 2018 16:26:19 +0200
-Pods Statuses:  0 Running / 1 Succeeded / 0 Failed
-Pod Template:
-  Labels:  controller-uid=e605a646-f962-11e8-ba9e-025000000001
-           job-name=steve
+```console
+$ kubectl describe job.batch/steve
+Name:           steve
+
+# ...truncated
+
   Containers:
    steve:
-    Image:      ubuntu:18.04
-
-# ...truncated output
+    Image:      ubuntu:20.04
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      echo
+      Hi, I am a long running process computing stuff.
+    Environment:  <none>
+    Mounts:       <none>
+  Volumes:        <none>
+Events:
+  Type    Reason            Age    From            Message
+  ----    ------            ----   ----            -------
+  Normal  SuccessfulCreate  9m26s  job-controller  Created pod: steve-fp4wz
+  Normal  Completed         9m11s  job-controller  Job completed
 ```
 
 ---
 
 # Viewing the logs of your first job
 
-```shell
-$  JOB_PODS=$(kubectl get pods --selector=job-name=steve --output=jsonpath={.items..metadata.name})
-$  kubectl logs $JOB_PODS
+```console
+$ export JOB_PODS=$(kubectl get pods --selector=job-name=steve --output=jsonpath={.items..metadata.name})
+$ kubectl logs $JOB_PODS
 Hi, I am a long running process computing stuff.
 ```
 
@@ -215,6 +221,8 @@ The actual number of Pods running in parallel does not exceed the number of rema
 
 # Parallel Job with completion count
 
+`parallel-job.yml`:
+
 ```yaml
 apiVersion: batch/v1
 kind: Job
@@ -227,7 +235,7 @@ spec:
     spec:
       containers:
         - name: parallel-job
-          image: "ubuntu:18.04"
+          image: "ubuntu:20.04"
           command: ["echo",  "Hi, I am a long running process doing parallel stuff."]
       restartPolicy: Never
 ```
@@ -236,27 +244,34 @@ spec:
 
 # Creating a parallel Job with completions
 
-```shell
-$  kubectl create -f https://p.2hog.codes/presentations/running-jobs-on-kubernetes/examples/2-parallel-job.yml
-job.batch "parallel-job" created
-$  kubectl describe jobs/parallel-job
+```console
+$ kubectl apply -f parallel-job.yml
+job.batch/parallel-job created
+```
+
+---
+
+# Inspecting your parallel Job
+
+```console
+$ kubectl describe job.batch/parallel-job
 Name:           parallel-job
-# Truncated output
+Namespace:      default
+Selector:       controller-uid=2e73d13b-0b67-4f2a-ab6d-29625e1a5467
+Labels:         controller-uid=2e73d13b-0b67-4f2a-ab6d-29625e1a5467
+                job-name=parallel-job
 Annotations:    <none>
-Parallelism:    3
-Completions:    5
-Start Time:     Thu, 06 Dec 2018 17:09:19 +0200
-Pods Statuses:  0 Running / 5 Succeeded / 0 Failed
-Pod Template:
-# Truncated output
+Parallelism:    5
+Completions:    2
+
+# ...truncated
+
 Events:
   Type    Reason            Age   From            Message
   ----    ------            ----  ----            -------
-  Normal  SuccessfulCreate  6s    job-controller  Created pod: parallel-job-dxn6l
-  Normal  SuccessfulCreate  6s    job-controller  Created pod: parallel-job-67jt6
-  Normal  SuccessfulCreate  6s    job-controller  Created pod: parallel-job-vznc8
-  Normal  SuccessfulCreate  4s    job-controller  Created pod: parallel-job-jtgkn
-  Normal  SuccessfulCreate  4s    job-controller  Created pod: parallel-job-6jz2q
+  Normal  SuccessfulCreate  33s   job-controller  Created pod: parallel-job-j4pks
+  Normal  SuccessfulCreate  33s   job-controller  Created pod: parallel-job-d8nn8
+  Normal  Completed         30s   job-controller  Job completed
 ```
 
 ---
@@ -271,6 +286,8 @@ To prevent this set a deadline value using the optional `activeDeadlineSeconds` 
 
 # Job with deadline
 
+`deadline-job.yml`:
+
 ```yaml
 apiVersion: batch/v1
 kind: Job
@@ -282,35 +299,36 @@ spec:
     spec:
       containers:
         - name: deadline-job
-          image: "ubuntu:18.04"
+          image: "ubuntu:20.04"
           command: ["sleep",  "2", "&&", "exit", "1"]
       restartPolicy: Never
 ```
 
 ---
 
-# Creating a parallel Job with completions
+# Creating a Job with deadline
 
-```shell
-$  kubectl create -f https://p.2hog.codes/presentations/running-jobs-on-kubernetes/examples/3-deadline-job.yml
-job.batch "deadline-job" created
-$  kubectl describe job deadline-job
+```console
+$ kubectl apply -f deadline-job.yml
+job.batch/deadline-job created
+```
+
+---
+
+# Inspecting your Job with deadline
+
+```console
+$ kubectl describe job.batch/deadline-job
 Name:                     deadline-job
-# Truncated output
-Start Time:               Thu, 06 Dec 2018 17:20:36 +0200
-Active Deadline Seconds:  5s
-Pods Statuses:            1 Running / 0 Succeeded / 1 Failed
-Pod Template:
-  Labels:  controller-uid=7b0e60c4-f96a-11e8-ba9e-025000000001
-           job-name=deadline-job
-  # Truncated output
+
+# ...truncated
+
 Events:
-  Type     Reason            Age   From            Message
-  ----     ------            ----  ----            -------
-  Normal   SuccessfulCreate  13s   job-controller  Created pod: deadline-job-n58n5
-  Normal   SuccessfulCreate  11s   job-controller  Created pod: deadline-job-5rhvx
-  Normal   SuccessfulDelete  8s    job-controller  Deleted pod: deadline-job-5rhvx
-  Warning  DeadlineExceeded  8s    job-controller  Job was active longer than specified deadline
+  Type     Reason            Age    From            Message
+  ----     ------            ----   ----            -------
+  Normal   SuccessfulCreate  4m32s  job-controller  Created pod: deadline-job-s5dzr
+  Normal   SuccessfulCreate  4m31s  job-controller  Created pod: deadline-job-g5b5v
+  Warning  DeadlineExceeded  4m27s  job-controller  Job was active longer than specified deadline
 ```
 
 ---
@@ -360,6 +378,8 @@ A CronJob is like a crontab line; it runs a job on a given schedule, written in 
 
 # Your first CronJob
 
+`cron-job.yml`:
+
 ```yaml
 apiVersion: batch/v1beta1
 kind: CronJob
@@ -373,7 +393,7 @@ spec:
         spec:
           containers:
           - name: cron-job
-            image: ubuntu:18.06
+            image: ubuntu:20.04
             command: ["date"]
           restartPolicy: Never
 ```
@@ -382,13 +402,40 @@ spec:
 
 # Creating a CronJob
 
-```shell
-$  kubectl create -f https://p.2hog.codes/presentations/running-jobs-on-kubernetes/examples/4-cron-job.yml
-$  kubectl get job
+```console
+$ kubectl apply -f cron-job.yml
+cronjob.batch/cron-job create
+```
+
+---
+
+# Viewing the Jobs of your CronJob
+
+```console
+$ kubectl get job
 NAME                  DESIRED   SUCCESSFUL   AGE
-cron-job-1544112120   1         0            2m
-cron-job-1544112180   1         0            1m
-cron-job-1544112240   1         0            5s
+cron-job-1606682640   1         0            1m
+cron-job-1606682700   1         0            5s
+```
+
+---
+
+# Inspecting your CronJob
+
+```console
+$ kubectl describe cronjob.batch/cron-job
+Name:                          cron-job
+
+# ...truncated
+
+Active Jobs:         <none>
+Events:
+  Type    Reason            Age   From                Message
+  ----    ------            ----  ----                -------
+  Normal  SuccessfulCreate  99s   cronjob-controller  Created job cron-job-1606682640
+  Normal  SawCompletedJob   89s   cronjob-controller  Saw completed job: cron-job-1606682640, status: Complete
+  Normal  SuccessfulCreate  39s   cronjob-controller  Created job cron-job-1606682700
+  Normal  SawCompletedJob   29s   cronjob-controller  Saw completed job: cron-job-1606682700, status: Complete
 ```
 
 ---
@@ -409,7 +456,7 @@ Missed CronJobs are considered failures.
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: cron-job
+  name: cron-job-with-deadline
 spec:
   schedule: "* */1 * * *"  # Every hour
   startingDeadlineSeconds: 3600
@@ -419,7 +466,7 @@ spec:
         spec:
           containers:
           - name: cron-job
-            image: ubuntu:18.06
+            image: ubuntu:20.04
             command: ["date"]
           restartPolicy: Never
 ```
@@ -444,7 +491,7 @@ This is done via the `concurrencyPolicy` field, which accepts the following valu
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: cron-job
+  name: cron-job-with-concurrency
 spec:
   schedule: "* */1 * * *"
   concurrencyPolicy: Replace
@@ -454,7 +501,7 @@ spec:
         spec:
           containers:
           - name: cron-job
-            image: ubuntu:18.06
+            image: ubuntu:20.04
             command: ["date"]
           restartPolicy: Never
 ```
@@ -478,7 +525,7 @@ This can be tweaked using the following fields:
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: cron-job
+  name: cron-job-with-history
 spec:
   schedule: "* */1 * * *"
   successfulJobsHistoryLimit: 12
@@ -489,7 +536,7 @@ spec:
         spec:
           containers:
           - name: cron-job
-            image: ubuntu:18.06
+            image: ubuntu:20.04
             command: ["date"]
           restartPolicy: Never
 ```
@@ -499,6 +546,7 @@ spec:
 # Worst practices
 
 1. Replacing Celery, Sidekiq etc. with CronJobs
+2. Creating CronJobs without history limits
 
 ---
 
