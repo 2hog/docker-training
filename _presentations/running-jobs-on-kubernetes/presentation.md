@@ -39,16 +39,6 @@ class: middle
 
 ---
 
-# Dimitris Togias
-
-* Self-luminous, minimalist engineer
-* Co-founder of Warply and Niobium Labs
-* Previously, Mobile Engineer and Craftsman at Skroutz
-
-.footnote[[@demo9](https://twitter.com/demo9)]
-
----
-
 # Agenda
 
 1. Workloads
@@ -160,7 +150,7 @@ spec:
 # Creating your first job
 
 ```shell
-paris at ~ ⠕ kubectl create -f https://p.2hog.codes/presentations/running-jobs-on-kubernetes/examples/1-steve-job.yml
+$  kubectl create -f https://p.2hog.codes/presentations/running-jobs-on-kubernetes/examples/1-steve-job.yml
 job.batch "steve" created
 ```
 
@@ -169,7 +159,7 @@ job.batch "steve" created
 # Check the status of your job
 
 ```shell
-paris at ~ ⠕ kubectl describe jobs/steveName:           steve
+$  kubectl describe jobs/steveName:           steve
 Namespace:      default
 Selector:       controller-uid=e605a646-f962-11e8-ba9e-025000000001
 Labels:         controller-uid=e605a646-f962-11e8-ba9e-025000000001
@@ -194,8 +184,8 @@ Pod Template:
 # Viewing the logs of your first job
 
 ```shell
-paris at ~ ⠕ JOB_PODS=$(kubectl get pods --selector=job-name=steve --output=jsonpath={.items..metadata.name})
-paris at ~ ⠕ kubectl logs $JOB_PODS
+$  JOB_PODS=$(kubectl get pods --selector=job-name=steve --output=jsonpath={.items..metadata.name})
+$  kubectl logs $JOB_PODS
 Hi, I am a long running process computing stuff.
 ```
 
@@ -247,9 +237,9 @@ spec:
 # Creating a parallel Job with completions
 
 ```shell
-paris at ~ ⠕ kubectl create -f https://p.2hog.codes/presentations/running-jobs-on-kubernetes/examples/2-parallel-job.yml
+$  kubectl create -f https://p.2hog.codes/presentations/running-jobs-on-kubernetes/examples/2-parallel-job.yml
 job.batch "parallel-job" created
-paris at ~ ⠕ kubectl describe jobs/parallel-job
+$  kubectl describe jobs/parallel-job
 Name:           parallel-job
 # Truncated output
 Annotations:    <none>
@@ -302,9 +292,9 @@ spec:
 # Creating a parallel Job with completions
 
 ```shell
-paris at ~ ⠕ kubectl create -f https://p.2hog.codes/presentations/running-jobs-on-kubernetes/examples/3-deadline-job.yml
+$  kubectl create -f https://p.2hog.codes/presentations/running-jobs-on-kubernetes/examples/3-deadline-job.yml
 job.batch "deadline-job" created
-paris at ~ ⠕ kubectl describe job deadline-job
+$  kubectl describe job deadline-job
 Name:                     deadline-job
 # Truncated output
 Start Time:               Thu, 06 Dec 2018 17:20:36 +0200
@@ -393,8 +383,8 @@ spec:
 # Creating a CronJob
 
 ```shell
-paris at ~ ⠕ kubectl create -f https://p.2hog.codes/presentations/running-jobs-on-kubernetes/examples/4-cron-job.yml
-paris at ~ ⠕ kubectl get job
+$  kubectl create -f https://p.2hog.codes/presentations/running-jobs-on-kubernetes/examples/4-cron-job.yml
+$  kubectl get job
 NAME                  DESIRED   SUCCESSFUL   AGE
 cron-job-1544112120   1         0            2m
 cron-job-1544112180   1         0            1m
