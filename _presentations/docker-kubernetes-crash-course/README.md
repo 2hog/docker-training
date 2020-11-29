@@ -22,7 +22,6 @@ After the end of the training, participants should be able to understand:
 * Multi-container pods and use cases
 * Pod design principles
 * Labels, selectors and deployments
-* Simple services
 
 ## Agenda
 
