@@ -3,7 +3,7 @@ class: middle
 
 ---
 
-# Introduction to Docker and Kubernetes
+# Docker and Kubernetes crash course
 
 ---
 
@@ -113,11 +113,6 @@ Containers are a set of **kernel tools and features** that **jail** and **limit*
 * Easy and simple to use developer experience for the masses
 
 ---
-# What is Docker
-
-Docker is an operating system for your data center.
-
----
 
 # The Docker platform building blocks
 * runc - the runtime
@@ -131,6 +126,12 @@ Docker is an operating system for your data center.
 * Orchestrates the distribution of containers in multiple nodes
 
 Today we're going to interact with the first two layers only
+
+---
+
+# The Docker platform building blocks
+* runc - the runtime
+* containerd - the container manager
 
 
 ---
@@ -328,7 +329,7 @@ docker run --cpuset-cpus 0 --rm -d -it progrium/stress --cpu 2 --timeout 10s -q
 
 --
 
-Alternatively:
+## Alternatively:
 
 * Only allows a container to use a specific CPU core
 * Uses weight scheduling (aka each container gets a percentage off **all** CPU, depending on the weights of the containers asking for CPU)
@@ -381,7 +382,7 @@ class: center
 
 # Docker Images
 
-The basis of Docker Containers
+The base of Docker Containers
 
 * They provide the root file system for a Docker Container
 * They contain the meta data needed to run (e.g. exposed ports, health check instructions etc.)
@@ -661,8 +662,8 @@ For implementing Sidecars.
 # Getting our hands dirty
 
 ```bash
-ssh workshop@workshop-vm-XX-00.akalipetis.com
 git clone https://github.com/2hog/docker-training-samples
+cd docker-training-samples
 ```
 
 ---
@@ -692,7 +693,7 @@ EOF
 # And check it out
 
 ```bash
-kubectl exec nginx --container=sidecar -it sh
+kubectl exec nginx --container=sidecar -it -- sh
 apk add -U curl
 curl localhost
 ```
@@ -729,9 +730,7 @@ As we saw before, when deploying a Kubernetes pod, we created a file with a Kind
   ```yaml
   apiVersion: the API version to use
   kind: the type of the object to create
-  metadata:
-    name: ...
-    ...
+  metadata: meta information about the object, like the name
   spec: the desired state
   ```
 
@@ -876,7 +875,7 @@ class: center
 
 ---
 
-# Let's create our first replica set
+# Let's expose our first replica set
 
 ```bash
 kubectl expose replicaset demo-replicaset --type=NodePort
@@ -897,7 +896,7 @@ How are pods _selected_ then?
 --
 
 ```bash
-kubectl get svc replicaset-demo --output=yaml | less
+kubectl get svc demo-replicaset --output=yaml | less
 kubectl get po demo-replicaset-8ksqx --output=yaml | less
 ```
 
@@ -918,7 +917,7 @@ kubectl get po demo-replicaset-8ksqx --output=yaml | less
 --
 
 ```bash
-curl localhost:`kubectl \
+curl workshop-vm-XX-1.akalipetis.com:`kubectl \
   get svc demo-replicaset \
   --output=json | jq '(.spec.ports)[0].nodePort'`
 ```
@@ -960,7 +959,7 @@ You can think of the abstractions like this:
 
 * Rolling updates
 * Rollbacks
-* Scale ups (and downs)
+* Scale outs (and ins)
 * Check out deployment status
 * Keep revisions of deployments
 
@@ -971,8 +970,8 @@ You can think of the abstractions like this:
 ```bash
 kubectl apply -f kube/deployment-demo.yml
 kubectl rollout status deployment demo-deployment
-curl http://localhost:`kubectl get svc demo-deployment-svc --output=json |\
-  jq '(.spec.ports)[0].nodePort'`
+curl workshop-vm-XX-1.akalipetis.com:`kubectl get svc demo-deployment-svc --output=json |\
+  jq '(.spec.ports)[0].nodePort'`; echo
 ```
 
 ???
@@ -985,10 +984,12 @@ We will now take the previous Replica Set and include it in a deployment
 
 ```bash
 # Edit kube/deployment-demo.yml first
+# add image: akalipetis/hostname
+# port: 5000
 kubectl apply -f kube/deployment-demo.yml
 kubectl rollout status deployment demo-deployment
-curl http://localhost:`kubectl get svc demo-deployment-svc --output=json |\
-  jq '(.spec.ports)[0].nodePort'`
+curl workshop-vm-XX-1.akalipetis.com:`kubectl get svc demo-deployment-svc --output=json |\
+  jq '(.spec.ports)[0].nodePort'`; echo
 ```
 
 --
