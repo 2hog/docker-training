@@ -206,6 +206,70 @@ We can mix different configuration options depending on limitations.
 
 ---
 
+# Quiz time!
+
+---
+
+# Q: Source Code or Configuration - The root directory of our app
+
+---
+
+# Q: Source Code or Configuration: The root directory of our app
+
+**A**: Source Code.
+
+**Explanation**: It is not expected to differ across environments (e.g. production, staging, development)
+
+---
+
+# Q: Source Code or Configuration - Connection details to database
+
+---
+
+# Q: Source Code or Configuration: Connection details to database
+
+**A**: Configuration.
+
+**Explanation**: It is expected (and should!) to differ across environments (e.g. production, staging, development)
+
+---
+
+# Q: Where should I store connection details to database in production?
+
+---
+
+# Q: Where should I store connection details to database in production?
+
+**A**: External data store.
+
+**Explanation**: Such sensitive information should be handled by an appropriate system that can also rotate secrets, encryption keys and even handle cases of breaches.
+
+---
+
+# Q: Where should I store connection details to database in local development?
+
+---
+
+# Q: Where should I store connection details to database in local development?
+
+**A**: Environment variables.
+
+**Explanation**: In local development we usually run a dummy database, so we can choose the simplest solution, as connection details are relevant only on our machine.
+
+---
+
+# Q: How can I tell my application which configuration to use across development and production?
+
+---
+
+# Q: How can I tell my application which configuration to use across development and production?
+
+**A**: With mixed configuration.
+
+**Explanation**: We can use an environment variable to determine how to load configuration on each environment.
+
+---
+
 # Configuration in Kubernetes
 
 ---
@@ -260,7 +324,7 @@ kubectl create configmap my-first-config --from-literal=environment=training
 # Creating your first ConfigMap
 
 ```console
-paris at ~ ⠕ kubectl create configmap my-first-config --from-literal=environment=training
+$ kubectl create configmap my-first-config --from-literal=environment=training
 configmap/my-first-config created
 ```
 
@@ -283,13 +347,13 @@ kubectl get configmap my-first-config -o yaml
 # Your First ConfigMap
 
 ```console
-paris at ~ ⠕ kubectl get configmap my-first-config -o yaml
+$ kubectl get configmap my-first-config -o yaml
 apiVersion: v1
 data:
   environment: training
 kind: ConfigMap
 metadata:
-  creationTimestamp: "2020-05-08T07:38:04Z"
+  creationTimestamp: "2020-11-30T07:38:04Z"
   managedFields:
   - apiVersion: v1
     fieldsType: FieldsV1
@@ -299,7 +363,7 @@ metadata:
         f:environment: {}
     manager: kubectl
     operation: Update
-    time: "2020-05-08T07:38:04Z"
+    time: "2020-11-30T07:38:04Z"
   name: my-first-config
   namespace: default
   resourceVersion: "99491"
@@ -329,9 +393,56 @@ As first-class Kubernetes objects, ConfigMaps have a strict structure:
 
 ---
 
-# A Richer ConfigMap Example
+# ConfigMap from `.env` file
+
+```console
+$ printf "REDIS_DB=0\nREDIS_HOST=redis\n" >> redis.env
+
+$ cat redis.env
+REDIS_DB=0
+REDIS_HOST=redis
+
+$ kubectl create configmap redis-env --from-env-file=redis.env
+configmap/redis-env created
+```
+
+---
+
+# `kubectl get configmap redis-env -o yaml`
 
 ```yaml
+apiVersion: v1
+data:
+  REDIS_DB: "0"
+  REDIS_HOST: redis
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2020-11-30T06:58:12Z"
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:data:
+        .: {}
+        f:REDIS_DB: {}
+        f:REDIS_HOST: {}
+    manager: kubectl-create
+    operation: Update
+    time: "2020-11-29T19:58:12Z"
+  name: redis-env
+  namespace: default
+  resourceVersion: "20619"
+  selfLink: /api/v1/namespaces/default/configmaps/redis-conf
+  uid: daa0587c-efb6-4845-885c-49a5112d32cc
+```
+
+---
+
+# A richer ConfigMap example
+
+`redis.yml`:
+
+```yml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -341,6 +452,15 @@ metadata:
 data:
   REDIS_DB: "0"
   REDIS_HOST: "redis"
+```
+
+---
+
+# A richer ConfigMap example
+
+```
+$ kubectl apply -f redis.yml
+configmap/redis-config created
 ```
 
 ---
@@ -355,6 +475,8 @@ There are 2 options for consuming ConfigMap data inside a Pod:
 ---
 
 # ConfigMap Data as Environment Variables
+
+`pod.yml`:
 
 ```yaml
 apiVersion: v1
@@ -373,7 +495,7 @@ spec:
               key: environment # Key inside the `data` section of ConfigMap
 ```
 
-The developer is in charge of the configuration baseline.
+The author of `pod.yml` (the developer) is in charge of the configuration baseline.
 
 ---
 
@@ -393,7 +515,7 @@ spec:
             name: my-first-config  # Name of ConfigMap
 ```
 
-The system administrator is in charge of the configuration baseline.
+The manager of `my-first-config` (the system administrator) is in charge of the configuration baseline.
 
 ---
 
@@ -523,7 +645,7 @@ kubectl create secret generic my-first-secret --from-literal=my_secret=combinati
 # Creating your first Secret
 
 ```console
-paris at ~ ⠕ kubectl create secret generic my-first-secret --from-literal=my_secret=combination
+$ kubectl create secret generic my-first-secret --from-literal=my_secret=combination
 secret/my-first-secret created
 ```
 
@@ -546,13 +668,13 @@ kubectl get secret my-first-secret -o yaml
 # Your First Secret
 
 ```console
-paris at ~ ⠕ kubectl get secret my-first-secret -o yaml
+$ kubectl get secret my-first-secret -o yaml
 apiVersion: v1
 data:
   my_secret: Y29tYmluYXRpb24=
 kind: Secret
 metadata:
-  creationTimestamp: "2020-05-08T07:35:29Z"
+  creationTimestamp: "2020-11-30T07:07:05Z"
   managedFields:
   - apiVersion: v1
     fieldsType: FieldsV1
@@ -561,14 +683,14 @@ metadata:
         .: {}
         f:my_secret: {}
       f:type: {}
-    manager: kubectl
+    manager: kubectl-create
     operation: Update
-    time: "2020-05-08T07:35:29Z"
+    time: "2020-11-29T20:07:05Z"
   name: my-first-secret
   namespace: default
-  resourceVersion: "99121"
+  resourceVersion: "21544"
   selfLink: /api/v1/namespaces/default/secrets/my-first-secret
-  uid: 7279f991-db1c-42f5-8929-1c6bed853ba2
+  uid: 5ec986f6-6017-4a73-a119-93be74ab2780
 type: Opaque
 ```
 
@@ -715,7 +837,7 @@ This should be used only as part of a transition path in legacy apps.
 
 # Let's see Secrets in practice!
 
-https://bit.ly/2QOUtL4
+https://bit.ly/2Vtatr7
 
 ---
 
