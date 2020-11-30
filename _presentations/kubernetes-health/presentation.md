@@ -10,7 +10,7 @@ class: center
 
 # About 2hog.codes
 
-* Founders of [SourceLair](https://www.sourcelair.com) online IDE + Dimitris Togias
+* Founders of [SourceLair](https://www.sourcelair.com) online IDE
 * Docker and DevOps training and consulting
 
 ---
@@ -32,16 +32,6 @@ class: center
 * Docker training and consulting
 
 .footnote[[@pariskasid](https://twitter.com/pariskasid)]
-
----
-
-# Dimitris Togias
-
-* Self-luminous, minimalist engineer
-* Co-founder of Warply and Niobium Labs
-* Previously, Mobile Engineer and Craftsman at Skroutz
-
-.footnote[[@demo9](https://twitter.com/demo9)]
 
 ---
 
@@ -68,14 +58,13 @@ class: center
 
 # Let's clone some examples
 
-```bash
-ssh workshop@workshop-vm-XX-00.akalipetis.com
+```console
 git clone https://github.com/2hog/samples-kubernetes-health
 ```
 
 ---
 
-# The different statuses of a pod
+# The different statuses of a Pod
 
 --
 
@@ -92,7 +81,7 @@ Unknown: Typically due to an error in communicating with the host of the Pod
 
 ---
 
-# But, before we understand pods
+# But, before we understand Pods
 
 We need to understand container states
 
@@ -109,7 +98,7 @@ Terminated: because of an exit code (either 0 or not) or by the system
 
 ---
 
-# Going back to the pods
+# Going back to the Pods
 
 --
 
@@ -121,7 +110,7 @@ Terminated: because of an exit code (either 0 or not) or by the system
 
 --
 
-```bash
+```console
 kubectl run --image=nginx:alpine nginx
 for i in `seq 20`; do
   kubectl describe po nginx;
@@ -136,8 +125,8 @@ grep -e '\(State\|Status\)' -A 2
 
 --
 
-1. Create a new deployment — which created a new pod
-1. Described the pod to see the status and the state every 2 seconds
+1. Create a new Deployment — which created a new Pod
+1. Described the Pod to see the status and the state every 2 seconds
 
 ???
 
@@ -149,7 +138,7 @@ Go back now and understand the diagram again
 
 --
 
-```bash
+```console
 kubectl run --image=alpine to-crash
 for i in `seq 20`; do
 kubectl describe po to-crash;
@@ -168,7 +157,7 @@ The container is still waiting to be restarted.
 
 --
 
-* Only one-off pods can be successful or failed
+* Only one-off Pods can be successful or failed
 * The exit code defines the exit status
 
 ---
@@ -177,7 +166,7 @@ The container is still waiting to be restarted.
 
 --
 
-```bash
+```console
 kubectl run --image alpine --restart=Never my-job
 for i in `seq 20`;
 do kubectl describe po my-job;
@@ -187,7 +176,7 @@ done | grep -e '\(Status\|State\)'
 
 --
 
-```bash
+```console
 kubectl run --image alpine --restart=Never my-failed-job -- sh -c 'exit 17'
 for i in `seq 20`;
 do kubectl describe po my-failed-job;
@@ -203,14 +192,14 @@ The container was terminated in both cases, the exit code determined the status
 
 # Container state and Pod status bottom line
 
-* Containers might stop or restart, without affecting pod status
-* A pod's status is derived from its container states and its restart policy
+* Containers might stop or restart, without affecting Pod status
+* a Pod's status is derived from its container states and its restart policy
 
 ???
 
-* A container restarting, does not mean it will affect its pod's status
-* An exited container, does not necessarily mark a pod as failed
-* In case of multi-container pods, the status only changes if all containers exit
+* A container restarting, does not mean it will affect its Pod's status
+* An exited container, does not necessarily mark a Pod as failed
+* In case of multi-container Pods, the status only changes if all containers exit
 
 ---
 
@@ -226,7 +215,6 @@ The container was terminated in both cases, the exit code determined the status
 # What if the process is running, but my application does not respond?
 
 --
-
 * A running process does not indicate a responsive application
 * There are many reasons why an application might be running, but not responding
 
@@ -260,6 +248,115 @@ This allows us to make sure our application is responding correctly
 
 ---
 
+# Health Probes
+
+According to the use case we distinct 3 kinds of probes: 
+
+- **Liveness Probes**
+- **Readiness Probes**
+- **Startup Probes**
+
+All of these Probes can use Command, HTTP or TCP mechanisms.
+
+Docs: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+
+---
+
+# Liveness Probes
+
+Liveness Probes let us know when to restart a container.
+
+They could catch a deadlock, where an application is running, but unable to make progress.
+
+---
+
+# Liveness Probes
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: liveness
+  name: liveness-exec
+spec:
+  containers:
+  - name: liveness
+    image: k8s.gcr.io/busybox
+    args:
+    - /bin/sh
+    - -c
+    - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 600
+    livenessProbe:
+      exec:
+        command:
+        - cat
+        - /tmp/healthy
+      initialDelaySeconds: 5
+      periodSeconds: 5
+```
+
+---
+
+# Readiness Probes
+
+Readiness Probes let us know when a container is ready to start accepting traffic.
+
+A Pod is considered ready when all of its containers are ready. One use of this signal is to control which Pods are used as backends for Services. When a Pod is not ready, it is removed from Service load balancers.
+
+---
+
+# Readiness Probes
+
+```yaml
+readinessProbe:
+  exec:
+    command:
+    - cat
+    - /tmp/healthy
+  initialDelaySeconds: 5
+  periodSeconds: 5
+```
+
+---
+
+# Startup Probes
+
+Startu Probes are being used to know when a container application has started.
+
+If such a probe is configured, it disables liveness and readiness checks until it succeeds, making sure those probes don't interfere with the application startup. This can be used to adopt liveness checks on slow starting containers, avoiding them getting killed by the kubelet before they are up and running.
+
+---
+
+# Startup Probes
+
+```yaml
+ports:
+- name: liveness-port
+  containerPort: 8080
+  hostPort: 8080
+
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: liveness-port
+  failureThreshold: 1
+  periodSeconds: 10
+
+startupProbe:
+  httpGet:
+    path: /healthz
+    port: liveness-port
+  failureThreshold: 30
+  periodSeconds: 10
+```
+
+---
+
+# Probe methods
+
+---
+
 # Command probe
 
 --
@@ -271,7 +368,7 @@ This allows us to make sure our application is responding correctly
 
 # Command probe
 
-```bash
+```console
 kubectl apply -f health-probe-exec.yml
 watch -n 2 'kubectl describe pod health-probe-exec | grep Events: -A 20'
 ```
@@ -296,7 +393,7 @@ watch -n 2 'kubectl describe pod health-probe-exec | grep Events: -A 20'
 
 --
 
-```bash
+```console
 kubectl apply -f health-probe-http-get.yml
 watch -n 2 'kubectl describe pod health-probe-http-get | grep Events: -A 20'
 ```
@@ -324,7 +421,7 @@ Enter the TCP probe, which just checks if a TCP connection can be made
 
 # TCP probe
 
-```bash
+```console
 kubectl apply -f health-probe-tcp.yml
 watch -n 2 'kubectl describe pod health-probe-tcp | grep Events: -A 20'
 ```
@@ -358,14 +455,14 @@ watch -n 2 'kubectl describe pod health-probe-tcp | grep Events: -A 20'
 
 # Readiness probes
 
-```bash
+```console
 kubectl apply -f health-ready-probe.yml
 watch -n 2 'kubectl describe pod health-ready | grep Events: -A 20'
 ```
 
 ---
 
-# Preparing a pod, before the actual containers run
+# Preparing a Pod, before the actual containers run
 
 --
 
@@ -386,7 +483,7 @@ watch -n 2 'kubectl describe pod health-ready | grep Events: -A 20'
 
 # Initialization containers
 
-```bash
+```console
 kubectl apply -f init-container.yml
 watch -n 2 'kubectl describe pod init-container | grep Events: -A 20'
 kubectl exec -it init-container bash
@@ -415,7 +512,7 @@ curl localhost:8000
 
 # Let's get hooked
 
-```bash
+```console
 kubectl apply -f hooks.yml
 kubectl exec -it lifecycle-demo sh
 cat /usr/share/nginx/html/hook
@@ -436,7 +533,7 @@ class: center
 
 * Kubernetes accounts RAM and CPU as resource types
 * Resources are used to
-  * Make sure a pod does not abuse the available resources
+  * Make sure a Pod does not abuse the available resources
   * Help the scheduler better do its job
 
 ---
@@ -494,7 +591,7 @@ i.e. if 100m means that the container can consume the same amount of cycles, as 
 
 # Let's see this in action
 
-```bash
+```console
 kubectl apply -f limits.yml
 ```
 

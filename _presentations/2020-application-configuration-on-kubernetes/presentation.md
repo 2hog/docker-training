@@ -710,7 +710,7 @@ As first-class Kubernetes objects, Secrets have a strict structure:
 # A Richer Secret
 
 ```console
-kubectl create secret generic richer-secret --from-literal=auth_user=velti --from-literal=auth_password=training
+kubectl create secret generic richer-secret --from-literal=auth_user=kube --from-literal=auth_password=training
 ```
 
 ---

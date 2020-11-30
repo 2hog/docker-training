@@ -13,7 +13,7 @@ class: middle
 
 # About 2hog.codes
 
-* Founders of [SourceLair](https://www.sourcelair.com) online IDE + Dimitris Togias
+* Founders of [SourceLair](https://www.sourcelair.com) online IDE
 * Docker and DevOps training and consulting
 
 ---
