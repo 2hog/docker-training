@@ -35,16 +35,6 @@ class: middle
 
 ---
 
-# Dimitris Togias
-
-* Self-luminous, minimalist engineer
-* Co-founder of Warply and Niobium Labs
-* Previously, Mobile Engineer and Craftsman at Skroutz
-
-.footnote[[@demo9](https://twitter.com/demo9)]
-
----
-
 class: center
 
 # [p.2hog.codes/kubernetes-monitoring](https://p.2hog.codes/kubernetes-monitoring)
@@ -210,10 +200,10 @@ kubectl cluster-info
 
 ```bash
 kubectl get no
-kubectl describe node workshop-vm-XX-00
-kubectl describe node workshop-vm-XX-01
-kubectl descibe nodes
-kubectl get componentstatuses
+kubectl describe node workshop-vm-$NODE_ID-1
+kubectl describe node workshop-vm-$NODE_ID-2
+kubectl describe nodes
+kubectl  get componentstatuses etcd-0
 ```
 
 ---
@@ -240,8 +230,57 @@ kubectl get all --all-namespaces
 
 ```bash
 kubectl apply -f dashboard/deploy.yml
-# Open https://workshop-vm-ΧΧ-00.akalipetis.com:30443
 ```
+
+---
+
+# Create a service account to access the dashboard
+
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+EOF
+```
+
+---
+
+# Bind the admin role to the created token
+
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
+EOF
+```
+
+---
+
+# Get the token
+
+```bash
+kubectl -n kube-system get secrets admin-user-token-x4l52 -o json | jq -r .data.token | base64 -d; echo
+```
+
+---
+
+# Open the dashboard
+
+* Go to https://workshop-vm-$NODE_ID-1.akalipetis.com:30443
+* Type "thisisunsafe" (this is unsafe without spaces) for Chrome to open the page
 
 ---
 
@@ -297,10 +336,10 @@ docker container stats --no-stream
 # Installing the Kubernetes metrics server
 
 ```bash
-kubectl apply -f metrics-server
+kubectl apply -f metrics-server/deploy.yml
 kubectl get po --all-namespaces
 kubectl -n kube-system top po kube-proxy-p9zp2
-kubectl top no workshop-vm-XX-00
+kubectl top no workshop-vm-$NODE_ID-1
 ```
 
 ---
@@ -346,7 +385,7 @@ kubectl top no workshop-vm-XX-00
 
 ```bash
 kubectl apply -f prometheus/
-# Open http://workshop-vm-00-00.akalipetis.com:30090/
+# Open http://workshop-vm-XX-1.akalipetis.com:30090/
 ```
 
 ---
@@ -358,8 +397,8 @@ kubectl apply -f prometheus/
 # Querying some metrics
 
 ```promql
-container_memory_usage_bytes{pod_name=~"metrics-server-.*"}
-kube_pod_container_status_restarts_total
+container_memory_usage_bytes{name=~".*prometheus.*"}
+count(container_memory_usage_bytes) by (instance)
 ```
 
 ---
@@ -435,10 +474,10 @@ kubectl -n kube-system logs -f weave-net-txtw8 -c weave
 
 ```bash
 # Jump into a container
-kubectl exec -it 
+kubectl exec -it -n kube-system weave-net-cb8v6 -c weave -- sh
 # Check the DNS records for the service and the tasks
-kubectl run --image=alpine --generator=run-pod/v1 sleepy sleep 600
-kubectl exec -it sleepy sh
+kubectl run --image=alpine sleepy sleep 600
+kubectl exec -it sleepy -- sh
 apk add bind-tools curl
 dig kubernetes.default.svc.cluster.local
 curl https://10.96.0.1 -k
@@ -471,12 +510,85 @@ ping 10.32.0.2
 # Taking a pod out for further investigation
 
 ```bash
-kubectl run --image=nginx:alpine --generator=run/v1 nginx
+kubectl create deployment nginx --image=nginx:alpine
 kubectl get po
-kubectl edit po nginx-6ddjx
+kubectl edit po nginx-565785f75c-t6kdk
 # add -debug suffix to labels
-kubectl get po
-kubectl exec -it nginx-6ddjx sh
+kubectl exec -it nginx-565785f75c-t6kdk -- sh
+```
+
+---
+
+# Let's create 99 problems
+
+--
+
+Ok, not 99
+
+---
+
+# Problem 1
+
+```bash
+kubectl apply -f 99-problems/1.yml
+kubectl get deploy problem-1 -w
+```
+
+--
+
+```bash
+kubectl apply -f 99-problems/1-solution.yml
+```
+
+--
+
+```bash
+kubectl scale deploy problem-1 --replicas 1
+```
+
+---
+
+# Problem 2
+
+```bash
+kubectl apply -f 99-problems/2.yml
+kubectl get deploy problem-2 -w
+```
+
+--
+
+```bash
+kubectl apply -f 99-problems/2-solution.yml
+```
+
+---
+
+# Problem 3
+
+```bash
+kubectl apply -f 99-problems/3.yml
+curl http://workshop-vm-$NODE_ID-1.akalipetis.com:8080
+```
+
+--
+
+```bash
+kubectl apply -f 99-problems/3-solution.yml
+```
+
+---
+
+# Problem 4
+
+```bash
+kubectl apply -f 99-problems/4.yml
+kubectl get po -w -l app=problem-4
+```
+
+--
+
+```bash
+kubectl apply -f 99-problems/4-solution.yml
 ```
 
 ---
