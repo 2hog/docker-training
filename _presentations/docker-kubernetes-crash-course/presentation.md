@@ -189,7 +189,7 @@ exit
 ```bash
 # Next, run the following commands and compare the output
 
-docker run node:13-alpine node --version
+docker run node:14-alpine node --version
 
 docker run node:12-alpine node --version
 ```
@@ -205,7 +205,7 @@ docker run node:12-alpine node --version
 
 - `docker`: Invokes the Docker Engine client
 - `run`: Instructs `docker` to run a container
-- `node:13-alpine`: The image to use as root file system
+- `node:14-alpine`: The image to use as root file system
 - `node --version`: The command that should be run as a container
 
 https://docs.docker.com/engine/reference/commandline/run/
