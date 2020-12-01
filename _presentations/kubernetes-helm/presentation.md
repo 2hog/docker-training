@@ -10,7 +10,7 @@ class: center
 
 # About 2hog.codes
 
-* Founders of [SourceLair](https://www.sourcelair.com) online IDE + Dimitris Togias
+* Founders of [SourceLair](https://www.sourcelair.com) online IDE
 * Docker and DevOps training and consulting
 
 ---
@@ -32,16 +32,6 @@ class: center
 * Docker training and consulting
 
 .footnote[[@pariskasid](https://twitter.com/pariskasid)]
-
----
-
-# Dimitris Togias
-
-* Self-luminous, minimalist engineer
-* Co-founder of Warply and Niobium Labs
-* Previously, Mobile Engineer and Craftsman at Skroutz
-
-.footnote[[@demo9](https://twitter.com/demo9)]
 
 ---
 
@@ -84,57 +74,46 @@ class: center
 
 # Helm architecture
 
-* Tiller server — a rest API server, which processes and deploys charts
-* Helm client — simple CLI to interact with Tiller
+* Helm client — CLI that encapsulates all the Helm logic and communicates with the Kubernetes API
+
+--
+
+_Differences with Helm 2_:
+
+* Helm had a client-server model
+* Helm was a simple CLI
+* All the logic was implemented server-side with Tiller
 
 ---
 
-# What's that Tiller thing?
+# Important Helm concepts
 
-.center[![](/images/kubernetes-helm/tiller.jpg)]
+* Helm charts - the Helm packages that can be deployed inside a Kubernetes cluster
+* Helm repositories - the place too store and retrieve Charts, either public or private
+* Helm releases - the instance of a Chart, running inside a Kubernetes cluster
 
----
-
-# Hey, Kube Tiller
-
-* Manages different releases for each chart
-* Stores history of each release
-* Can easily install, upgrade or rollback Kubernetes resources
-* Does some garbage collection
-
----
-
-# Tiller server behind the scenes
-
-* Merges the given values with the templates
-* Deploys the output manifests to Kubernetes
-* Adds some lifecycle hooks, to make the release process easier
-
----
-
-# Main Helm concepts
-
-* Chart — a package for Helm
-* Repository — the chart registry
-* Release — an instance of a Chart, running within a Kubernetes cluster
+_Tip_: Use `helm search repo` to look for repositories and charts from the CLI
 
 ---
 
 # Installing Helm
 
-```bash
-kubectl apply -f \
-  https://gist.githubusercontent.com/akalipetis/968a29bd42b7944f788cb6332b480b62/raw/b00ef23c64575605139d8ba4ee1998c3aaa2f88e/tiller-rbac.yml
-helm init --service-account tiller
-```
+* Done, you didn't need to do anything, only having the CLI is enough!
+
+--
+
+_Differences with Helm 2_:
+* Helm 2 needed Tiller to be deployed inside the cluster
+* Tiller deployment had a complex RBAC setup, which was either too permissive, or too complicated to implement
 
 ---
 
 # Let's deploy our first chart
 
 ```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
-helm install stable/postgresql
+helm install my-db bitnami/postgresql
 ```
 
 ---
@@ -143,18 +122,38 @@ helm install stable/postgresql
 
 ```bash
 helm repo add rimusz https://charts.rimusz.net
-helm upgrade --install hostpath-provisioner \
+helm install hostpath-provisioner \
   --namespace kube-system \
   rimusz/hostpath-provisioner
 ```
 
 ---
 
+# Install the whole ELK stack
+
+```bash
+helm repo add elastic https://helm.elastic.co
+kubectl create ns elastic
+helm install -n elastic --values=elasticsearch.yml   elasticsearch elastic/elasticsearch
+helm install -n elastic logstash elastic/logstash
+helm install -n elastic \
+  --set service.type=NodePort,nodePort=35601 \
+  kibana elastic/kibana
+helm install -n elastic filebeat elastic/filebeat
+```
+
+
+???
+
+Cleanup: kubectl delete --all -ikkk
+
+---
+
 # Configuring the way a Chart is deployed
 
 ```bash
-helm delete --purge ignorant-coral
-helm install --set=persistence.storageClass=standard stable/postgresql
+helm uninstall my-db
+helm install my-db --set=persistence.storageClass=hostpath bitnami/postgresql
 ```
 
 ---
@@ -162,9 +161,15 @@ helm install --set=persistence.storageClass=standard stable/postgresql
 # Configuring default values
 
 ```bash
-helm inspect values stable/postgresql > values.yml
+helm show values bitnami/postgresql > values.yml
+# Set storage class to hostpath and
+# Set nodePort: 5432
 vim values.yml
-helm upgrade -f=values.yml fair-serval stable/postgresql
+export POSTGRESQL_PASSWORD=$(kubectl get secret \
+  my-db-postgresql \
+  -o jsonpath="{.data.postgresql-password}" \
+  |base64 --decode)
+helm upgrade -f=values.yml --set postgresqlPassword=$POSTGRESQL_PASSWORD my-db bitnami/postgresql
 ```
 
 ???
@@ -176,14 +181,14 @@ helm upgrade -f=values.yml fair-serval stable/postgresql
 # Where do I find those charts?
 
 * We can quickly `helm search`
-* Or go to https://hub.helm.sh/
+* Or go to https://artifacthub.io/
 
 ---
 
 # What's in a Chart?
 
 ```bash
-helm fetch stable/postgresql --untar
+helm fetch bitnami/postgresql --untar
 ```
 
 ---
@@ -225,9 +230,9 @@ vim templates/statefulset.yaml
 
 ```bash
 helm ls
-helm status fair-serval
-helm history fair-serval
-helm rollback fair-serval 1
+helm status my-db
+helm history my-db
+helm rollback my-db 1
 ```
 
 ---
@@ -236,7 +241,38 @@ helm rollback fair-serval 1
 
 ```bash
 helm plugin install https://github.com/databus23/helm-diff --version master
-helm diff upgrade fair-serval stable/postgresql --values values.yaml
+helm diff upgrade \
+  -f=values.yml \
+  --set postgresqlPassword=$POSTGRESQL_PASSWORD \
+  my-db bitnami/postgresql
+```
+
+---
+
+# How does Helm determine what to deploy?
+
+* Helm is using 3-way merge
+* Takes into account the initial deployment state
+* Then, compares it with any possible runtimes changes in the application
+* And finally, finds the differences regarding the new version
+
+--
+
+_Differences with Helm 2_:
+
+* Helm 2 did not support 3-way merge, only 2-way
+* This created issues, especially when values are dynamically changed, like replicas for example
+
+---
+
+# 3-way merge in action
+
+```bash
+kubectl edit sts my-db-postgresql
+helm diff upgrade \
+  -f=values.yml \
+  --set postgresqlPassword=$POSTGRESQL_PASSWORD \
+  my-db bitnami/postgresql
 ```
 
 ---
@@ -245,6 +281,7 @@ helm diff upgrade fair-serval stable/postgresql --values values.yaml
 
 ```bash
 helm create my-awesome-chart
+cd my-awesome-chart
 vim Chart.yaml
 vim values.yaml
 ```
@@ -265,6 +302,8 @@ vim values.yaml
 * Files
 * Capabilities
 * Template
+
+https://helm.sh/docs/chart_template_guide/builtin_objects/
 
 ???
 
@@ -365,17 +404,9 @@ vim values.yaml
 
 # Helm best practices
 
-* Use the Charts on https://hub.helm.sh, at least as a starting point
+* Use the Charts on https://artifacthub.io/, at least as a starting point
 * Create a private Helm repository for common internal services
 * Have specific charts version controlled alongside their repositories
-
----
-
-# Let's create a real chart
-
-```bash
-git clone https://github.com/2hog/docker-training-samples-micro-django
-```
 
 ---
 
