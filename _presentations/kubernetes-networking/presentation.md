@@ -10,7 +10,7 @@ class: middle
 
 # About 2hog.codes
 
-* Founders of [SourceLair](https://www.sourcelair.com) online IDE + Dimitris Togias
+* Founders of [SourceLair](https://www.sourcelair.com) online IDE
 * Docker and DevOps training and consulting
 
 ---
@@ -35,16 +35,6 @@ class: middle
 
 ---
 
-# Dimitris Togias
-
-* Self-luminous, minimalist engineer
-* Co-founder of Warply and Niobium Labs
-* Previously, Mobile Engineer and Craftsman at Skroutz
-
-.footnote[[@demo9](https://twitter.com/demo9)]
-
----
-
 class: center
 
 # [p.2hog.codes/kubernetes-networking](https://p.2hog.codes/kubernetes-networking)
@@ -61,7 +51,7 @@ class: center
 
 # Let's get the code
 
-```bash
+```console
 git clone https://github.com/2hog/kubernetes-networking
 cd kubernetes-networking
 ```
@@ -81,6 +71,23 @@ class: center
 * Pod-to-Pod communications
 * Pod-to-Service communications
 * External-to-internal communications
+
+---
+
+# The Kubernetes networking model
+
+--
+
+* Kubernetes supports everything implementing the CNI
+* All Pods and Nodes in the cluster are routable within a flat network
+  * That means that there's no network separation and thus all workloads should be trusted, or resources secured
+* Every Pod gets an IP
+* Pods and nodes get DNS names, which work inside the cluster
+
+???
+
+* Sensitive resources should be secured
+* There are ways to handle that, but out of topic for this course
 
 ---
 
@@ -106,9 +113,9 @@ This imposes possible security issues, more on that later
 
 # How to implement networking within the cluster
 
-* Supply the underlay network
-* Pick the network plugin of choice
-* Deploy the networking plugin in the cluster
+1. Supply the underlay network
+2. Pick the network plugin of choice
+3. Deploy the networking plugin in the cluster
 
 ---
 
@@ -123,9 +130,9 @@ This imposes possible security issues, more on that later
 
 # Let's see how network plugins are deployed
 
-```bash
-kubectl get po -n kube-system
-kubectl describe po -n kube-system weave-net-hlc5g
+```console
+kubectl get pod -n kube-system
+kubectl describe pod -n kube-system weave-net-hlc5g
 ```
 
 ???
@@ -145,11 +152,11 @@ That's why Weave has the `node.kubernetes.io/network-unavailable:NoSchedule` tol
 
 # Let's reach a pod
 
-```bash
+```console
 # Run an NGINX pod
 kubectl run nginx --image=nginx --generator=run-pod/v1
 # Get the IP and hit NGINX's port 80
-kubectl describe po nginx | grep IP
+kubectl describe pod nginx | grep IP
 curl 10.44.0.2
 ```
 
@@ -157,7 +164,7 @@ curl 10.44.0.2
 
 # Pod networking
 
-* Every pod has it's own localhost
+* Every Pod has it's own localhost
 * Network namespace it initialized by the pause container
 * Pod containers are attached to the same network namespace
 
@@ -165,7 +172,7 @@ curl 10.44.0.2
 
 # Pod networking
 
-```bash
+```console
 # workshop-vm-XX-01
 docker ps | grep nginx
 # inspect the pause container
@@ -176,15 +183,15 @@ docker inspect 35a40f6dbdb3
 
 ???
 
-The pod created two containers, while we just requested one
+The Pod created two containers, while we just requested one
 The two containers have the same network interface — this is just for the initialization of the network namespace
-https://github.com/kubernetes/kubernetes/blob/master/build/pause
+https://github.com/kubernetes/kubernetes/tree/v1.19.4/build/pause
 
 ---
 
 # Pod networking
 
-```bash
+```console
 cat << EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -206,7 +213,7 @@ EOF
 
 # Pod networking
 
-```bash
+```console
 kubectl exec nginx-sleepy -c sleepy -it sh
 apk add -U curl
 curl localhost
@@ -227,7 +234,7 @@ class: center
 
 ---
 
-# Getting through pod mortality
+# Getting through Pod mortality
 
 * Pods are ephemeral, they might be created and destroyed in a fast pace
 * A service can be consisted of one or more Pods
@@ -235,13 +242,13 @@ class: center
 
 ---
 
-# Say hello to services
+# Say hello to Services
 
 Services are an abstraction, which defines a logical set of Pods and an access policy
 
 ---
 
-# Kubernetes services
+# Kubernetes Services
 
 * API objects
 * Use a label selector for choosing the related Pods
@@ -249,9 +256,27 @@ Services are an abstraction, which defines a logical set of Pods and an access p
 
 ---
 
+# Kubernetes Service load-balancing
+
+--
+
+* Each Service in the Kubernetes gets a virtual IP
+  * Kubernetes Services make sure connections to this internal IP are routed to the correct container, in any host in the cluster
+* Multi-host networking is made with CNI plugins
+* If desired, services can integrate with external load balancers or simply open a port to each node in the cluster
+  * Connections, as soon as they enter the cluster, are routed in the exact same way
+
+???
+
+Benefits:
+* You don't need to know where in the cluster every pod runs
+* You don't need to do health management
+
+---
+
 # Label selectors in action
 
-```bash
+```console
 # Create a single Pod and a service
 kubectl apply -f nginx-selected.yml
 kubectl apply -f service.yml
@@ -260,7 +285,7 @@ curl 10.101.9.233
 ```
 --
 
-```bash
+```console
 # Add another Pod with the same selector
 kubectl apply -f web-selected.yml
 curl 10.101.9.23
@@ -268,7 +293,7 @@ curl 10.101.9.23
 
 --
 
-```bash
+```console
 # Change target port to "web", instead of a specific number
 kubectl apply -f service.yml
 ```
@@ -281,7 +306,7 @@ kubectl apply -f service.yml
 
 ---
 
-# How do Kubernetes services work
+# How do Kubernetes Services work
 
 * They sit in front of Pods, exposing a Cluster-routable IP
 * When TCP connections are made to this IP, then kube-proxy takes control to move the traffic to one of the Pods
@@ -327,14 +352,14 @@ kubectl apply -f service.yml
 
 ---
 
-# Discovering services
+# Discovering Services
 
 * Service information is exposed to the environment
-  ```bash
+  ```console
   kubectl exec web-selected printenv | grep SERVICE
   ```
 * Service IP can be easily queried from a known DNS record
-  ```bash
+  ```console
   kubectl exec web-selected -it bash
   apt update && apt install -y dnsutils
   dig my-service.default.svc.cluster.local
@@ -345,21 +370,61 @@ In order for the DNS records to work, CoreDNS should be configured
 
 ---
 
+# How is DNS resolved in Kubernetes
+
+* Services
+    * A record: `my-svc.my-namespace.svc.cluster.local`
+        * Multiple A records for "headless" services
+    * SRV record: `_my-port-name._my-port-protocol.my-svc.my-namespace.svc.cluster.local`
+* Pods
+    * A record: `pod-ip-address.my-namespace.pod.cluster.local`
+
+---
+
 # Service DNS records in Kubernetes
 
-* Each service gets a `my-svc.my-namespace.svc.cluster.local` A record
+* Each Service gets a `my-svc.my-namespace.svc.cluster.local` A record
 * And a `_my-port-name._my-port-protocol.my-svc.my-namespace.svc.cluster.local` SRV record
 
 ---
 
-# Special cases in services DNS records
+# Special cases in Services DNS records
 
 * Headless services return multiple answers for their A record, one for each Pod
 * StatefulSets also include the following A records `my-statefulset-{0..N-1}.my-svc.my-namespace.svc.cluster.local`
 
 ---
 
-# A bit deeper on service routing
+# Search domains
+
+Except from the full DNS records, you can also search the following DNS names
+
+* Services within the same namespace
+  * `svc` will resolve to `svc.the-namespace.cluster.local` when queried from a pod in this namespace
+* Services within the same cluster
+  * `svc.the-namespace` will resolve to `svc.the-namespace.cluster.local`, even when queried from other namespaces in the same cluster
+
+???
+
+* The `cluster.local` suffix is there to support cluster federation in the future
+* Clusters could potentially be in the same address space
+* Search domains allow for simplifying the configuration of applications, within the same namespace
+* There are times where applications do not respect search domains, be careful with that
+
+---
+
+# Let's check out DNS resolution in Kubernetes
+
+```console
+kubectl exec nginx --container=sidecar -it sh
+apk add -U bind-tools
+host demo-replicaset
+dig demo-replicaset.svc.default.cluster.local
+```
+
+---
+
+# A bit deeper on Service routing
 
 * userspace proxy-mode — opens a random port on each node and traffic flows through that port
 * iptables proxy-mode — endpoints are matched with iptables rules, this is the default mode
@@ -385,11 +450,11 @@ IPVS algorithms
 
 ---
 
-# Things to keep in mind when using services
+# Things to keep in mind when using Services
 
 * usermode proxying does not scale very well in large clusters
 * source IP information might be lost if a request passes through a service (ie in usermode, or in iptables when coming from the outside)
-* Using services without proper readiness/liveness probes loses a lot of the good things
+* Using services without proper Readiness or Liveness probes loses a lot of the good things
 
 ---
 
@@ -424,7 +489,7 @@ IPVS algorithms
 
 # Let's see this in action
 
-```bash
+```console
 kubectl exec nginx-selected -it sh
 apk add -U curl
 curl -I www.google.com
@@ -440,7 +505,7 @@ curl -I https://13.91.101.219 -k
 # How does Weave implement network policies
 
 * Weave is using iptables on the host machine to implement the network policies
-* This is great, but it's not ideal since there's no security on the pod level and there are many iptable rules needed
+* This is great, but it's not ideal since there's no security on the Pod level and there are many iptable rules needed
 
 ???
 
@@ -478,7 +543,7 @@ A service mesh is a dedicated infrastructure layer for making service-to-service
 
 ---
 
-# What does a service mesh actually do
+# What does a Service Mesh actually do
 
 * Provide rich metrics on the network traffic within the cluster
 * Secure and encrypt connections between Pods
@@ -487,14 +552,14 @@ A service mesh is a dedicated infrastructure layer for making service-to-service
 
 ---
 
-# Service mesh implementations
+# Service Mesh implementations
 
 * Istio — IBM and Google, CNCF member project
 * Linkerd — Buoyant, CNCF member project
 
 ---
 
-# How is a service mesh deployed
+# How is a Service Mesh deployed
 
 * The control plane is deployed as Kubernetes resources
 * The data plane, is either automatically injected, or added "by hand"
@@ -503,7 +568,7 @@ A service mesh is a dedicated infrastructure layer for making service-to-service
 
 # Let's deploy a service mesh
 
-```bash
+```console
 curl -sL https://run.linkerd.io/install | sh
 export PATH=$PATH:$HOME/.linkerd2/bin
 linkerd check --pre
@@ -521,7 +586,7 @@ Open http://workshop-vm-XX-00.akalipetis.com:8084
 
 # Let's inject our first deployment
 
-```bash
+```console
 linkerd inject deployment.yml | kubectl apply -f -
 ```
 
@@ -532,7 +597,7 @@ linkerd inject deployment.yml | kubectl apply -f -
 * An init container was injected, to set up everything for Linkerd proxy
 * The Linkerd proxy was deployed alongside our container
 
-```bash
+```console
 kubectl edit deployments env-example-deployment
 ```
 
@@ -547,7 +612,7 @@ kubectl edit deployments env-example-deployment
 
 # TLS without the hassle
 
-```bash
+```console
 linkerd install --tls=optional | kubectl apply -f -
 linkerd stat authority -n linkerd
 ```
