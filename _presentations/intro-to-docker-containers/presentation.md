@@ -116,7 +116,7 @@ Containers are a set of **kernel tools and features** that **jail** and **limit*
 ---
 # What is Docker
 
-Docker is an operating system for your data center.
+Docker developer-first tool for building, packaging, distributing and running applications on the cloud.
 
 ---
 
@@ -189,9 +189,9 @@ exit
 ```bash
 # Next, run the following commands and compare the output
 
-docker run node:13-alpine node --version
+docker run python:3.9-alpine python --version
 
-docker run node:12-alpine node --version
+docker run python:3.8-alpine python --version
 ```
 
 ???
@@ -205,8 +205,8 @@ docker run node:12-alpine node --version
 
 - `docker`: Invokes the Docker Engine client
 - `run`: Instructs `docker` to run a container
-- `node:13-alpine`: The image to use as root file system
-- `node --version`: The command that should be run as a container
+- `python:3.9-alpine`: The image to use as root file system
+- `python --version`: The command that should be run as a container
 
 https://docs.docker.com/engine/reference/commandline/run/
 
@@ -410,12 +410,11 @@ The Dockerfile is a text file that contains all commands needed to build an imag
 ## Example
 
 ```dockerfile
-FROM openjdk:8
+FROM python:3.8
 
-COPY Main.java /usr/src/app/Main.java
 WORKDIR /usr/src/app
-RUN javac Main.java
-CMD ["java", "Main"]
+COPY hello.py ./
+CMD ["python", "hello.py"]
 ```
 
 https://docs.docker.com/engine/reference/builder/
@@ -431,10 +430,10 @@ Run the following command to build your Docker Image, based on the Dockerfile an
 ## Example
 
 ```bash
-mkdir -p /root/myjava
-cd /root/myjava
-docker build -t myjava .
-docker run myjava
+mkdir -p /root/training
+cd /root/training
+docker build -t training .
+docker run training
 ```
 
 ---
@@ -443,7 +442,7 @@ docker run myjava
 
 - `docker`: Invokes the Docker Engine client
 - `build`: Instructs `docker` to build a new image
-- `-t myjava`: Give the name `myjava` to the resulting image
+- `-t training`: Give the name `training` to the resulting image
 - `.`: Use the current directory to find the Dockerfile and needed files
 
 https://docs.docker.com/engine/reference/commandline/build/
