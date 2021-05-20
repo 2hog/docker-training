@@ -1,10 +1,10 @@
-FROM jekyll/jekyll as dev
-COPY Gemfile Gemfile.lock /srv/jekyll/
-RUN gem install bundler:1.16.4 && \
-    bundle install
+FROM jekyll/jekyll:3.8 as dev
+WORKDIR /srv/jekyll/
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
 
 FROM dev as builder
-COPY ./ /srv/jekyll/
+COPY ./ ./
 RUN jekyll build
 
 FROM nginx:alpine
